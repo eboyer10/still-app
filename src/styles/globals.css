@@ -25,7 +25,27 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
+@keyframes still-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+}
+
+.still-breathe {
+  animation: still-breathe 8s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .still-breathe {
+    animation: none;
+  }
+
   *,
   *::before,
   *::after {
