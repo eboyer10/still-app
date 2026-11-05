@@ -6,7 +6,7 @@ export default function EmptyJourney() {
   return (
     <div className="flex flex-col items-center py-12 text-center sm:py-20">
       <BreathingOrb auto className="mb-12" />
-      <h2 className="font-serif text-3xl font-light tracking-tight sm:text-4xl">
+      <h2 className="font-serif text-4xl font-light tracking-tight sm:text-5xl">
         Your journey begins with a single pause.
       </h2>
       <p className="mt-4 max-w-sm text-base leading-7 text-foreground/70">

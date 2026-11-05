@@ -6,9 +6,9 @@ export default function SiteMark({ className = "" }: { className?: string }) {
     <Link
       href="/"
       aria-label="Still, home"
-      className={`inline-flex min-h-11 items-center gap-2 font-serif text-xl tracking-tight ${className}`.trim()}
+      className={`inline-flex min-h-11 items-center gap-2 font-serif text-2xl tracking-tight ${className}`.trim()}
     >
-      <span aria-hidden="true" className="size-2.5 rounded-full bg-[var(--orb-mid)]" />
+      <span aria-hidden="true" className="size-2.5 rounded-full bg-[linear-gradient(135deg,var(--btn-from),var(--btn-to))] shadow-[0_0_10px_2px_var(--orb-glow)]" />
       Still
     </Link>
   );

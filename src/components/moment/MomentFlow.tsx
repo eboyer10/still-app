@@ -122,7 +122,7 @@ export default function MomentFlow() {
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
 
-  const heading = "text-2xl font-light leading-snug tracking-tight outline-none sm:text-3xl";
+  const heading = "font-serif text-3xl font-light leading-tight tracking-tight outline-none sm:text-5xl";
 
   const chosen = MOMENT_ACTIONS.find((a) => a.id === actionId);
   const customText = customAction.trim();

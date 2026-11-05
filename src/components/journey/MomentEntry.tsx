@@ -96,11 +96,11 @@ export default function MomentEntry({ moment }: { moment: Moment }) {
   };
 
   return (
-    <article className="rise-in relative pl-6 sm:pl-8" aria-label={`Moment on ${dateFormat.format(when)}`}>
-      <span aria-hidden="true" className="absolute left-0 top-3 size-2.5 rounded-full bg-[var(--orb-mid)]" />
+    <article id={`moment-${moment.id}`} tabIndex={-1} className="rise-in relative scroll-mt-24 pl-6 outline-none sm:pl-8" aria-label={`Moment on ${dateFormat.format(when)}`}>
+      <span aria-hidden="true" className="absolute left-0 top-3 size-2.5 rounded-full bg-[linear-gradient(135deg,var(--btn-from),var(--btn-to))] shadow-[0_0_10px_2px_var(--orb-glow)]" />
 
       <header>
-        <time dateTime={moment.completedAt} className="font-serif text-xl tracking-tight sm:text-2xl">
+        <time dateTime={moment.completedAt} className="font-serif text-2xl tracking-tight sm:text-3xl">
           {dateFormat.format(when)}
         </time>
         <span className="ml-3 text-sm text-foreground/50">{timeFormat.format(when)}</span>
@@ -113,7 +113,7 @@ export default function MomentEntry({ moment }: { moment: Moment }) {
             editor("reflection")
           ) : (
             <>
-              <blockquote className="mt-2 whitespace-pre-wrap font-serif text-lg italic leading-8 text-foreground/90 sm:text-xl">
+              <blockquote className="mt-2 whitespace-pre-wrap font-serif text-xl italic leading-8 text-foreground/90 sm:text-2xl sm:leading-9">
                 {reflection.text}
               </blockquote>
               {reflection.editedAt && <p className="mt-1 text-xs text-foreground/45">Edited</p>}

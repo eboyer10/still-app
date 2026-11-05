@@ -7,50 +7,71 @@
   initial-value: 0;
 }
 
+/* Light: soft lavender (brand violets #7e75ff / #ac84ff on #f2edfe, ink #231332). */
 :root {
-  --background: #f7f5f0;
-  --foreground: #2b2a28;
+  --background: #f2edfe;
+  --foreground: #231332;
+  --sky-glow: rgb(172 132 255 / 0.28);
 
-  --orb-core: #fff1d6;
-  --orb-mid: #f2c58f;
-  --orb-edge: #d9946a;
-  --orb-glow: rgb(236 178 120 / 0.45);
-  --orb-ring: rgb(200 140 95 / 0.4);
-  --orb-shade: rgb(120 60 30 / 0.18);
+  --orb-core: #ffffff;
+  --orb-mid: #ac84ff;
+  --orb-edge: #7e75ff;
+  --orb-glow: rgb(172 132 255 / 0.5);
+  --orb-ring: rgb(126 117 255 / 0.45);
+  --orb-shade: rgb(60 30 140 / 0.22);
 
-  --land-1: rgb(242 197 143 / 0.4);
-  --land-2: rgb(214 160 140 / 0.3);
-  --land-3: rgb(190 200 190 / 0.35);
+  --btn-from: #f3d4ff;
+  --btn-to: #b08cff;
+  --btn-ink: #1d1040;
+
+  --land-1: rgb(172 132 255 / 0.35);
+  --land-2: rgb(126 117 255 / 0.25);
+  --land-3: rgb(254 222 234 / 0.7);
+
+  --sky: linear-gradient(180deg, #e2d6ff 0%, #c9b3ff 52%, #f6d8f0 100%);
+  --ridge-far: rgb(172 132 255 / 0.5);
+  --ridge-mid: rgb(126 117 255 / 0.62);
+  --ridge-near: rgb(84 56 178 / 0.8);
+}
+
+/* Dark: deep indigo night with violet mist (the Satvika-style look). */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0d0a26;
+    --foreground: #ece8ff;
+    --sky-glow: rgb(150 100 230 / 0.32);
+
+    --orb-core: #f6e8ff;
+    --orb-mid: #b48cff;
+    --orb-edge: #6a45d8;
+    --orb-glow: rgb(172 132 255 / 0.5);
+    --orb-ring: rgb(205 175 255 / 0.4);
+    --orb-shade: rgb(25 8 80 / 0.45);
+
+    --land-1: rgb(168 124 255 / 0.3);
+    --land-2: rgb(100 70 210 / 0.3);
+    --land-3: rgb(240 170 220 / 0.16);
+
+    --sky: linear-gradient(180deg, #130c36 0%, #3a2484 46%, #9a6fd6 74%, #e3c3f2 100%);
+    --ridge-far: rgb(130 95 215 / 0.6);
+    --ridge-mid: rgb(72 46 160 / 0.85);
+    --ridge-near: rgb(20 12 62 / 0.96);
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-dm-sans);
   --font-mono: var(--font-geist-mono);
-  --font-serif: var(--font-fraunces), Georgia, serif;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #161615;
-    --foreground: #e8e6e1;
-
-    --orb-core: #f7dcae;
-    --orb-mid: #c98a58;
-    --orb-edge: #8a5a42;
-    --orb-glow: rgb(214 150 96 / 0.35);
-    --orb-ring: rgb(230 170 120 / 0.35);
-    --orb-shade: rgb(20 8 0 / 0.35);
-
-    --land-1: rgb(201 138 88 / 0.22);
-    --land-2: rgb(150 100 110 / 0.2);
-    --land-3: rgb(90 120 120 / 0.22);
-  }
+  --font-serif: var(--font-cormorant), Georgia, serif;
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(130% 70% at 50% -12%, var(--sky-glow), transparent 62%),
+    var(--background);
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
 }
@@ -143,7 +164,7 @@ body {
   opacity: calc(0.15 + var(--breath) * 0.4);
 }
 
-/* ---------- My journey: a concept of an evolving landscape (CSS only) ---------- */
+/* ---------- Misty ambience (home and My journey) ---------- */
 
 .journey-landscape {
   position: fixed;
@@ -182,9 +203,28 @@ body {
   }
 }
 
+/* ---------- Journey landscape: each light is one moment you took ---------- */
+
+.landscape-light {
+  animation: still-twinkle 6s ease-in-out infinite;
+}
+
+@keyframes still-twinkle {
+  0%,
+  100% {
+    opacity: 0.75;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .journey-landscape,
-  .rise-in {
+  .rise-in,
+  .landscape-light {
     animation: none !important;
   }
 

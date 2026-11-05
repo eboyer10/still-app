@@ -33,6 +33,9 @@ Arrive → Breathe (30s) → Reflect (optional) → Act (optional) → Close.
   revisited (any follow-up recorded); intentions acted upon (only "I did it").
 - Follow-up is neutral and optional: "I did it", "Not yet", "My priorities changed". None is framed as better.
 - Never invent data: a Moment shows only what the person actually gave. No placeholders.
+- A landscape visualization (`JourneyLandscape`): each Moment is one light on a misty ridge, oldest to newest.
+  A ring marks a kept reflection; a small star marks an intention. Lights are evenly spaced, so gaps between
+  visits are never shown. It never counts, scores, or measures progress.
 - Everything is editable and deletable (per reflection, per intention, per Moment, or all data).
 
 ### Navigation
@@ -42,7 +45,10 @@ Arrive → Breathe (30s) → Reflect (optional) → Act (optional) → Close.
 ## Visual design principles
 
 - **Immersive and contemplative.** One luminous, organic orb at the center; everything else recedes.
-- **Calm over clever.** Warm neutrals with a soft amber glow. Use theme tokens in `globals.css`, not hard-coded colors.
+- **Purple branding.** Deep indigo night (dark) and soft lavender (light), with violet `#7e75ff` / `#ac84ff`,
+  blush `#fedeea`, and ink `#231332`. Misty layered hills, a lavender gradient pill for the primary action.
+  Use theme tokens in `globals.css`, not hard-coded colors.
+- **Type.** Cormorant Garamond (serif) for headings, reflections and the wordmark; DM Sans for UI text.
 - **Space.** Generous whitespace, a narrow reading column, few elements per screen.
 - **Soft type.** Light to regular weights, comfortable line height.
 - **Supportive atmosphere.** Rings, glow, and background wash follow the breath and stay subtle.

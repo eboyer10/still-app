@@ -32,7 +32,7 @@ export default function SettingsForm() {
           My journey
         </Link>
       </nav>
-      <h1 className="mt-10 text-3xl font-light tracking-tight sm:text-4xl">Settings</h1>
+      <h1 className="mt-10 font-serif text-4xl font-light tracking-tight sm:text-5xl">Settings</h1>
       <p className="mt-3 text-base leading-7 text-foreground/70">
         Choose how Still might invite you to pause. This is a prototype: nothing is
         scheduled and no notifications are sent. Your choices stay on this device.

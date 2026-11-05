@@ -3,6 +3,7 @@
 import Link from "next/link";
 import EmptyJourney from "@/components/journey/EmptyJourney";
 import DeleteConfirm from "@/components/journey/DeleteConfirm";
+import JourneyLandscape from "@/components/journey/JourneyLandscape";
 import JourneySummary from "@/components/journey/JourneySummary";
 import MomentEntry from "@/components/journey/MomentEntry";
 import SiteMark from "@/components/SiteMark";
@@ -37,7 +38,7 @@ export default function JourneyView() {
         </nav>
 
         <header className="mt-10 sm:mt-16">
-          <h1 className="font-serif text-4xl font-light tracking-tight sm:text-6xl">My journey</h1>
+          <h1 className="font-serif text-5xl font-light tracking-tight sm:text-7xl">My journey</h1>
           <p className="mt-4 max-w-md text-base leading-7 text-foreground/70">
             A quiet record of the times you stopped, what you noticed, and what you hoped to do next.
           </p>
@@ -47,6 +48,10 @@ export default function JourneyView() {
           <EmptyJourney />
         ) : (
           <>
+            <section className="mt-10 sm:mt-14" aria-label="Your journey as a landscape">
+              <JourneyLandscape moments={moments} />
+            </section>
+
             <section className="mt-12 sm:mt-16" aria-label="Summary">
               <JourneySummary counts={getJourneyCounts(moments)} />
               <Link href="/moment" className={buttonClass("primary", "mt-8 px-8")}>
