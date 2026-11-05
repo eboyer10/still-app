@@ -3,7 +3,7 @@ import type { JourneyCounts } from "@/lib/journey";
 const plural = (n: number, one: string, many: string) => (n === 1 ? one : many);
 
 function Num({ children }: { children: number }) {
-  return <span className="font-serif text-4xl font-light sm:text-5xl">{children}</span>;
+  return <span className="font-display text-4xl font-bold sm:text-5xl">{children}</span>;
 }
 
 /** Counts as plain sentences: they describe, they never score or instruct. */

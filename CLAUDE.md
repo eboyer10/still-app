@@ -48,13 +48,16 @@ Arrive → Breathe (30s) → Reflect (optional) → Act (optional) → Close.
 - **Purple branding.** Deep indigo night (dark) and soft lavender (light), with violet `#7e75ff` / `#ac84ff`,
   blush `#fedeea`, and ink `#231332`. Misty layered hills, a lavender gradient pill for the primary action.
   Use theme tokens in `globals.css`, not hard-coded colors.
-- **Type.** Cormorant Garamond (serif) for headings, reflections and the wordmark; DM Sans for UI text.
+- **Dark only.** Deep indigo night; no light theme. Background is `WaveBackground`: layered, misty violet
+  ridges whose height, glow and crest lines rise and fall with `--breath` (own 4s/4s loop on home, journey and
+  settings; driven by the guided breath on /moment). Keep it soft so text stays readable.
+- **Type.** Bricolage Grotesque (bold display) for headings, the wordmark and reflections; DM Sans for UI text.
 - **Space.** Generous whitespace, a narrow reading column, few elements per screen.
-- **Soft type.** Light to regular weights, comfortable line height.
+- **Confident type.** Bold display headings, regular body text, comfortable line height.
 - **Supportive atmosphere.** Rings, glow, and background wash follow the breath and stay subtle.
 - **Motion.** One `--breath` value (0..1) drives the orb and atmosphere so they stay in sync.
   Always respect `prefers-reduced-motion` (the orb rests and only gently brightens).
-- **Accessible.** WCAG AA contrast, visible focus, 44px touch targets, keyboard support, light and dark themes.
+- **Accessible.** WCAG AA contrast, visible focus, 44px touch targets, keyboard support.
 
 ## Development guidelines
 

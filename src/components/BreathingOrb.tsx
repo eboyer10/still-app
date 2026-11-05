@@ -4,12 +4,13 @@ type BreathingOrbProps = {
    * follows the `--breath` CSS variable (0..1) set by a parent.
    */
   auto?: boolean;
+  compact?: boolean;
   className?: string;
 };
 
-export default function BreathingOrb({ auto = false, className = "" }: BreathingOrbProps) {
+export default function BreathingOrb({ auto = false, compact = false, className = "" }: BreathingOrbProps) {
   return (
-    <div aria-hidden="true" className={`orb ${auto ? "orb-auto" : ""} ${className}`.trim()}>
+    <div aria-hidden="true" className={`orb ${auto ? "orb-auto" : ""} ${compact ? "orb-compact" : ""} ${className}`.trim()}>
       <div className="orb-halo" />
       <div className="orb-ring" style={{ "--ring-spread": 0.35 } as React.CSSProperties} />
       <div className="orb-ring" style={{ "--ring-spread": 0.7 } as React.CSSProperties} />

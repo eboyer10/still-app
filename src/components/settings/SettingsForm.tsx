@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import WaveBackground from "@/components/WaveBackground";
 import SiteMark from "@/components/SiteMark";
 import ReminderPreviewCard from "@/components/settings/ReminderPreviewCard";
 import Button, { buttonClass } from "@/components/ui/Button";
@@ -26,13 +27,14 @@ export default function SettingsForm() {
 
   return (
     <div className="mx-auto w-full max-w-xl px-6 py-12 sm:py-20">
+      <WaveBackground auto />
       <nav aria-label="Primary" className="-mt-6 flex items-center justify-between sm:-mt-12">
         <SiteMark />
         <Link href="/journey" className={buttonClass("ghost", "text-sm")}>
           My journey
         </Link>
       </nav>
-      <h1 className="mt-10 font-serif text-4xl font-light tracking-tight sm:text-5xl">Settings</h1>
+      <h1 className="mt-10 font-display text-4xl font-bold tracking-tight sm:text-5xl">Settings</h1>
       <p className="mt-3 text-base leading-7 text-foreground/70">
         Choose how Still might invite you to pause. This is a prototype: nothing is
         scheduled and no notifications are sent. Your choices stay on this device.

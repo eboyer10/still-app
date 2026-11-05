@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import BreathingOrb from "@/components/BreathingOrb";
 import Button, { buttonClass } from "@/components/ui/Button";
+import WaveBackground from "@/components/WaveBackground";
 import SiteMark from "@/components/SiteMark";
 import RadioCard from "@/components/ui/RadioCard";
 import { CUSTOM_ACTION_ID, MOMENT_ACTIONS } from "@/lib/actions";
@@ -122,7 +123,7 @@ export default function MomentFlow() {
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
 
-  const heading = "font-serif text-3xl font-light leading-tight tracking-tight outline-none sm:text-5xl";
+  const heading = "font-display text-3xl font-bold leading-tight tracking-tight outline-none sm:text-5xl";
 
   const chosen = MOMENT_ACTIONS.find((a) => a.id === actionId);
   const customText = customAction.trim();
@@ -152,6 +153,7 @@ export default function MomentFlow() {
 
   return (
     <div ref={stageRef} className="relative min-h-dvh overflow-hidden">
+      <WaveBackground />
       <div className="moment-atmosphere" aria-hidden="true" />
       <p className="sr-only" role="status" aria-live="polite">
         {status}

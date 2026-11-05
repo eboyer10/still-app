@@ -7,56 +7,28 @@
   initial-value: 0;
 }
 
-/* Light: soft lavender (brand violets #7e75ff / #ac84ff on #f2edfe, ink #231332). */
+/* Dark only: deep indigo night with violet mist (brand violets #7e75ff / #ac84ff). */
 :root {
-  --background: #f2edfe;
-  --foreground: #231332;
-  --sky-glow: rgb(172 132 255 / 0.28);
+  color-scheme: dark;
 
-  --orb-core: #ffffff;
-  --orb-mid: #ac84ff;
-  --orb-edge: #7e75ff;
+  --background: #090720;
+  --foreground: #ece8ff;
+
+  --orb-core: #f6e8ff;
+  --orb-mid: #b48cff;
+  --orb-edge: #6a45d8;
   --orb-glow: rgb(172 132 255 / 0.5);
-  --orb-ring: rgb(126 117 255 / 0.45);
-  --orb-shade: rgb(60 30 140 / 0.22);
+  --orb-ring: rgb(205 175 255 / 0.4);
+  --orb-shade: rgb(25 8 80 / 0.45);
 
   --btn-from: #f3d4ff;
-  --btn-to: #b08cff;
+  --btn-to: #a77bff;
   --btn-ink: #1d1040;
 
-  --land-1: rgb(172 132 255 / 0.35);
-  --land-2: rgb(126 117 255 / 0.25);
-  --land-3: rgb(254 222 234 / 0.7);
-
-  --sky: linear-gradient(180deg, #e2d6ff 0%, #c9b3ff 52%, #f6d8f0 100%);
-  --ridge-far: rgb(172 132 255 / 0.5);
-  --ridge-mid: rgb(126 117 255 / 0.62);
-  --ridge-near: rgb(84 56 178 / 0.8);
-}
-
-/* Dark: deep indigo night with violet mist (the Satvika-style look). */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0d0a26;
-    --foreground: #ece8ff;
-    --sky-glow: rgb(150 100 230 / 0.32);
-
-    --orb-core: #f6e8ff;
-    --orb-mid: #b48cff;
-    --orb-edge: #6a45d8;
-    --orb-glow: rgb(172 132 255 / 0.5);
-    --orb-ring: rgb(205 175 255 / 0.4);
-    --orb-shade: rgb(25 8 80 / 0.45);
-
-    --land-1: rgb(168 124 255 / 0.3);
-    --land-2: rgb(100 70 210 / 0.3);
-    --land-3: rgb(240 170 220 / 0.16);
-
-    --sky: linear-gradient(180deg, #130c36 0%, #3a2484 46%, #9a6fd6 74%, #e3c3f2 100%);
-    --ridge-far: rgb(130 95 215 / 0.6);
-    --ridge-mid: rgb(72 46 160 / 0.85);
-    --ridge-near: rgb(20 12 62 / 0.96);
-  }
+  --sky: linear-gradient(180deg, #130c36 0%, #3a2484 46%, #9a6fd6 74%, #e3c3f2 100%);
+  --ridge-far: rgb(130 95 215 / 0.6);
+  --ridge-mid: rgb(72 46 160 / 0.85);
+  --ridge-near: rgb(20 12 62 / 0.96);
 }
 
 @theme inline {
@@ -64,14 +36,11 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-dm-sans);
   --font-mono: var(--font-geist-mono);
-  --font-serif: var(--font-cormorant), Georgia, serif;
+  --font-display: var(--font-bricolage), system-ui, sans-serif;
 }
 
 body {
-  background:
-    radial-gradient(130% 70% at 50% -12%, var(--sky-glow), transparent 62%),
-    var(--background);
-  background-attachment: fixed;
+  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
 }
@@ -79,6 +48,11 @@ body {
 :focus-visible {
   outline: 2px solid var(--foreground);
   outline-offset: 3px;
+}
+
+/* Headings are focused by script to guide keyboard users; they aren't controls, so no ring. */
+[tabindex="-1"]:focus-visible {
+  outline: none;
 }
 
 /* ---------- Breathing orb ---------- */
@@ -94,6 +68,11 @@ body {
 
 .orb-auto {
   animation: still-breath 8s ease-in-out infinite;
+}
+
+/* Smaller orb for screens that also hold text and buttons. */
+.orb-compact {
+  --orb-size: clamp(8.5rem, 28vmin, 14rem);
 }
 
 @keyframes still-breath {
@@ -164,27 +143,56 @@ body {
   opacity: calc(0.15 + var(--breath) * 0.4);
 }
 
-/* ---------- Misty ambience (home and My journey) ---------- */
+/* ---------- Breathing wave background ---------- */
 
-.journey-landscape {
+.wave-bg {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: -1;
+  overflow: hidden;
   pointer-events: none;
-  background:
-    radial-gradient(120% 60% at 20% 105%, var(--land-1) 0%, transparent 60%),
-    radial-gradient(100% 50% at 85% 110%, var(--land-2) 0%, transparent 62%),
-    radial-gradient(90% 45% at 50% -10%, var(--land-3) 0%, transparent 65%);
-  background-size: 140% 140%;
-  animation: still-drift 70s ease-in-out infinite alternate;
+  background: linear-gradient(180deg, #150d3d 0%, #1b1055 32%, #100a38 62%, #090720 100%);
 }
 
-@keyframes still-drift {
+.wave-bg-auto {
+  animation: still-breath 8s ease-in-out infinite;
+}
+
+/* The glow high in the sky swells and softens with each breath. */
+.wave-haze {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(75% 38% at 50% 0%, rgb(226 190 255 / calc(0.2 + var(--breath) * 0.2)), transparent 72%),
+    radial-gradient(60% 40% at 50% 46%, rgb(130 80 220 / calc(0.14 + var(--breath) * 0.12)), transparent 75%);
+}
+
+.wave-layer {
+  position: absolute;
+  bottom: 0;
+  left: -20%;
+  width: 140%;
+  height: 78%;
+  transform: translateY(calc(var(--breath) * var(--lift)));
+}
+
+.wave-layer svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: still-sway var(--sway) ease-in-out infinite alternate;
+}
+
+.wave-crest {
+  opacity: calc(0.25 + var(--breath) * 0.55);
+}
+
+@keyframes still-sway {
   from {
-    background-position: 0% 0%, 100% 0%, 50% 0%;
+    transform: translateX(-4%);
   }
   to {
-    background-position: 30% 10%, 70% 8%, 50% 14%;
+    transform: translateX(4%);
   }
 }
 
@@ -222,14 +230,16 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .journey-landscape,
+  .wave-bg-auto,
+  .wave-layer svg,
   .rise-in,
   .landscape-light {
     animation: none !important;
   }
 
   /* No movement: the orb rests, and only gently brightens with the breath. */
-  .orb-auto {
+  .orb-auto,
+  .wave-bg-auto {
     animation: none !important;
     --breath: 0.5;
   }

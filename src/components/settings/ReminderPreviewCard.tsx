@@ -13,7 +13,7 @@ export default function ReminderPreviewCard({ onDismiss }: ReminderPreviewCardPr
       className="fixed inset-x-4 bottom-4 z-20 mx-auto max-w-md rounded-3xl border border-foreground/15 bg-background/95 p-6 text-left shadow-xl backdrop-blur"
     >
       <p className="text-xs uppercase tracking-widest text-foreground/50">Preview</p>
-      <h2 className="mt-2 text-xl font-light">A moment, if you&apos;d like one.</h2>
+      <h2 className="mt-2 font-display text-xl font-bold">A moment, if you&apos;d like one.</h2>
       <p className="mt-2 text-sm leading-6 text-foreground/70">
         Thirty seconds to pause and reconnect. No pressure either way.
       </p>
