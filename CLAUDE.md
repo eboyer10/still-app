@@ -1,51 +1,74 @@
 # Still
 
-Still is a mindfulness and reflection app.
-
-> Draft: the vision and design sections below are a starting point written
-> without detailed input. Items marked (assumed) are guesses. Edit freely.
+Still is a sensory experience for intentional living, not a wellness productivity app.
 
 ## Product vision
 
-- Still gives people a calm, private place to pause, notice how they feel, and reflect.
-- It should feel like exhaling, not like another feed or task list.
-- Core ideas (assumed): short guided pauses, simple journaling prompts, and a gentle
-  history to look back on. No streak pressure, no gamification, no ads.
-- Privacy first: reflections belong to the user.
+**Still Moments** are brief, permission-based invitations to pause, reconnect with
+yourself, and take one meaningful action away from the screen.
+
+- The goal is to help people pause, reconnect, and act in the real world, then leave the app.
+- It should feel like an immersive, contemplative experience, not a tool to optimize yourself.
+- Everything is an invitation. Nothing is required, and every step can be skipped.
+- Privacy first: reflections belong to the user and are not stored or sent anywhere.
+
+### Never build
+- Scores, streaks, badges, achievement indicators, or progress-to-goal mechanics.
+- Dashboards, charts, or history views that turn reflection into metrics.
+- Guilt-driven copy, urgency, or dark patterns.
+
+### The Moment flow (`/moment`)
+Arrive → Breathe (30s) → Reflect (optional) → Act (optional) → Close.
+- Breathing is a fixed gentle 4s inhale / 4s exhale with no hold. It guides, it doesn't force:
+  people can pause, skip, exit, or simply rest without following the orb.
+- One optional question: "What would make the rest of today feel more meaningful?"
+- Six action invitations (Reconnect, Create, Step Outside, Let Go, Make Space,
+  Follow Your Curiosity) plus "Choose my own action". Keep wording soft and concise.
+- The close is calm: no counts, scores or "well done".
 
 ## Visual design principles
 
-- **Calm over clever.** Quiet, warm neutrals; one soft accent at most (assumed).
-- **Space.** Generous whitespace and a narrow reading column. Fewer elements per screen.
-- **Soft type.** Light to regular weights, comfortable line height, no shouting.
-- **Gentle motion.** Slow, subtle transitions. Always respect `prefers-reduced-motion`.
-- **Accessible.** WCAG AA contrast, visible focus states, keyboard support, light and dark themes.
-- **Honest UI.** No dark patterns, guilt-driven copy, or intrusive notifications.
+- **Immersive and contemplative.** One luminous, organic orb at the center; everything else recedes.
+- **Calm over clever.** Warm neutrals with a soft amber glow. Use theme tokens in `globals.css`, not hard-coded colors.
+- **Space.** Generous whitespace, a narrow reading column, few elements per screen.
+- **Soft type.** Light to regular weights, comfortable line height.
+- **Supportive atmosphere.** Rings, glow, and background wash follow the breath and stay subtle.
+- **Motion.** One `--breath` value (0..1) drives the orb and atmosphere so they stay in sync.
+  Always respect `prefers-reduced-motion` (the orb rests and only gently brightens).
+- **Accessible.** WCAG AA contrast, visible focus, 44px touch targets, keyboard support, light and dark themes.
 
 ## Development guidelines
 
 ### Stack
-Next.js (App Router), React, TypeScript (strict), Tailwind CSS. Package manager: npm.
+Next.js 16 (App Router, Cache Components), React 19, TypeScript (strict), Tailwind CSS v4. Package manager: npm.
+`AGENTS.md` notes this Next.js version has breaking changes: read the matching guide in
+`node_modules/next/dist/docs/` before writing Next.js code.
 
 ### Commands
-- `npm run dev` — dev server
+- `npm run dev` — dev server (http://localhost:3000)
 - `npm run build` — production build (must pass before pushing)
 - `npm run lint` — ESLint (must pass before pushing)
 
 ### Structure
-- `src/app/` routes and layouts
-- `src/components/` shared UI components
-- `src/lib/` utilities and helpers
-- `src/styles/` global styles (Tailwind theme tokens live in `globals.css`)
+- `src/app/` routes: `/` welcome, `/moment`, `/settings`
+- `src/components/` shared UI; `moment/` and `settings/` hold feature components; `ui/` holds Button and RadioCard
+- `src/lib/` `breath.ts` (timing), `preferences.ts` (localStorage), `actions.ts` (action copy)
+- `src/styles/` global styles, theme and orb tokens
 - `public/assets/` static images, icons, fonts
 - `docs/` product and design documentation
 
 ### Conventions
 - Import from `src` with the `@/` alias.
-- Server components by default; add `"use client"` only when needed.
-- Style with Tailwind utilities and theme tokens; avoid custom CSS and hard-coded colors.
-- Keep components small, typed, and named in PascalCase; files in `src/components` match the component name.
-- Prefer semantic HTML and label every interactive control.
+- Server components by default; add `"use client"` only when needed (state, effects, browser APIs).
+- Style with Tailwind utilities and theme tokens. Reuse `Button`, `RadioCard` and `BreathingOrb`.
+- Use native, semantic controls and label every interactive element.
+- Keep components small, typed, and PascalCase.
+
+### Prototype scope (important)
+- Preferences persist in `localStorage` only (`still:preferences`). No accounts, no backend.
+- **Do not** add real system notifications, push subscriptions, service workers, background
+  reminders or scheduling, and **never** request notification permission, until explicitly planned.
+- "Preview reminder" is an in-app card only.
 
 ### Secrets and git
 - Never commit secrets. Use `.env.local`; keep `.env.example` current with variable names only.

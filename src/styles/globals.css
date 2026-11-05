@@ -1,8 +1,22 @@
 @import "tailwindcss";
 
+/* 0 = resting, 1 = fully expanded. Registered so keyframes can animate it. */
+@property --breath {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
 :root {
   --background: #f7f5f0;
   --foreground: #2b2a28;
+
+  --orb-core: #fff1d6;
+  --orb-mid: #f2c58f;
+  --orb-edge: #d9946a;
+  --orb-glow: rgb(236 178 120 / 0.45);
+  --orb-ring: rgb(200 140 95 / 0.4);
+  --orb-shade: rgb(120 60 30 / 0.18);
 }
 
 @theme inline {
@@ -16,6 +30,13 @@
   :root {
     --background: #161615;
     --foreground: #e8e6e1;
+
+    --orb-core: #f7dcae;
+    --orb-mid: #c98a58;
+    --orb-edge: #8a5a42;
+    --orb-glow: rgb(214 150 96 / 0.35);
+    --orb-ring: rgb(230 170 120 / 0.35);
+    --orb-shade: rgb(20 8 0 / 0.35);
   }
 }
 
@@ -25,31 +46,120 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-@keyframes still-breathe {
+:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 3px;
+}
+
+/* ---------- Breathing orb ---------- */
+
+.orb {
+  --orb-size: clamp(10rem, 44vmin, 20rem);
+  position: relative;
+  display: grid;
+  width: var(--orb-size);
+  height: var(--orb-size);
+  place-items: center;
+}
+
+.orb-auto {
+  animation: still-breath 8s ease-in-out infinite;
+}
+
+@keyframes still-breath {
   0%,
   100% {
-    transform: scale(1);
-    opacity: 0.8;
+    --breath: 0;
   }
   50% {
-    transform: scale(1.12);
-    opacity: 1;
+    --breath: 1;
   }
 }
 
-.still-breathe {
-  animation: still-breathe 8s ease-in-out infinite;
+.orb-halo {
+  position: absolute;
+  inset: -35%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--orb-glow) 0%, transparent 68%);
+  filter: blur(14px);
+  opacity: calc(0.35 + var(--breath) * 0.5);
+  transform: scale(calc(0.9 + var(--breath) * 0.25));
+}
+
+.orb-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--orb-ring);
+  opacity: calc(var(--breath) * 0.55);
+  transform: scale(calc(1.08 + var(--breath) * var(--ring-spread, 0.4)));
+}
+
+.orb-body {
+  position: absolute;
+  inset: 0;
+  border-radius: 54% 46% 52% 48% / 48% 54% 46% 52%;
+  background: radial-gradient(
+    circle at 34% 28%,
+    var(--orb-core) 0%,
+    var(--orb-mid) 52%,
+    var(--orb-edge) 100%
+  );
+  box-shadow:
+    0 0 48px 8px var(--orb-glow),
+    inset -12px -16px 36px var(--orb-shade);
+  transform: scale(calc(0.7 + var(--breath) * 0.36));
+  animation: still-morph 16s ease-in-out infinite;
+}
+
+@keyframes still-morph {
+  0%,
+  100% {
+    border-radius: 54% 46% 52% 48% / 48% 54% 46% 52%;
+  }
+  33% {
+    border-radius: 46% 54% 47% 53% / 55% 45% 55% 45%;
+  }
+  66% {
+    border-radius: 52% 48% 56% 44% / 46% 52% 48% 54%;
+  }
+}
+
+/* Soft wash behind the moment screens; follows the same --breath value. */
+.moment-atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 45%, var(--orb-glow), transparent 62%);
+  opacity: calc(0.15 + var(--breath) * 0.4);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .still-breathe {
-    animation: none;
+  /* No movement: the orb rests, and only gently brightens with the breath. */
+  .orb-auto {
+    animation: none !important;
+    --breath: 0.5;
+  }
+
+  .orb-body {
+    animation: none !important;
+    transform: none;
+    opacity: calc(0.6 + var(--breath) * 0.4);
+  }
+
+  .orb-halo {
+    transform: none;
+  }
+
+  .orb-ring {
+    display: none;
   }
 
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }
