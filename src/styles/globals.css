@@ -17,6 +17,10 @@
   --orb-glow: rgb(236 178 120 / 0.45);
   --orb-ring: rgb(200 140 95 / 0.4);
   --orb-shade: rgb(120 60 30 / 0.18);
+
+  --land-1: rgb(242 197 143 / 0.4);
+  --land-2: rgb(214 160 140 / 0.3);
+  --land-3: rgb(190 200 190 / 0.35);
 }
 
 @theme inline {
@@ -24,6 +28,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-fraunces), Georgia, serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -37,6 +42,10 @@
     --orb-glow: rgb(214 150 96 / 0.35);
     --orb-ring: rgb(230 170 120 / 0.35);
     --orb-shade: rgb(20 8 0 / 0.35);
+
+    --land-1: rgb(201 138 88 / 0.22);
+    --land-2: rgb(150 100 110 / 0.2);
+    --land-3: rgb(90 120 120 / 0.22);
   }
 }
 
@@ -134,7 +143,51 @@ body {
   opacity: calc(0.15 + var(--breath) * 0.4);
 }
 
+/* ---------- My journey: a concept of an evolving landscape (CSS only) ---------- */
+
+.journey-landscape {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 60% at 20% 105%, var(--land-1) 0%, transparent 60%),
+    radial-gradient(100% 50% at 85% 110%, var(--land-2) 0%, transparent 62%),
+    radial-gradient(90% 45% at 50% -10%, var(--land-3) 0%, transparent 65%);
+  background-size: 140% 140%;
+  animation: still-drift 70s ease-in-out infinite alternate;
+}
+
+@keyframes still-drift {
+  from {
+    background-position: 0% 0%, 100% 0%, 50% 0%;
+  }
+  to {
+    background-position: 30% 10%, 70% 8%, 50% 14%;
+  }
+}
+
+.rise-in {
+  animation: still-rise 0.9s ease-out both;
+}
+
+@keyframes still-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .journey-landscape,
+  .rise-in {
+    animation: none !important;
+  }
+
   /* No movement: the orb rests, and only gently brightens with the breath. */
   .orb-auto {
     animation: none !important;

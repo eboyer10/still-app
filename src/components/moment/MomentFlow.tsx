@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import BreathingOrb from "@/components/BreathingOrb";
 import Button, { buttonClass } from "@/components/ui/Button";
+import SiteMark from "@/components/SiteMark";
 import RadioCard from "@/components/ui/RadioCard";
 import { CUSTOM_ACTION_ID, MOMENT_ACTIONS } from "@/lib/actions";
+import { addMoment } from "@/lib/journey";
 import {
   BREATH_DURATION_MS,
   breathCue,
@@ -43,14 +45,20 @@ export default function MomentFlow() {
   const [reflection, setReflection] = useState("");
   const [actionId, setActionId] = useState<string | null>(null);
   const [customAction, setCustomAction] = useState("");
-  // Kept in component state only: nothing here is stored or sent anywhere.
+  const [keepReflection, setKeepReflection] = useState(true);
+  const [saveFailed, setSaveFailed] = useState(false);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const firstRender = useRef(true);
+  const breathCompleted = useRef(false);
+  const saved = useRef(false);
 
-  const finishBreath = useCallback(() => setStep("reflect"), []);
+  const finishBreath = useCallback(() => {
+    breathCompleted.current = true;
+    setStep("reflect");
+  }, []);
 
   useBreathTimer({
     durationMs: BREATH_DURATION_MS,
@@ -122,12 +130,38 @@ export default function MomentFlow() {
   const chosenText =
     actionId === CUSTOM_ACTION_ID && customText ? customText : chosen?.invitation;
 
+  // Reaching the close saves the Moment once, with only what the person actually gave.
+  const finish = (withIntention: boolean) => {
+    if (!saved.current) {
+      saved.current = true;
+      const intention =
+        withIntention && chosenText
+          ? actionId === CUSTOM_ACTION_ID
+            ? { source: "custom" as const, text: customText }
+            : { source: "preset" as const, presetId: actionId ?? undefined, text: chosenText }
+          : undefined;
+      const ok = addMoment({
+        breathCompleted: breathCompleted.current,
+        reflection: keepReflection ? reflection : undefined,
+        intention,
+      });
+      setSaveFailed(!ok);
+    }
+    setStep("close");
+  };
+
   return (
     <div ref={stageRef} className="relative min-h-dvh overflow-hidden">
       <div className="moment-atmosphere" aria-hidden="true" />
       <p className="sr-only" role="status" aria-live="polite">
         {status}
       </p>
+
+      {step !== "breathe" && (
+        <div className="absolute left-4 top-3 z-20 sm:left-8 sm:top-5">
+          <SiteMark />
+        </div>
+      )}
 
       <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-6 py-12 text-center">
         {step === "arrive" && (
@@ -214,8 +248,17 @@ export default function MomentFlow() {
                   className="w-full resize-none rounded-2xl border border-foreground/20 bg-transparent px-5 py-4 text-base leading-7 placeholder:text-foreground/40"
                 />
                 <p className="mt-2 px-1 text-xs text-foreground/50">
-                  Optional. This stays on this screen and isn&apos;t saved.
+                  Optional. Saved privately on this device. You can edit or delete it anytime in My journey.
                 </p>
+                <label className="mt-3 flex min-h-11 cursor-pointer items-center gap-3 px-1 text-sm text-foreground/70">
+                  <input
+                    type="checkbox"
+                    checked={!keepReflection}
+                    onChange={(event) => setKeepReflection(!event.target.checked)}
+                    className="size-5 accent-foreground"
+                  />
+                  Don&apos;t save this reflection
+                </label>
               </div>
               <div className="flex flex-col items-center gap-3 sm:flex-row">
                 <Button type="submit">Continue</Button>
@@ -236,7 +279,7 @@ export default function MomentFlow() {
               className="mt-8 flex flex-col items-center gap-6"
               onSubmit={(event) => {
                 event.preventDefault();
-                if (canChoose) setStep("close");
+                if (canChoose) finish(true);
               }}
             >
               <fieldset className="w-full">
@@ -283,7 +326,7 @@ export default function MomentFlow() {
                 <Button type="submit" disabled={!canChoose}>
                   Choose this
                 </Button>
-                <Button variant="ghost" onClick={() => setStep("close")}>
+                <Button variant="ghost" onClick={() => finish(false)}>
                   Skip
                 </Button>
               </div>
@@ -307,9 +350,17 @@ export default function MomentFlow() {
               </p>
             )}
             <p className="mt-8 text-sm text-foreground/50">Go gently.</p>
-            <div className="mt-10">
+            {saveFailed && (
+              <p className="mt-4 max-w-xs text-xs leading-5 text-foreground/60" role="status">
+                Your browser wouldn&apos;t let Still save this, so it will be gone when you close the page.
+              </p>
+            )}
+            <div className="mt-10 flex flex-col items-center gap-2">
               <Link href="/" className={buttonClass("quiet")}>
                 Done
+              </Link>
+              <Link href="/journey" className={buttonClass("ghost", "text-sm")}>
+                View my journey
               </Link>
             </div>
           </section>

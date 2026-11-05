@@ -14,9 +14,14 @@ export default function WelcomeScreen() {
         <Link href="/moment" className={buttonClass("primary", "px-8")}>
           Begin a moment
         </Link>
-        <Link href="/settings" className={buttonClass("ghost", "text-sm")}>
-          Settings
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href="/journey" className={buttonClass("ghost", "text-sm")}>
+            My journey
+          </Link>
+          <Link href="/settings" className={buttonClass("ghost", "text-sm")}>
+            Settings
+          </Link>
+        </div>
       </div>
     </main>
   );

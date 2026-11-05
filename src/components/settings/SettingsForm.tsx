@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import SiteMark from "@/components/SiteMark";
 import ReminderPreviewCard from "@/components/settings/ReminderPreviewCard";
 import Button, { buttonClass } from "@/components/ui/Button";
 import RadioCard from "@/components/ui/RadioCard";
@@ -25,10 +26,13 @@ export default function SettingsForm() {
 
   return (
     <div className="mx-auto w-full max-w-xl px-6 py-12 sm:py-20">
-      <Link href="/" className={buttonClass("ghost", "-ml-6")}>
-        ← Back
-      </Link>
-      <h1 className="mt-6 text-3xl font-light tracking-tight sm:text-4xl">Settings</h1>
+      <nav aria-label="Primary" className="-mt-6 flex items-center justify-between sm:-mt-12">
+        <SiteMark />
+        <Link href="/journey" className={buttonClass("ghost", "text-sm")}>
+          My journey
+        </Link>
+      </nav>
+      <h1 className="mt-10 text-3xl font-light tracking-tight sm:text-4xl">Settings</h1>
       <p className="mt-3 text-base leading-7 text-foreground/70">
         Choose how Still might invite you to pause. This is a prototype: nothing is
         scheduled and no notifications are sent. Your choices stay on this device.
@@ -110,6 +114,17 @@ export default function SettingsForm() {
         <Button variant="quiet" className="mt-4" onClick={() => setPreviewing(true)}>
           Preview reminder
         </Button>
+      </div>
+
+      <div className="mt-10 border-t border-foreground/10 pt-8">
+        <h2 className="text-lg font-medium">Your data</h2>
+        <p className="mt-1 text-sm leading-6 text-foreground/60">
+          Reflections and intentions are saved only in this browser. You can edit or delete them in{" "}
+          <Link href="/journey" className="underline underline-offset-4">
+            My journey
+          </Link>
+          .
+        </p>
       </div>
 
       {previewing && <ReminderPreviewCard onDismiss={() => setPreviewing(false)} />}
