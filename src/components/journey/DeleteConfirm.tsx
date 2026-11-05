@@ -30,7 +30,7 @@ export default function DeleteConfirm({ label, what, onConfirm }: DeleteConfirmP
 
   return (
     <span role="group" aria-label={`Confirm: ${label} ${what}`} className="flex flex-wrap items-center gap-2 text-sm">
-      <span className="text-foreground/70">Remove {what}? This can&apos;t be undone.</span>
+      <span className="text-foreground/85">Remove {what}? This can&apos;t be undone.</span>
       <Button variant="quiet" className="min-h-11 px-4 text-sm" onClick={onConfirm}>
         Yes, remove
       </Button>

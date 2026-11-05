@@ -27,7 +27,7 @@ const dateFormat = new Intl.DateTimeFormat(undefined, {
 const timeFormat = new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" });
 
 const fieldClass =
-  "w-full rounded-2xl border border-foreground/20 bg-transparent px-4 py-3 text-base leading-7 placeholder:text-foreground/40";
+  "w-full rounded-2xl border border-foreground/20 bg-transparent px-4 py-3 text-base leading-7 placeholder:text-foreground/60";
 
 export default function MomentEntry({ moment }: { moment: Moment }) {
   const [editing, setEditing] = useState<Editing>(null);
@@ -103,12 +103,12 @@ export default function MomentEntry({ moment }: { moment: Moment }) {
         <time dateTime={moment.completedAt} className="font-display text-2xl tracking-tight sm:text-3xl">
           {dateFormat.format(when)}
         </time>
-        <span className="ml-3 text-sm text-foreground/50">{timeFormat.format(when)}</span>
+        <span className="ml-3 text-sm text-foreground/70">{timeFormat.format(when)}</span>
       </header>
 
       {reflection && (
         <section className="mt-4" aria-label="Reflection">
-          <p className="text-xs uppercase tracking-widest text-foreground/50">Reflection</p>
+          <p className="text-xs uppercase tracking-widest text-foreground/70">Reflection</p>
           {editing === "reflection" ? (
             editor("reflection")
           ) : (
@@ -130,13 +130,13 @@ export default function MomentEntry({ moment }: { moment: Moment }) {
 
       {intention && (
         <section className="mt-5" aria-label="Intention">
-          <p className="text-xs uppercase tracking-widest text-foreground/50">Intention</p>
+          <p className="text-xs uppercase tracking-widest text-foreground/70">Intention</p>
           {editing === "intention" ? (
             editor("intention")
           ) : (
             <>
               <p className="mt-2 text-base leading-7">{intention.text}</p>
-              <p className="mt-1 text-sm text-foreground/60">
+              <p className="mt-1 text-sm text-foreground/75">
                 {status ? FOLLOW_UP_LABELS[status] : "Not revisited yet"}
               </p>
               <div className="mt-1 flex flex-wrap items-center gap-1">

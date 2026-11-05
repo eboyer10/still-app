@@ -9,7 +9,7 @@ export default function EmptyJourney() {
       <h2 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">
         Your journey begins with a single pause.
       </h2>
-      <p className="mt-4 max-w-sm text-base leading-7 text-foreground/70">
+      <p className="mt-4 max-w-sm text-base leading-7 text-foreground/85">
         When you take a moment, what you choose to keep will gather here, only on this device.
       </p>
       <Link href="/moment" className={buttonClass("primary", "mt-10 px-8")}>

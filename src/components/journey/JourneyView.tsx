@@ -40,7 +40,7 @@ export default function JourneyView() {
 
         <header className="mt-10 sm:mt-16">
           <h1 className="font-display text-5xl font-extrabold tracking-tight sm:text-7xl">My journey</h1>
-          <p className="mt-4 max-w-md text-base leading-7 text-foreground/70">
+          <p className="mt-4 max-w-md text-base leading-7 text-foreground/85">
             A quiet record of the times you stopped, what you noticed, and what you hoped to do next.
           </p>
         </header>
@@ -63,7 +63,7 @@ export default function JourneyView() {
             <div className="mt-16 space-y-14 sm:mt-24">
               {groupByMonth(moments).map((group) => (
                 <section key={group.label} aria-label={group.label}>
-                  <h2 className="mb-8 text-sm uppercase tracking-widest text-foreground/50">{group.label}</h2>
+                  <h2 className="mb-8 text-sm uppercase tracking-widest text-foreground/70">{group.label}</h2>
                   <div className="space-y-12 border-l border-foreground/15">
                     {group.moments.map((moment) => (
                       <MomentEntry key={moment.id} moment={moment} />
@@ -74,7 +74,7 @@ export default function JourneyView() {
             </div>
 
             <footer className="mt-20 border-t border-foreground/10 pt-6">
-              <p className="text-sm leading-6 text-foreground/60">
+              <p className="text-sm leading-6 text-foreground/75">
                 Everything here is saved only in this browser. You can edit or remove any of it, or all of it.
               </p>
               <div className="mt-2">

@@ -9,7 +9,7 @@ import WaveBackground from "@/components/WaveBackground";
 import SiteMark from "@/components/SiteMark";
 import RadioCard from "@/components/ui/RadioCard";
 import { CUSTOM_ACTION_ID, MOMENT_ACTIONS } from "@/lib/actions";
-import { addMoment } from "@/lib/journey";
+import { addMoment, INTENTION_LIMIT, REFLECTION_LIMIT } from "@/lib/journey";
 import {
   BREATH_DURATION_MS,
   breathCue,
@@ -18,7 +18,7 @@ import {
   type BreathCue,
 } from "@/lib/breath";
 
-type Step = "arrive" | "breathe" | "reflect" | "act" | "close";
+type Step = "breathe" | "keep" | "close";
 
 const CUE_TEXT: Record<BreathCue, string> = {
   in: "Breathe in",
@@ -26,7 +26,6 @@ const CUE_TEXT: Record<BreathCue, string> = {
   settle: "Rest here",
 };
 
-const REFLECTION_LIMIT = 280;
 const REST_BREATH = "0.3";
 
 const isTyping = (target: EventTarget | null) =>
@@ -39,7 +38,7 @@ const isInteractive = (target: EventTarget | null) =>
 
 export default function MomentFlow() {
   const router = useRouter();
-  const [step, setStep] = useState<Step>("arrive");
+  const [step, setStep] = useState<Step>("breathe");
   const [paused, setPaused] = useState(false);
   const [status, setStatus] = useState("");
   const [cue, setCue] = useState<BreathCue>("in");
@@ -50,15 +49,15 @@ export default function MomentFlow() {
   const [saveFailed, setSaveFailed] = useState(false);
 
   const stageRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const firstRender = useRef(true);
   const breathCompleted = useRef(false);
   const saved = useRef(false);
+  const lastCue = useRef<BreathCue | null>(null);
 
   const finishBreath = useCallback(() => {
     breathCompleted.current = true;
-    setStep("reflect");
+    setStep("keep");
   }, []);
 
   useBreathTimer({
@@ -66,8 +65,13 @@ export default function MomentFlow() {
     running: step === "breathe" && !paused,
     onFrame: (ms) => {
       stageRef.current?.style.setProperty("--breath", breathValue(ms).toFixed(4));
-      progressRef.current?.style.setProperty("transform", `scaleX(${ms / BREATH_DURATION_MS})`);
-      setCue(breathCue(ms));
+      const next = breathCue(ms);
+      setCue(next);
+      // Announce each phase once, politely, so screen reader users get the same cues.
+      if (next !== lastCue.current) {
+        lastCue.current = next;
+        setStatus(CUE_TEXT[next]);
+      }
     },
     onComplete: finishBreath,
   });
@@ -97,6 +101,8 @@ export default function MomentFlow() {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !isTyping(event.target)) {
+        // Never throw away words someone has started to write.
+        if (step === "keep" && (reflection.trim() || customAction.trim())) return;
         router.push("/");
       } else if (
         event.key === " " &&
@@ -109,7 +115,7 @@ export default function MomentFlow() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [router, step, togglePause]);
+  }, [router, step, togglePause, reflection, customAction]);
 
   // A hidden tab shouldn't quietly use up the 30 seconds.
   useEffect(() => {
@@ -132,18 +138,18 @@ export default function MomentFlow() {
     actionId === CUSTOM_ACTION_ID && customText ? customText : chosen?.invitation;
 
   // Reaching the close saves the Moment once, with only what the person actually gave.
-  const finish = (withIntention: boolean) => {
+  const finish = (keepAnything: boolean) => {
     if (!saved.current) {
       saved.current = true;
       const intention =
-        withIntention && chosenText
+        keepAnything && canChoose && chosenText
           ? actionId === CUSTOM_ACTION_ID
             ? { source: "custom" as const, text: customText }
             : { source: "preset" as const, presetId: actionId ?? undefined, text: chosenText }
           : undefined;
       const ok = addMoment({
         breathCompleted: breathCompleted.current,
-        reflection: keepReflection ? reflection : undefined,
+        reflection: keepAnything && keepReflection ? reflection : undefined,
         intention,
       });
       setSaveFailed(!ok);
@@ -166,24 +172,6 @@ export default function MomentFlow() {
       )}
 
       <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-6 py-12 text-center">
-        {step === "arrive" && (
-          <section className="flex flex-col items-center" aria-labelledby="arrive-title">
-            <BreathingOrb className="mb-10" />
-            <h1 id="arrive-title" ref={headingRef} tabIndex={-1} className={heading}>
-              Would you like to take a moment?
-            </h1>
-            <p className="mt-4 max-w-sm text-base leading-7 text-foreground/70">
-              Thirty seconds to pause. You can stop whenever you like.
-            </p>
-            <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
-              <Button onClick={() => setStep("breathe")}>Begin</Button>
-              <Link href="/" className={buttonClass("ghost")}>
-                Not now
-              </Link>
-            </div>
-          </section>
-        )}
-
         {step === "breathe" && (
           <section className="flex flex-col items-center" aria-labelledby="breathe-title">
             <h1 id="breathe-title" ref={headingRef} tabIndex={-1} className="sr-only">
@@ -193,28 +181,14 @@ export default function MomentFlow() {
             <p className="mt-12 h-8 text-xl font-light tracking-wide sm:text-2xl" aria-hidden="true">
               {paused ? "Paused" : CUE_TEXT[cue]}
             </p>
-            <p className="mt-3 max-w-xs text-sm leading-6 text-foreground/60">
+            <p className="mt-6 max-w-xs text-sm leading-6 text-foreground/75">
               Breathe however feels right. Follow the orb, or simply rest.
             </p>
-            <div
-              className="mt-8 h-px w-40 bg-foreground/15"
-              role="progressbar"
-              aria-label="Moment progress"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-hidden="true"
-            >
-              <div
-                ref={progressRef}
-                className="h-px origin-left bg-foreground/60"
-                style={{ transform: "scaleX(0)" }}
-              />
-            </div>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <Button variant="quiet" onClick={togglePause} aria-pressed={paused}>
                 {paused ? "Resume" : "Pause"}
               </Button>
-              <Button variant="ghost" onClick={() => setStep("reflect")}>
+              <Button variant="ghost" onClick={() => setStep("keep")}>
                 Skip
               </Button>
               <Link href="/" className={buttonClass("ghost")}>
@@ -224,35 +198,38 @@ export default function MomentFlow() {
           </section>
         )}
 
-        {step === "reflect" && (
-          <section className="w-full" aria-labelledby="reflect-title">
-            <h1 id="reflect-title" ref={headingRef} tabIndex={-1} className={heading}>
-              What would make the rest of today feel more meaningful?
+        {step === "keep" && (
+          <section className="w-full" aria-labelledby="keep-title">
+            <h1 id="keep-title" ref={headingRef} tabIndex={-1} className={heading}>
+              Before you go
             </h1>
+            <p className="mt-3 text-base leading-7 text-foreground/85">
+              Both parts are optional. Skip whatever doesn&apos;t call to you.
+            </p>
             <form
-              className="mt-8 flex flex-col items-center gap-6"
+              className="mt-8 flex flex-col items-center gap-8 text-left"
               onSubmit={(event) => {
                 event.preventDefault();
-                setStep("act");
+                finish(true);
               }}
             >
-              <div className="w-full text-left">
-                <label htmlFor="reflection" className="sr-only">
-                  Your reflection (optional)
+              <div className="w-full">
+                <label htmlFor="reflection" className="block text-lg font-medium leading-7">
+                  What would make the rest of today feel more meaningful?
                 </label>
                 <textarea
                   id="reflection"
                   value={reflection}
                   onChange={(event) => setReflection(event.target.value)}
                   maxLength={REFLECTION_LIMIT}
-                  rows={4}
+                  rows={3}
                   placeholder="A word, a sentence, anything at all."
-                  className="w-full resize-none rounded-2xl border border-foreground/20 bg-transparent px-5 py-4 text-base leading-7 placeholder:text-foreground/40"
+                  className="mt-3 w-full resize-none rounded-2xl border border-foreground/20 bg-transparent px-5 py-4 text-base leading-7 placeholder:text-foreground/75"
                 />
-                <p className="mt-2 px-1 text-xs text-foreground/50">
-                  Optional. Saved privately on this device. You can edit or delete it anytime in My journey.
+                <p className="mt-2 px-1 text-xs text-foreground/85">
+                  Saved privately on this device. You can edit or delete it anytime in My journey.
                 </p>
-                <label className="mt-3 flex min-h-11 cursor-pointer items-center gap-3 px-1 text-sm text-foreground/70">
+                <label className="mt-2 flex min-h-11 cursor-pointer items-center gap-3 px-1 text-sm text-foreground/85">
                   <input
                     type="checkbox"
                     checked={!keepReflection}
@@ -262,31 +239,12 @@ export default function MomentFlow() {
                   Don&apos;t save this reflection
                 </label>
               </div>
-              <div className="flex flex-col items-center gap-3 sm:flex-row">
-                <Button type="submit">Continue</Button>
-                <Button variant="ghost" onClick={() => setStep("act")}>
-                  Skip
-                </Button>
-              </div>
-            </form>
-          </section>
-        )}
 
-        {step === "act" && (
-          <section className="w-full" aria-labelledby="act-title">
-            <h1 id="act-title" ref={headingRef} tabIndex={-1} className={heading}>
-              Is there one small thing you&apos;d like to do, away from the screen?
-            </h1>
-            <form
-              className="mt-8 flex flex-col items-center gap-6"
-              onSubmit={(event) => {
-                event.preventDefault();
-                if (canChoose) finish(true);
-              }}
-            >
               <fieldset className="w-full">
-                <legend className="sr-only">Choose one small action</legend>
-                <div className="grid gap-3 text-left">
+                <legend className="text-lg font-medium leading-7">
+                  Is there one small thing you&apos;d like to do, away from the screen?
+                </legend>
+                <div className="mt-3 grid gap-3">
                   {MOMENT_ACTIONS.map((action) => (
                     <RadioCard
                       key={action.id}
@@ -308,7 +266,7 @@ export default function MomentFlow() {
                   />
                 </div>
                 {actionId === CUSTOM_ACTION_ID && (
-                  <div className="mt-3 text-left">
+                  <div className="mt-3">
                     <label htmlFor="custom-action" className="sr-only">
                       Your own action
                     </label>
@@ -317,17 +275,16 @@ export default function MomentFlow() {
                       type="text"
                       value={customAction}
                       onChange={(event) => setCustomAction(event.target.value)}
-                      maxLength={120}
+                      maxLength={INTENTION_LIMIT}
                       placeholder="What feels right for you?"
-                      className="min-h-11 w-full rounded-2xl border border-foreground/20 bg-transparent px-5 text-base placeholder:text-foreground/40"
+                      className="min-h-11 w-full rounded-2xl border border-foreground/20 bg-transparent px-5 text-base placeholder:text-foreground/75"
                     />
                   </div>
                 )}
               </fieldset>
-              <div className="flex flex-col items-center gap-3 sm:flex-row">
-                <Button type="submit" disabled={!canChoose}>
-                  Choose this
-                </Button>
+
+              <div className="flex flex-col items-center gap-3 self-center sm:flex-row">
+                <Button type="submit">Continue</Button>
                 <Button variant="ghost" onClick={() => finish(false)}>
                   Skip
                 </Button>
@@ -343,17 +300,17 @@ export default function MomentFlow() {
               Thank you for pausing.
             </h1>
             {chosenText ? (
-              <p className="mt-4 max-w-sm text-base leading-7 text-foreground/70">
+              <p className="mt-4 max-w-sm text-base leading-7 text-foreground/85">
                 When you&apos;re ready: {chosenText}
               </p>
             ) : (
-              <p className="mt-4 max-w-sm text-base leading-7 text-foreground/70">
+              <p className="mt-4 max-w-sm text-base leading-7 text-foreground/85">
                 Carry this quiet with you.
               </p>
             )}
-            <p className="mt-8 text-sm text-foreground/50">Go gently.</p>
+            <p className="mt-8 text-sm text-foreground/70">Go gently.</p>
             {saveFailed && (
-              <p className="mt-4 max-w-xs text-xs leading-5 text-foreground/60" role="status">
+              <p className="mt-4 max-w-xs text-xs leading-5 text-foreground/75" role="status">
                 Your browser wouldn&apos;t let Still save this, so it will be gone when you close the page.
               </p>
             )}

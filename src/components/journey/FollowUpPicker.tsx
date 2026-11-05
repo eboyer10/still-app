@@ -15,7 +15,7 @@ const OPTIONS: FollowUpStatus[] = ["did-it", "not-yet", "priorities-changed"];
 export default function FollowUpPicker({ momentId, value, onChange }: FollowUpPickerProps) {
   return (
     <fieldset className="mt-4">
-      <legend className="text-sm text-foreground/70">How did this go?</legend>
+      <legend className="text-sm text-foreground/85">How did this go?</legend>
       <div className="mt-3 grid gap-2 sm:grid-cols-3">
         {OPTIONS.map((status) => (
           <RadioCard

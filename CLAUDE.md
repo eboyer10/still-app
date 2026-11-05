@@ -19,9 +19,10 @@ yourself, and take one meaningful action away from the screen.
 - Guilt-driven copy, urgency, or dark patterns.
 
 ### The Moment flow (`/moment`)
-Arrive → Breathe (30s) → Reflect (optional) → Act (optional) → Close.
+Breathe (30s, starts straight from home's "Begin a moment") → "Before you go" (reflection and action on one calm screen, both optional) → Close.
 - Breathing is a fixed gentle 4s inhale / 4s exhale with no hold. It guides, it doesn't force:
   people can pause, skip, exit, or simply rest without following the orb.
+- Breath cues are announced politely to screen readers; there is no progress bar. Escape never discards typed words.
 - One optional question: "What would make the rest of today feel more meaningful?"
 - Six action invitations (Reconnect, Create, Step Outside, Let Go, Make Space,
   Follow Your Curiosity) plus "Choose my own action". Keep wording soft and concise.
@@ -39,6 +40,7 @@ Arrive → Breathe (30s) → Reflect (optional) → Act (optional) → Close.
 - Everything is editable and deletable (per reflection, per intention, per Moment, or all data).
 
 ### Navigation
+- Home asks one gentle follow-up about the latest unrevisited intention (`HomeExtras`), and shows "My journey" only once a Moment exists. Settings is a small footer link until reminders are real.
 - No persistent menu. Home (`/`) is the hub; every screen has the "Still" wordmark (`SiteMark`) top-left
   as the one way back to the beginning (hidden during the breathing step). Moment keeps Exit.
 

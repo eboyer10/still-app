@@ -35,9 +35,9 @@ export default function SettingsForm() {
         </Link>
       </nav>
       <h1 className="mt-10 font-display text-4xl font-bold tracking-tight sm:text-5xl">Settings</h1>
-      <p className="mt-3 text-base leading-7 text-foreground/70">
-        Choose how Still might invite you to pause. This is a prototype: nothing is
-        scheduled and no notifications are sent. Your choices stay on this device.
+      <p className="mt-3 text-base leading-7 text-foreground/85">
+        Choose how Still might invite you to pause. Reminders aren&apos;t switched on yet, so Still won&apos;t
+        send anything. Your choices are kept on this device for when they are.
       </p>
 
       <fieldset className="mt-10">
@@ -59,11 +59,11 @@ export default function SettingsForm() {
 
       <fieldset className="mt-10" disabled={remindersOff}>
         <legend className="text-lg font-medium">Preferred time window</legend>
-        <p className="mt-1 text-sm text-foreground/60">
+        <p className="mt-1 text-sm text-foreground/75">
           {remindersOff ? "Choose a frequency to set a window." : "Invitations would stay within this window."}
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-4">
-          <label className="flex flex-col gap-1 text-sm text-foreground/70">
+          <label className="flex flex-col gap-1 text-sm text-foreground/85">
             From
             <input
               type="time"
@@ -72,7 +72,7 @@ export default function SettingsForm() {
               className={fieldClass}
             />
           </label>
-          <label className="flex flex-col gap-1 text-sm text-foreground/70">
+          <label className="flex flex-col gap-1 text-sm text-foreground/85">
             Until
             <input
               type="time"
@@ -83,7 +83,7 @@ export default function SettingsForm() {
           </label>
         </div>
         {!remindersOff && windowInvalid && (
-          <p className="mt-3 text-sm text-foreground/70" role="status">
+          <p className="mt-3 text-sm text-foreground/85" role="status">
             The end time is before the start time. Try a later end time.
           </p>
         )}
@@ -100,7 +100,7 @@ export default function SettingsForm() {
           />
           <span>
             <span className="block text-base">Show gentle reminders inside Still</span>
-            <span className="block text-sm leading-6 text-foreground/60">
+            <span className="block text-sm leading-6 text-foreground/75">
               Reminders appear only while the app is open. Still never asks for system
               notification permission.
             </span>
@@ -110,7 +110,7 @@ export default function SettingsForm() {
 
       <div className="mt-12 border-t border-foreground/10 pt-8">
         <h2 className="text-lg font-medium">See how it feels</h2>
-        <p className="mt-1 text-sm leading-6 text-foreground/60">
+        <p className="mt-1 text-sm leading-6 text-foreground/75">
           This shows a sample reminder card. It doesn&apos;t schedule anything.
         </p>
         <Button variant="quiet" className="mt-4" onClick={() => setPreviewing(true)}>
@@ -120,7 +120,7 @@ export default function SettingsForm() {
 
       <div className="mt-10 border-t border-foreground/10 pt-8">
         <h2 className="text-lg font-medium">Your data</h2>
-        <p className="mt-1 text-sm leading-6 text-foreground/60">
+        <p className="mt-1 text-sm leading-6 text-foreground/75">
           Reflections and intentions are saved only in this browser. You can edit or delete them in{" "}
           <Link href="/journey" className="underline underline-offset-4">
             My journey
