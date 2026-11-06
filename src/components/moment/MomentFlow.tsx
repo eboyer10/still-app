@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import BreathingLines from "@/components/BreathingLines";
 import Button, { buttonClass } from "@/components/ui/Button";
 import SkyBackground from "@/components/SkyBackground";
@@ -11,6 +11,7 @@ import RadioCard from "@/components/ui/RadioCard";
 import { CUSTOM_ACTION_ID, MOMENT_ACTIONS } from "@/lib/actions";
 import { usePreferences } from "@/lib/preferences";
 import { startBreathSound, unlockAudio, type BreathSound } from "@/lib/sound";
+import { situationLine } from "@/lib/situations";
 import { addMoment, INTENTION_LIMIT, REFLECTION_LIMIT } from "@/lib/journey";
 import {
   BREATH_DURATION_MS,
@@ -30,6 +31,9 @@ const CUE_TEXT: Record<BreathCue, string> = {
 
 const REST_BREATH = "0.3";
 
+const subscribeNever = () => () => {};
+const readSituation = () => new URLSearchParams(window.location.search).get("for");
+
 const isTyping = (target: EventTarget | null) =>
   target instanceof HTMLElement &&
   (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
@@ -40,7 +44,8 @@ const isInteractive = (target: EventTarget | null) =>
 
 export default function MomentFlow() {
   const router = useRouter();
-  const [{ sound }, updatePrefs] = usePreferences();
+  const [{ sound, haptics }, updatePrefs] = usePreferences();
+  const situation = useSyncExternalStore(subscribeNever, readSituation, () => null);
   const soundRef = useRef<BreathSound | null>(null);
   const [step, setStep] = useState<Step>("breathe");
   const [paused, setPaused] = useState(false);
@@ -58,6 +63,10 @@ export default function MomentFlow() {
   const breathCompleted = useRef(false);
   const saved = useRef(false);
   const lastCue = useRef<BreathCue | null>(null);
+  const hapticsRef = useRef(haptics);
+  useEffect(() => {
+    hapticsRef.current = haptics;
+  }, [haptics]);
 
   const finishBreath = useCallback(() => {
     breathCompleted.current = true;
@@ -77,6 +86,7 @@ export default function MomentFlow() {
       if (next !== lastCue.current) {
         lastCue.current = next;
         setStatus(CUE_TEXT[next]);
+        if (hapticsRef.current && "vibrate" in navigator) navigator.vibrate(next === "settle" ? 0 : 40);
       }
     },
     onComplete: finishBreath,
@@ -188,7 +198,7 @@ export default function MomentFlow() {
         </div>
       )}
 
-      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-6 py-12 text-center">
+      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-6 pb-12 pt-20 text-center">
         {step === "breathe" && (
           <section className="flex flex-col items-center" aria-labelledby="breathe-title">
             <h1 id="breathe-title" ref={headingRef} tabIndex={-1} className="sr-only">
@@ -198,8 +208,8 @@ export default function MomentFlow() {
             <p className="mt-12 h-8 text-xl font-light tracking-wide sm:text-2xl" aria-hidden="true">
               {paused ? "Paused" : CUE_TEXT[cue]}
             </p>
-            <p className="mt-6 max-w-xs text-sm leading-6 text-foreground/75">
-              Breathe however feels right. Follow the lines, or simply rest.
+            <p className="mt-6 max-w-xs text-sm leading-6 text-foreground/85">
+              {situationLine(situation)}
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <Button variant="quiet" onClick={togglePause} aria-pressed={paused}>
@@ -251,7 +261,7 @@ export default function MomentFlow() {
                   maxLength={REFLECTION_LIMIT}
                   rows={3}
                   placeholder="A word, a sentence, anything at all."
-                  className="mt-3 w-full resize-none rounded-2xl border border-foreground/20 bg-transparent px-5 py-4 text-base leading-7 placeholder:text-foreground/75"
+                  className="mt-3 w-full resize-none rounded-2xl border border-foreground/20 bg-transparent px-5 py-4 text-base leading-7 placeholder:text-foreground/85"
                 />
                 <p className="mt-2 px-1 text-xs text-foreground/85">
                   Saved privately on this device. You can edit or delete it anytime in My journey.
@@ -271,7 +281,7 @@ export default function MomentFlow() {
                 <legend className="text-lg font-medium leading-7">
                   Is there one small thing you&apos;d like to do, away from the screen?
                 </legend>
-                <div className="mt-3 grid gap-3">
+                <div className="mt-3 grid grid-cols-2 gap-2">
                   {MOMENT_ACTIONS.map((action) => (
                     <RadioCard
                       key={action.id}
@@ -280,7 +290,6 @@ export default function MomentFlow() {
                       checked={actionId === action.id}
                       onChange={setActionId}
                       title={action.title}
-                      description={action.invitation}
                     />
                   ))}
                   <RadioCard
@@ -288,10 +297,14 @@ export default function MomentFlow() {
                     value={CUSTOM_ACTION_ID}
                     checked={actionId === CUSTOM_ACTION_ID}
                     onChange={setActionId}
-                    title="Choose my own action"
-                    description="Something meaningful to you."
+                    title="My own"
                   />
                 </div>
+                <p className="mt-3 min-h-12 px-1 text-base leading-6 text-foreground/90" aria-live="polite">
+                  {actionId === CUSTOM_ACTION_ID
+                    ? "Something meaningful to you."
+                    : chosen?.invitation ?? "Choose one, or skip."}
+                </p>
                 {actionId === CUSTOM_ACTION_ID && (
                   <div className="mt-3">
                     <label htmlFor="custom-action" className="sr-only">
@@ -304,7 +317,7 @@ export default function MomentFlow() {
                       onChange={(event) => setCustomAction(event.target.value)}
                       maxLength={INTENTION_LIMIT}
                       placeholder="What feels right for you?"
-                      className="min-h-11 w-full rounded-2xl border border-foreground/20 bg-transparent px-5 text-base placeholder:text-foreground/75"
+                      className="min-h-11 w-full rounded-2xl border border-foreground/20 bg-transparent px-5 text-base placeholder:text-foreground/85"
                     />
                   </div>
                 )}
@@ -328,7 +341,7 @@ export default function MomentFlow() {
             </h1>
             {chosenText ? (
               <>
-                <p className="mt-6 max-w-sm text-sm uppercase tracking-widest text-foreground/75">
+                <p className="mt-6 max-w-sm text-sm uppercase tracking-widest text-foreground/85">
                   When you&apos;re ready
                 </p>
                 <p className="mt-3 max-w-md font-display text-2xl font-bold leading-snug sm:text-3xl">
@@ -341,9 +354,9 @@ export default function MomentFlow() {
                 Carry this quiet with you.
               </p>
             )}
-            <p className="mt-6 text-sm text-foreground/70">Go gently.</p>
+            <p className="mt-6 text-sm text-foreground/80">Go gently.</p>
             {saveFailed && (
-              <p className="mt-4 max-w-xs text-xs leading-5 text-foreground/75" role="status">
+              <p className="mt-4 max-w-xs text-xs leading-5 text-foreground/85" role="status">
                 Your browser wouldn&apos;t let Still save this, so it will be gone when you close the page.
               </p>
             )}

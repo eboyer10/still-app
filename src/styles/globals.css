@@ -22,10 +22,10 @@
   --btn-to: #8f9bff;
   --btn-ink: #24124f;
 
-  --sky: linear-gradient(180deg, #2a1b6e 0%, #5b3fb0 55%, #b98ae0 100%);
-  --ridge-far: rgb(170 130 240 / 0.55);
-  --ridge-mid: rgb(110 78 205 / 0.8);
-  --ridge-near: rgb(26 16 78 / 0.96);
+  --sky: linear-gradient(180deg, #ddcdf8 0%, #b9aaf0 55%, #9d93e8 100%);
+  --ridge-far: rgb(150 120 230 / 0.55);
+  --ridge-mid: rgb(112 82 208 / 0.85);
+  --ridge-near: rgb(58 36 140 / 0.95);
 }
 
 @theme inline {

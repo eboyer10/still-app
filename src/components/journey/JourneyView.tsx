@@ -9,6 +9,8 @@ import MomentEntry from "@/components/journey/MomentEntry";
 import SkyBackground from "@/components/SkyBackground";
 import SiteMark from "@/components/SiteMark";
 import { buttonClass } from "@/components/ui/Button";
+import LineFromBefore from "@/components/journey/LineFromBefore";
+import { useState } from "react";
 import { clearJourney, getJourneyCounts, useJourney, type Moment } from "@/lib/journey";
 
 const monthFormat = new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" });
@@ -24,13 +26,24 @@ function groupByMonth(moments: Moment[]) {
   return groups;
 }
 
+type Filter = "all" | "reflections" | "intentions";
+const FILTERS: { value: Filter; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "reflections", label: "Reflections" },
+  { value: "intentions", label: "Intentions" },
+];
+
 export default function JourneyView() {
   const { moments, ready } = useJourney();
+  const [filter, setFilter] = useState<Filter>("all");
+  const shown = moments.filter((m) =>
+    filter === "reflections" ? m.reflection : filter === "intentions" ? m.intention : true,
+  );
 
   return (
     <div className="relative min-h-dvh">
       <SkyBackground auto />
-      <div className="relative z-10 mx-auto w-full max-w-2xl px-6 pb-24 pt-4 sm:pt-6">
+      <div className="relative z-10 mx-auto w-full max-w-3xl px-5 pb-24 pt-4 sm:px-6 sm:pt-6">
         <nav aria-label="Primary" className="flex items-center justify-between">
           <SiteMark />
           <Link href="/settings" className={buttonClass("ghost", "text-sm")}>
@@ -38,8 +51,8 @@ export default function JourneyView() {
           </Link>
         </nav>
 
-        <header className="mt-10 sm:mt-16">
-          <h1 className="font-display text-5xl font-semibold tracking-tight sm:text-7xl">My journey</h1>
+        <header className="mt-8 sm:mt-12">
+          <h1 className="font-display text-5xl font-semibold tracking-tight sm:text-6xl">My journey</h1>
           <p className="mt-4 max-w-md text-base leading-7 text-foreground/85">
             A quiet record of the times you stopped, what you noticed, and what you hoped to do next.
           </p>
@@ -49,22 +62,49 @@ export default function JourneyView() {
           <EmptyJourney />
         ) : (
           <>
-            <section className="mt-10 sm:mt-14" aria-label="Your journey as a landscape">
-              <JourneyLandscape moments={moments} />
-            </section>
+            <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <LineFromBefore moments={moments} />
+              </div>
+              <section aria-label="Summary" className="rounded-3xl bg-white/35 p-4 backdrop-blur [&>ul>li]:flex [&>ul>li]:flex-col [&>ul>li]:justify-center">
+                <JourneySummary counts={getJourneyCounts(moments)} />
+              </section>
+              <section aria-label="Your journey as a landscape" className="rounded-3xl bg-white/35 p-4 backdrop-blur">
+                <JourneyLandscape moments={moments} />
+              </section>
+            </div>
 
-            <section className="mt-12 sm:mt-16" aria-label="Summary">
-              <JourneySummary counts={getJourneyCounts(moments)} />
-              <Link href="/moment" className={buttonClass("primary", "mt-8 px-8")}>
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+              <div role="group" aria-label="Show" className="flex flex-wrap gap-2">
+                {FILTERS.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    aria-pressed={filter === option.value}
+                    onClick={() => setFilter(option.value)}
+                    className={`min-h-11 rounded-full px-5 text-sm transition-colors ${
+                      filter === option.value ? "bg-foreground text-background" : "bg-white/50 hover:bg-white/75"
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+              <Link href="/moment" className={buttonClass("primary", "px-6")}>
                 Begin a moment
               </Link>
-            </section>
+            </div>
 
-            <div className="mt-16 space-y-14 sm:mt-24">
-              {groupByMonth(moments).map((group) => (
+            <div className="mt-8 space-y-10">
+              {shown.length === 0 && (
+                <p className="text-base text-foreground/85" role="status">
+                  Nothing here yet. Moments with {filter === "reflections" ? "a reflection" : "an intention"} will appear here.
+                </p>
+              )}
+              {groupByMonth(shown).map((group) => (
                 <section key={group.label} aria-label={group.label}>
-                  <h2 className="mb-8 text-sm uppercase tracking-widest text-foreground/70">{group.label}</h2>
-                  <div className="space-y-12 border-l border-foreground/15">
+                  <h2 className="mb-3 text-sm uppercase tracking-widest text-foreground/80">{group.label}</h2>
+                  <div className="space-y-3">
                     {group.moments.map((moment) => (
                       <MomentEntry key={moment.id} moment={moment} />
                     ))}
@@ -74,7 +114,7 @@ export default function JourneyView() {
             </div>
 
             <footer className="mt-20 border-t border-foreground/10 pt-6">
-              <p className="text-sm leading-6 text-foreground/75">
+              <p className="text-sm leading-6 text-foreground/85">
                 Everything here is saved only in this browser. You can edit or remove any of it, or all of it.
               </p>
               <div className="mt-2">

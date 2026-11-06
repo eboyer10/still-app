@@ -19,12 +19,14 @@ export default function WelcomeScreen() {
         </Link>
         <HomeExtras />
       </div>
-      <Link
-        href="/settings"
-        className={buttonClass("ghost", "absolute bottom-3 right-4 text-sm sm:right-8")}
-      >
-        Settings
-      </Link>
+      <div className="absolute bottom-3 right-4 flex gap-2 sm:right-8">
+        <Link href="/support" className={buttonClass("ghost", "text-sm")}>
+          Support
+        </Link>
+        <Link href="/settings" className={buttonClass("ghost", "text-sm")}>
+          Settings
+        </Link>
+      </div>
     </main>
   );
 }

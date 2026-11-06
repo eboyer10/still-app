@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Fraunces, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 
@@ -20,6 +20,11 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: "Still",
   description: "A quiet space for mindfulness and reflection.",
+  appleWebApp: { capable: true, title: "Still", statusBarStyle: "default" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#c4b8f6",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

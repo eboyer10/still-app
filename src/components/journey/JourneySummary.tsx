@@ -1,36 +1,23 @@
 import type { JourneyCounts } from "@/lib/journey";
 
-const plural = (n: number, one: string, many: string) => (n === 1 ? one : many);
-
-function Num({ children }: { children: number }) {
-  return <span className="font-display text-4xl font-bold sm:text-5xl">{children}</span>;
+function Stat({ value, label }: { value: number; label: string }) {
+  return (
+    <li className="rounded-2xl bg-white/50 px-4 py-3">
+      <span className="block font-display text-3xl font-semibold leading-none">{value}</span>
+      <span className="mt-1 block text-sm leading-5 text-foreground/80">{label}</span>
+    </li>
+  );
 }
 
-/** Counts as plain sentences: they describe, they never score or instruct. */
+/** Plain counts that describe, never score: no totals to beat, no percentages, no targets. */
 export default function JourneySummary({ counts }: { counts: JourneyCounts }) {
   const { momentsTaken, intentionsChosen, intentionsRevisited, intentionsActedOn } = counts;
   return (
-    <div className="space-y-4 text-lg leading-10 text-foreground/80 sm:text-xl sm:leading-[3rem]">
-      <p>
-        You&apos;ve made time to pause <Num>{momentsTaken}</Num> {plural(momentsTaken, "time", "times")}.
-      </p>
-      {intentionsChosen > 0 && (
-        <p>
-          You&apos;ve chosen <Num>{intentionsChosen}</Num> {plural(intentionsChosen, "intention", "intentions")}
-          {intentionsRevisited > 0 ? (
-            <>
-              , and looked back on <Num>{intentionsRevisited}</Num>.
-            </>
-          ) : (
-            "."
-          )}
-        </p>
-      )}
-      {intentionsActedOn > 0 && (
-        <p>
-          Of those, <Num>{intentionsActedOn}</Num> {plural(intentionsActedOn, "was", "were")} acted upon.
-        </p>
-      )}
-    </div>
+    <ul className="m-0 grid list-none grid-cols-2 gap-3 p-0">
+      <Stat value={momentsTaken} label={momentsTaken === 1 ? "pause taken" : "pauses taken"} />
+      <Stat value={intentionsChosen} label={intentionsChosen === 1 ? "intention chosen" : "intentions chosen"} />
+      <Stat value={intentionsRevisited} label="looked back on" />
+      <Stat value={intentionsActedOn} label="acted upon" />
+    </ul>
   );
 }

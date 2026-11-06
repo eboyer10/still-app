@@ -35,7 +35,7 @@ export default function JourneyLandscape({ moments }: { moments: Moment[] }) {
   return (
     <figure>
       <div
-        className="relative h-60 overflow-hidden rounded-3xl border border-foreground/10 sm:h-80"
+        className="relative h-44 overflow-hidden rounded-3xl border border-white/60 sm:h-60"
         style={{ background: "var(--sky)" }}
       >
         <svg
@@ -83,7 +83,7 @@ export default function JourneyLandscape({ moments }: { moments: Moment[] }) {
           })}
         </ol>
       </div>
-      <figcaption className="mt-3 text-sm leading-6 text-foreground/65">
+      <figcaption className="mt-3 text-sm leading-6 text-foreground/80">
         Each light is a moment you took. A ring means you kept a reflection; a small star means you chose an
         intention.
         {moments.length > MAX_LIGHTS && ` Showing your latest ${MAX_LIGHTS}.`}

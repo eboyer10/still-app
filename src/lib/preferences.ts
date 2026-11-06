@@ -12,6 +12,10 @@ export type Preferences = {
   inAppReminders: boolean;
   /** Soft tone that follows the breath. Off unless chosen. */
   sound: boolean;
+  /** A tiny vibration at each breath phase, on phones that support it. Off unless chosen. */
+  haptics: boolean;
+  /** The short first-run note on the home screen has been dismissed. */
+  introSeen: boolean;
 };
 
 export const DEFAULT_PREFERENCES: Preferences = {
@@ -20,6 +24,8 @@ export const DEFAULT_PREFERENCES: Preferences = {
   windowEnd: "17:00",
   inAppReminders: true,
   sound: false,
+  haptics: false,
+  introSeen: false,
 };
 
 const STORAGE_KEY = "still:preferences";
@@ -45,6 +51,8 @@ function parse(raw: string | null): Preferences {
           ? data.inAppReminders
           : DEFAULT_PREFERENCES.inAppReminders,
       sound: typeof data.sound === "boolean" ? data.sound : DEFAULT_PREFERENCES.sound,
+      haptics: typeof data.haptics === "boolean" ? data.haptics : DEFAULT_PREFERENCES.haptics,
+      introSeen: typeof data.introSeen === "boolean" ? data.introSeen : DEFAULT_PREFERENCES.introSeen,
     };
   } catch {
     return DEFAULT_PREFERENCES;

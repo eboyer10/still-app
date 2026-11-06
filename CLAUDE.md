@@ -15,7 +15,7 @@ yourself, and take one meaningful action away from the screen.
 
 ### Never build
 - Scores, streaks, badges, achievement indicators, or progress-to-goal mechanics.
-- Dashboards, charts, percentages, or progress bars that turn reflection into metrics.
+- Percentages, progress bars, goals, or charts that turn reflection into metrics. Calm cards and plain count pills are fine; never show gaps between visits.
 - Guilt-driven copy, urgency, or dark patterns.
 
 ### The Moment flow (`/moment`)
@@ -30,18 +30,16 @@ Breathe (30s, starts straight from home's "Begin a moment") → "Before you go" 
 - Sound is an opt-in setting (`sound`, off by default): a very soft tone that follows the breath and stops on pause. Never autoplay.
 
 ### My Journey (`/journey`)
-- A chronological, editorial history of completed Moments with saved reflections and intentions.
-- Counts are plain sentences, never tiles or bars: Moments taken; intentions chosen; intentions
-  revisited (any follow-up recorded); intentions acted upon (only "I did it").
+- A calm, scannable bento of cards: "A line from before" (`LineFromBefore`, a random past reflection, "Show another"), stat pills (`JourneySummary`: pauses taken, intentions chosen, looked back on, acted upon: plain counts, no targets), and the landscape.
+- Filter pills (All / Reflections / Intentions, `aria-pressed`), then month-grouped compact cards (`MomentEntry`) with a per-moment glyph (`MomentGlyph`). Cards expand (also via `#moment-<id>`) to show the reflection, intention and follow-up.
+- An "Options" menu per entry: edit/remove reflection, edit/remove intention, remove moment, save reflection as an image (`shareImage.ts`, local canvas, opt-in).
 - Follow-up is neutral and optional: "I did it", "Not yet", "My priorities changed". None is framed as better.
 - Never invent data: a Moment shows only what the person actually gave. No placeholders.
-- A landscape visualization (`JourneyLandscape`): each Moment is one light on a misty ridge, oldest to newest.
-  A ring marks a kept reflection; a small star marks an intention. Lights are evenly spaced, so gaps between
-  visits are never shown. It never counts, scores, or measures progress.
+- `JourneyLandscape`: each Moment is one light on a misty ridge, oldest to newest, evenly spaced so gaps are never shown. A ring marks a kept reflection; a small star marks an intention.
 - Everything is editable and deletable (per reflection, per intention, per Moment, or all data).
 
 ### Navigation
-- Home asks gentle follow-ups (up to three per visit, newest first, "Ask me later" to skip) about unrevisited intentions (`HomeExtras`), and shows "My journey" only once a Moment exists. Settings is a small footer link until reminders are real.
+- Home asks gentle follow-ups (up to three per visit, newest first, "Ask me later" to skip) about unrevisited intentions (`HomeExtras`), and shows "My journey" only once a Moment exists. Support and Settings are small footer links. First run shows a dismissible "How Still works" card (`introSeen`). Situation chips (`situations.ts`) link to `/moment?for=<id>` and add a gentle line to the moment.
 - No persistent menu. Home (`/`) is the hub; every screen has the "Still" wordmark (`SiteMark`) top-left
   as the one way back to the beginning (hidden during the breathing step). Moment keeps Exit.
 
@@ -74,9 +72,9 @@ Next.js 16 (App Router, Cache Components), React 19, TypeScript (strict), Tailwi
 - `npm run lint` — ESLint (must pass before pushing)
 
 ### Structure
-- `src/app/` routes: `/` welcome, `/moment`, `/journey`, `/settings`
+- `src/app/` routes: `/` welcome, `/moment`, `/journey`, `/settings`, `/support`; `manifest.ts` and `icon.svg` make it installable (no service worker)
 - `src/components/` shared UI; `moment/` and `settings/` hold feature components; `ui/` holds Button and RadioCard
-- `src/lib/` `breath.ts` (timing), `sky.ts`, `sound.ts`, `preferences.ts` and `journey.ts` (localStorage stores), `actions.ts` (action copy)
+- `src/lib/` `breath.ts` (timing), `sky.ts`, `sound.ts`, `preferences.ts` and `journey.ts` (localStorage stores), `actions.ts` (action copy), `situations.ts`, `shareImage.ts`
 - `src/styles/` global styles, theme and breathing-line tokens
 - `public/assets/` static images, icons, fonts
 - `docs/` product and design documentation
@@ -94,7 +92,7 @@ Next.js 16 (App Router, Cache Components), React 19, TypeScript (strict), Tailwi
   once under `still:journey:backup` (removed by "Delete all my journey data"). No accounts, no backend.
 - **Do not** add real system notifications, push subscriptions, service workers, background
   reminders or scheduling, and **never** request notification permission, until explicitly planned.
-- "Preview reminder" is an in-app card only.
+- Settings holds sound, haptics (`navigator.vibrate`, off by default), data and a note that Still sends no reminders. There are no reminder controls until reminders are really planned.
 
 ### Secrets and git
 - Never commit secrets. Use `.env.local`; keep `.env.example` current with variable names only.
