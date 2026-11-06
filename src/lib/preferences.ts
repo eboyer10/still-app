@@ -10,6 +10,8 @@ export type Preferences = {
   windowStart: string;
   windowEnd: string;
   inAppReminders: boolean;
+  /** Soft tone that follows the breath. Off unless chosen. */
+  sound: boolean;
 };
 
 export const DEFAULT_PREFERENCES: Preferences = {
@@ -17,6 +19,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   windowStart: "09:00",
   windowEnd: "17:00",
   inAppReminders: true,
+  sound: false,
 };
 
 const STORAGE_KEY = "still:preferences";
@@ -41,6 +44,7 @@ function parse(raw: string | null): Preferences {
         typeof data.inAppReminders === "boolean"
           ? data.inAppReminders
           : DEFAULT_PREFERENCES.inAppReminders,
+      sound: typeof data.sound === "boolean" ? data.sound : DEFAULT_PREFERENCES.sound,
     };
   } catch {
     return DEFAULT_PREFERENCES;

@@ -9,6 +9,8 @@ import WaveBackground from "@/components/WaveBackground";
 import SiteMark from "@/components/SiteMark";
 import RadioCard from "@/components/ui/RadioCard";
 import { CUSTOM_ACTION_ID, MOMENT_ACTIONS } from "@/lib/actions";
+import { usePreferences } from "@/lib/preferences";
+import { startBreathSound, type BreathSound } from "@/lib/sound";
 import { addMoment, INTENTION_LIMIT, REFLECTION_LIMIT } from "@/lib/journey";
 import {
   BREATH_DURATION_MS,
@@ -38,6 +40,8 @@ const isInteractive = (target: EventTarget | null) =>
 
 export default function MomentFlow() {
   const router = useRouter();
+  const [{ sound }] = usePreferences();
+  const soundRef = useRef<BreathSound | null>(null);
   const [step, setStep] = useState<Step>("breathe");
   const [paused, setPaused] = useState(false);
   const [status, setStatus] = useState("");
@@ -64,7 +68,9 @@ export default function MomentFlow() {
     durationMs: BREATH_DURATION_MS,
     running: step === "breathe" && !paused,
     onFrame: (ms) => {
-      stageRef.current?.style.setProperty("--breath", breathValue(ms).toFixed(4));
+      const value = breathValue(ms);
+      stageRef.current?.style.setProperty("--breath", value.toFixed(4));
+      soundRef.current?.update(value);
       const next = breathCue(ms);
       setCue(next);
       // Announce each phase once, politely, so screen reader users get the same cues.
@@ -75,6 +81,17 @@ export default function MomentFlow() {
     },
     onComplete: finishBreath,
   });
+
+  // The optional tone only plays while the breath is running.
+  useEffect(() => {
+    if (!sound || step !== "breathe" || paused) return;
+    const tone = startBreathSound();
+    soundRef.current = tone;
+    return () => {
+      tone?.stop();
+      soundRef.current = null;
+    };
+  }, [sound, step, paused]);
 
   // Outside the breath, the orb simply rests.
   useEffect(() => {
@@ -300,15 +317,21 @@ export default function MomentFlow() {
               Thank you for pausing.
             </h1>
             {chosenText ? (
-              <p className="mt-4 max-w-sm text-base leading-7 text-foreground/85">
-                When you&apos;re ready: {chosenText}
-              </p>
+              <>
+                <p className="mt-6 max-w-sm text-sm uppercase tracking-widest text-foreground/75">
+                  When you&apos;re ready
+                </p>
+                <p className="mt-3 max-w-md font-display text-2xl font-bold leading-snug sm:text-3xl">
+                  {chosenText}
+                </p>
+                <p className="mt-6 text-base text-foreground/85">The screen can wait.</p>
+              </>
             ) : (
               <p className="mt-4 max-w-sm text-base leading-7 text-foreground/85">
                 Carry this quiet with you.
               </p>
             )}
-            <p className="mt-8 text-sm text-foreground/70">Go gently.</p>
+            <p className="mt-6 text-sm text-foreground/70">Go gently.</p>
             {saveFailed && (
               <p className="mt-4 max-w-xs text-xs leading-5 text-foreground/75" role="status">
                 Your browser wouldn&apos;t let Still save this, so it will be gone when you close the page.
@@ -316,7 +339,7 @@ export default function MomentFlow() {
             )}
             <div className="mt-10 flex flex-col items-center gap-2">
               <Link href="/" className={buttonClass("quiet")}>
-                Done
+                {chosenText ? "I'm heading off" : "Done"}
               </Link>
               <Link href="/journey" className={buttonClass("ghost", "text-sm")}>
                 View my journey

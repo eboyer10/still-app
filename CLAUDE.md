@@ -26,7 +26,8 @@ Breathe (30s, starts straight from home's "Begin a moment") → "Before you go" 
 - One optional question: "What would make the rest of today feel more meaningful?"
 - Six action invitations (Reconnect, Create, Step Outside, Let Go, Make Space,
   Follow Your Curiosity) plus "Choose my own action". Keep wording soft and concise.
-- The close is calm: no counts, scores or "well done". It offers "Done" and a subtle "View my journey".
+- The close is calm: no counts, scores or "well done". If an action was chosen it is shown large with "The screen can wait." and "I'm heading off"; otherwise "Done". A subtle "View my journey" remains.
+- Sound is an opt-in setting (`sound`, off by default): a very soft tone that follows the breath and stops on pause. Never autoplay.
 
 ### My Journey (`/journey`)
 - A chronological, editorial history of completed Moments with saved reflections and intentions.
@@ -40,7 +41,7 @@ Breathe (30s, starts straight from home's "Begin a moment") → "Before you go" 
 - Everything is editable and deletable (per reflection, per intention, per Moment, or all data).
 
 ### Navigation
-- Home asks one gentle follow-up about the latest unrevisited intention (`HomeExtras`), and shows "My journey" only once a Moment exists. Settings is a small footer link until reminders are real.
+- Home asks gentle follow-ups (up to three per visit, newest first, "Ask me later" to skip) about unrevisited intentions (`HomeExtras`), and shows "My journey" only once a Moment exists. Settings is a small footer link until reminders are real.
 - No persistent menu. Home (`/`) is the hub; every screen has the "Still" wordmark (`SiteMark`) top-left
   as the one way back to the beginning (hidden during the breathing step). Moment keeps Exit.
 
@@ -50,6 +51,7 @@ Breathe (30s, starts straight from home's "Begin a moment") → "Before you go" 
 - **Purple branding.** Deep indigo night (dark) and soft lavender (light), with violet `#7e75ff` / `#ac84ff`,
   blush `#fedeea`, and ink `#231332`. Misty layered hills, a lavender gradient pill for the primary action.
   Use theme tokens in `globals.css`, not hard-coded colors.
+- **Time-of-day sky.** `useSky` tints the background by local hour (dawn, day, dusk, night); always dark enough for text.
 - **Dark only.** Deep indigo night; no light theme. Background is `WaveBackground`: layered, misty violet
   ridges whose height, glow and crest lines rise and fall with `--breath` (own 4s/4s loop on home, journey and
   settings; driven by the guided breath on /moment). Keep it soft so text stays readable.
@@ -76,7 +78,7 @@ Next.js 16 (App Router, Cache Components), React 19, TypeScript (strict), Tailwi
 ### Structure
 - `src/app/` routes: `/` welcome, `/moment`, `/journey`, `/settings`
 - `src/components/` shared UI; `moment/` and `settings/` hold feature components; `ui/` holds Button and RadioCard
-- `src/lib/` `breath.ts` (timing), `preferences.ts` and `journey.ts` (localStorage stores), `actions.ts` (action copy)
+- `src/lib/` `breath.ts` (timing), `sky.ts`, `sound.ts`, `preferences.ts` and `journey.ts` (localStorage stores), `actions.ts` (action copy)
 - `src/styles/` global styles, theme and orb tokens
 - `public/assets/` static images, icons, fonts
 - `docs/` product and design documentation

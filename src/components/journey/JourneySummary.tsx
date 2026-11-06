@@ -24,12 +24,11 @@ export default function JourneySummary({ counts }: { counts: JourneyCounts }) {
           ) : (
             "."
           )}
-          {intentionsActedOn > 0 && (
-            <>
-              {" "}
-              <Num>{intentionsActedOn}</Num> {plural(intentionsActedOn, "was", "were")} acted upon.
-            </>
-          )}
+        </p>
+      )}
+      {intentionsActedOn > 0 && (
+        <p>
+          Of those, <Num>{intentionsActedOn}</Num> {plural(intentionsActedOn, "was", "were")} acted upon.
         </p>
       )}
     </div>

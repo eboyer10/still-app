@@ -11,15 +11,16 @@ const OPTIONS: FollowUpStatus[] = ["did-it", "not-yet", "priorities-changed"];
 export default function HomeExtras() {
   const { moments, ready } = useJourney();
   const [skipped, setSkipped] = useState(false);
-  const [thanks, setThanks] = useState(false);
+  const [answered, setAnswered] = useState(0);
 
   if (!ready) return null;
 
-  const pending = [...moments].reverse().find((m) => m.intention && !m.intention.followUp);
+  // Up to three look-backs per visit, newest first, so catching up never feels like a chore.
+  const pending = answered < 3 ? [...moments].reverse().find((m) => m.intention && !m.intention.followUp) : undefined;
 
   return (
     <>
-      {thanks ? (
+      {answered > 0 && !pending ? (
         <p role="status" className="mt-8 text-sm text-foreground/85">
           Thank you for looking back.
         </p>
@@ -41,7 +42,7 @@ export default function HomeExtras() {
                   type="button"
                   onClick={() => {
                     setFollowUp(pending.id, status);
-                    setThanks(true);
+                    setAnswered((n) => n + 1);
                   }}
                   className={buttonClass("quiet", "text-sm")}
                 >

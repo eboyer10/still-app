@@ -108,6 +108,24 @@ export default function SettingsForm() {
         </label>
       </fieldset>
 
+      <fieldset className="mt-10">
+        <legend className="text-lg font-medium">Sound</legend>
+        <label className="mt-4 flex min-h-11 cursor-pointer items-start gap-3">
+          <input
+            type="checkbox"
+            checked={preferences.sound}
+            onChange={(event) => update({ sound: event.target.checked })}
+            className="mt-1 size-5 accent-foreground"
+          />
+          <span>
+            <span className="block text-base">A soft tone that follows the breath</span>
+            <span className="block text-sm leading-6 text-foreground/75">
+              Off unless you choose it. Pausing the breath pauses the sound.
+            </span>
+          </span>
+        </label>
+      </fieldset>
+
       <div className="mt-12 border-t border-foreground/10 pt-8">
         <h2 className="text-lg font-medium">See how it feels</h2>
         <p className="mt-1 text-sm leading-6 text-foreground/75">

@@ -1,3 +1,7 @@
+"use client";
+
+import { useSky } from "@/lib/sky";
+
 type Layer = {
   /** Where the ridge sits inside its box, in % from the top. */
   base: number;
@@ -66,8 +70,9 @@ function points(layer: Layer) {
  * 4s-in / 4s-out loop of its own. Decorative only.
  */
 export default function WaveBackground({ auto = false }: { auto?: boolean }) {
+  const sky = useSky();
   return (
-    <div aria-hidden="true" className={`wave-bg ${auto ? "wave-bg-auto" : ""}`.trim()}>
+    <div aria-hidden="true" data-sky={sky} className={`wave-bg ${auto ? "wave-bg-auto" : ""}`.trim()}>
       <div className="wave-haze" />
       {LAYERS.map((layer, index) => {
         const pts = points(layer);
