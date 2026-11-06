@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import WaveBackground from "@/components/WaveBackground";
+import SkyBackground from "@/components/SkyBackground";
 import SiteMark from "@/components/SiteMark";
 import ReminderPreviewCard from "@/components/settings/ReminderPreviewCard";
 import Button, { buttonClass } from "@/components/ui/Button";
@@ -28,7 +28,7 @@ export default function SettingsForm() {
 
   return (
     <div className="mx-auto w-full max-w-xl px-6 py-12 sm:py-20">
-      <WaveBackground auto />
+      <SkyBackground auto />
       <nav aria-label="Primary" className="-mt-6 flex items-center justify-between sm:-mt-12">
         <SiteMark />
         <Link href="/journey" className={buttonClass("ghost", "text-sm")}>

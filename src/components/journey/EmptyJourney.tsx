@@ -1,11 +1,11 @@
 import Link from "next/link";
-import BreathingOrb from "@/components/BreathingOrb";
+import BreathingLines from "@/components/BreathingLines";
 import { buttonClass } from "@/components/ui/Button";
 
 export default function EmptyJourney() {
   return (
     <div className="flex flex-col items-center py-12 text-center sm:py-20">
-      <BreathingOrb auto className="mb-12" />
+      <BreathingLines auto className="mb-12" />
       <h2 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">
         Your journey begins with a single pause.
       </h2>

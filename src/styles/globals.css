@@ -7,29 +7,25 @@
   initial-value: 0;
 }
 
-/* Dark only: deep indigo night with violet mist (brand violets #7e75ff / #ac84ff). */
+/* A soft pastel dawn: pink, white light and periwinkle, with deep violet ink for text. */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  --background: #090720;
-  --foreground: #ece8ff;
+  --background: #f6ecfa;
+  --foreground: #2a1a5e;
 
-  --orb-core: #f6e8ff;
-  --orb-mid: #b48cff;
-  --orb-edge: #6a45d8;
-  --orb-glow: rgb(172 132 255 / 0.5);
-  --orb-ring: rgb(205 175 255 / 0.4);
-  --orb-shade: rgb(25 8 80 / 0.45);
+  /* Glowing points on the journey landscape card (a small dusk window). */
+  --orb-core: #fdf1ff;
+  --orb-glow: rgb(150 135 255 / 0.55);
 
-  --btn-from: #f3d4ff;
-  --btn-to: #a77bff;
-  --btn-ink: #1d1040;
+  --btn-from: #f7a6d0;
+  --btn-to: #8f9bff;
+  --btn-ink: #24124f;
 
-  /* Same palette as the background hills, so the journey landscape reads as a window onto them. */
-  --sky: linear-gradient(180deg, #150d3d 0%, #1b1055 45%, #100a38 100%);
-  --ridge-far: rgb(130 90 230 / 0.45);
-  --ridge-mid: rgb(80 50 180 / 0.7);
-  --ridge-near: rgb(10 8 38 / 0.97);
+  --sky: linear-gradient(180deg, #2a1b6e 0%, #5b3fb0 55%, #b98ae0 100%);
+  --ridge-far: rgb(170 130 240 / 0.55);
+  --ridge-mid: rgb(110 78 205 / 0.8);
+  --ridge-near: rgb(26 16 78 / 0.96);
 }
 
 @theme inline {
@@ -37,7 +33,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-dm-sans);
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-bricolage), system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, serif;
 }
 
 body {
@@ -56,34 +52,21 @@ body {
   outline: none;
 }
 
-/* ---------- Breathing orb ---------- */
+/* ---------- Breathing lines ---------- */
 
-.orb {
-  --orb-size: clamp(10rem, 44vmin, 20rem);
+.lines {
+  --lines-width: clamp(17rem, 78vw, 32rem);
   position: relative;
-  display: grid;
-  width: var(--orb-size);
-  height: var(--orb-size);
-  place-items: center;
+  width: var(--lines-width);
+  aspect-ratio: 400 / 160;
 }
 
-/* A soft pool of deep indigo behind the orb, so it reads against the light sky. */
-.orb::before {
-  content: "";
-  position: absolute;
-  inset: -55%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgb(20 10 70 / 0.62) 0%, rgb(20 10 70 / 0.3) 40%, transparent 68%);
-  pointer-events: none;
+.lines-compact {
+  --lines-width: clamp(15rem, 60vw, 26rem);
 }
 
-.orb-auto {
+.lines-auto {
   animation: still-breath 8s ease-in-out infinite;
-}
-
-/* Smaller orb for screens that also hold text and buttons. */
-.orb-compact {
-  --orb-size: clamp(8.5rem, 28vmin, 14rem);
 }
 
 @keyframes still-breath {
@@ -96,52 +79,41 @@ body {
   }
 }
 
-.orb-halo {
+/* A pool of white light that swells with the breath. */
+.lines-glow {
   position: absolute;
-  inset: -35%;
+  inset: -30% 5%;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--orb-glow) 0%, transparent 68%);
-  filter: blur(14px);
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0) 100%);
   opacity: calc(0.35 + var(--breath) * 0.5);
-  transform: scale(calc(0.9 + var(--breath) * 0.25));
+  transform: scale(calc(0.8 + var(--breath) * 0.3));
 }
 
-.orb-ring {
+.lines-svg {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  border: 1px solid var(--orb-ring);
-  opacity: calc(var(--breath) * 0.55);
-  transform: scale(calc(1.08 + var(--breath) * var(--ring-spread, 0.4)));
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-.orb-body {
-  position: absolute;
-  inset: 0;
-  border-radius: 54% 46% 52% 48% / 48% 54% 46% 52%;
-  background: radial-gradient(
-    circle at 34% 28%,
-    var(--orb-core) 0%,
-    var(--orb-mid) 52%,
-    var(--orb-edge) 100%
-  );
-  box-shadow:
-    0 0 48px 8px var(--orb-glow),
-    inset -12px -16px 36px var(--orb-shade);
-  transform: scale(calc(0.7 + var(--breath) * 0.36));
-  animation: still-morph 16s ease-in-out infinite;
+.lines-path {
+  transform-box: view-box;
+  transform-origin: 200px 80px;
+  transform: scaleY(calc(0.18 + var(--breath) * 0.95));
+  opacity: calc(var(--reach) * (0.55 + var(--breath) * 0.45));
 }
 
-@keyframes still-morph {
-  0%,
-  100% {
-    border-radius: 54% 46% 52% 48% / 48% 54% 46% 52%;
+.lines-drift {
+  animation: still-drift var(--drift) ease-in-out infinite alternate;
+}
+
+@keyframes still-drift {
+  from {
+    transform: translateX(-10px);
   }
-  33% {
-    border-radius: 46% 54% 47% 53% / 55% 45% 55% 45%;
-  }
-  66% {
-    border-radius: 52% 48% 56% 44% / 46% 52% 48% 54%;
+  to {
+    transform: translateX(10px);
   }
 }
 
@@ -150,118 +122,101 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse at 50% 45%, var(--orb-glow), transparent 62%);
-  opacity: calc(0.15 + var(--breath) * 0.4);
+  background: radial-gradient(ellipse at 50% 42%, rgb(255 255 255 / 0.9), transparent 62%);
+  opacity: calc(0.25 + var(--breath) * 0.4);
 }
 
-/* ---------- Breathing wave background ---------- */
+/* ---------- Pastel sky ---------- */
 
-.wave-bg {
+.sky-bg {
+  --k0: #f3b4d4;
+  --k1: #f7cfe2;
+  --k2: #f1dff6;
+  --k3: #cfc6f6;
+  --k4: #b4b9f4;
+  --cloud: 255 255 255;
   position: fixed;
   inset: 0;
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  /* Soft pink-lavender glow at the top, deepening through violet into near-black navy (Satvika-style dawn). */
-  --s0: #b98ae0;
-  --s1: #a672d6;
-  --s2: #6a40b8;
-  --s3: #2e1c82;
-  --s4: #140e48;
-  --haze: 255 190 230;
-  --streak: 0.55;
-  background: linear-gradient(
-    180deg,
-    var(--s0) 0%,
-    var(--s1) 14%,
-    var(--s2) 30%,
-    var(--s3) 46%,
-    var(--s4) 62%,
-    #0a0830 78%,
-    #05041c 100%
-  );
+  background:
+    radial-gradient(70% 40% at 50% 46%, rgb(255 255 255 / calc(0.55 + var(--breath) * 0.25)), transparent 100%),
+    linear-gradient(180deg, var(--k0) 0%, var(--k1) 22%, var(--k2) 44%, var(--k3) 72%, var(--k4) 100%);
 }
 
-/* The sky follows the local hour: only a tint, and the lower half stays dark so text reads. */
-.wave-bg[data-sky="dawn"] {
-  --s0: #d7a0e0;
-  --s1: #bb7fd8;
-  --s2: #7a47c0;
-  --haze: 255 200 225;
-  --streak: 0.7;
+/* The sky follows the local hour: only a tint, always light enough for ink text. */
+.sky-bg[data-sky="dawn"] {
+  --k0: #f6aac4;
+  --k1: #f9cdd8;
+  --k2: #f6e1ea;
+  --k3: #dccaf2;
+  --k4: #bdbdf4;
 }
-.wave-bg[data-sky="day"] {
-  --s0: #b49ae8;
-  --s1: #9c80de;
-  --s2: #6446c2;
-  --haze: 235 215 255;
-  --streak: 0.6;
+.sky-bg[data-sky="day"] {
+  --k0: #c4b8f6;
+  --k1: #dcd5f9;
+  --k2: #eeeafb;
+  --k3: #cdd5f8;
+  --k4: #b4c4f4;
 }
-.wave-bg[data-sky="dusk"] {
-  --s0: #c78ad8;
-  --s1: #a860c8;
-  --s2: #6a38b0;
-  --s3: #321a78;
-  --haze: 255 175 215;
-  --streak: 0.6;
+.sky-bg[data-sky="dusk"] {
+  --k0: #f2a2c8;
+  --k1: #f6bfd6;
+  --k2: #f6d9e8;
+  --k3: #dbc3ee;
+  --k4: #b9b0ee;
 }
-.wave-bg[data-sky="night"] {
-  --s0: #6a4aae;
-  --s1: #55389c;
-  --s2: #3a2486;
-  --streak: 0.3;
-}
-
-/* Deepens the lower half so text and buttons keep AA contrast over the lighter hills. */
-.wave-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 38%, rgb(10 7 40 / 0.45) 58%, rgb(8 6 34 / 0.75) 80%);
-  pointer-events: none;
+.sky-bg[data-sky="night"] {
+  --k0: #d0a8e0;
+  --k1: #d6c0ea;
+  --k2: #e6dcf4;
+  --k3: #c5c2f0;
+  --k4: #a9aeea;
 }
 
-.wave-bg-auto {
+.sky-bg-auto {
   animation: still-breath 8s ease-in-out infinite;
 }
 
-/* The glow high in the sky swells and softens with each breath. */
-.wave-haze {
+.sky-cloud {
   position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(120% 4% at 50% 15%, rgb(255 246 252 / calc(var(--streak) + var(--breath) * 0.25)), transparent 100%),
-    radial-gradient(110% 14% at 50% 15%, rgb(var(--haze) / calc(0.35 + var(--breath) * 0.2)), transparent 100%),
-    radial-gradient(90% 30% at 50% 6%, rgb(var(--haze) / calc(0.25 + var(--breath) * 0.15)), transparent 100%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(var(--cloud) / 0.85), rgb(var(--cloud) / 0));
+  opacity: calc(0.5 + var(--breath) * 0.35);
+  animation: still-cloud 60s ease-in-out infinite alternate;
 }
 
-.wave-layer {
-  position: absolute;
-  bottom: 0;
-  left: -20%;
-  width: 140%;
-  height: 78%;
-  transform: translateY(calc(var(--breath) * var(--lift)));
+.sky-cloud-a {
+  left: -15%;
+  top: 6%;
+  width: 70%;
+  height: 28%;
 }
 
-.wave-layer svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  animation: still-sway var(--sway) ease-in-out infinite alternate;
+.sky-cloud-b {
+  right: -20%;
+  top: 52%;
+  width: 80%;
+  height: 34%;
+  animation-duration: 80s;
+  animation-direction: alternate-reverse;
 }
 
-.wave-crest {
-  opacity: calc(0.4 + var(--breath) * 0.5);
-  filter: drop-shadow(0 0 5px rgb(225 185 255 / 0.9));
+.sky-cloud-c {
+  left: 10%;
+  bottom: -10%;
+  width: 90%;
+  height: 30%;
+  animation-duration: 100s;
 }
 
-@keyframes still-sway {
+@keyframes still-cloud {
   from {
-    transform: translateX(-4%);
+    transform: translateX(-6%);
   }
   to {
-    transform: translateX(4%);
+    transform: translateX(6%);
   }
 }
 
@@ -299,32 +254,27 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wave-bg-auto,
-  .wave-layer svg,
+  .sky-bg-auto,
+  .lines-auto,
+  .sky-cloud,
+  .lines-drift,
   .rise-in,
   .landscape-light {
     animation: none !important;
   }
 
-  /* No movement: the orb rests, and only gently brightens with the breath. */
-  .orb-auto,
-  .wave-bg-auto {
-    animation: none !important;
+  /* No movement: the lines rest, and only gently brighten with the breath. */
+  .lines-auto,
+  .sky-bg-auto {
     --breath: 0.5;
   }
 
-  .orb-body {
-    animation: none !important;
-    transform: none;
-    opacity: calc(0.6 + var(--breath) * 0.4);
+  .lines-path {
+    transform: scaleY(0.7);
   }
 
-  .orb-halo {
+  .lines-glow {
     transform: none;
-  }
-
-  .orb-ring {
-    display: none;
   }
 
   *,

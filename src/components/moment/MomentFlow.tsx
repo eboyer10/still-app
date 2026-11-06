@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import BreathingOrb from "@/components/BreathingOrb";
+import BreathingLines from "@/components/BreathingLines";
 import Button, { buttonClass } from "@/components/ui/Button";
-import WaveBackground from "@/components/WaveBackground";
+import SkyBackground from "@/components/SkyBackground";
 import SiteMark from "@/components/SiteMark";
 import RadioCard from "@/components/ui/RadioCard";
 import { CUSTOM_ACTION_ID, MOMENT_ACTIONS } from "@/lib/actions";
@@ -93,7 +93,7 @@ export default function MomentFlow() {
     };
   }, [sound, step, paused]);
 
-  // Outside the breath, the orb simply rests.
+  // Outside the breath, the lines simply rest.
   useEffect(() => {
     if (step !== "breathe") stageRef.current?.style.setProperty("--breath", REST_BREATH);
   }, [step]);
@@ -176,7 +176,7 @@ export default function MomentFlow() {
 
   return (
     <div ref={stageRef} className="relative min-h-dvh overflow-hidden">
-      <WaveBackground />
+      <SkyBackground />
       <div className="moment-atmosphere" aria-hidden="true" />
       <p className="sr-only" role="status" aria-live="polite">
         {status}
@@ -188,18 +188,18 @@ export default function MomentFlow() {
         </div>
       )}
 
-      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-6 py-12 text-center [text-shadow:0_1px_16px_rgb(9_7_40/0.85)]">
+      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-6 py-12 text-center">
         {step === "breathe" && (
           <section className="flex flex-col items-center" aria-labelledby="breathe-title">
             <h1 id="breathe-title" ref={headingRef} tabIndex={-1} className="sr-only">
               Breathing moment
             </h1>
-            <BreathingOrb />
+            <BreathingLines />
             <p className="mt-12 h-8 text-xl font-light tracking-wide sm:text-2xl" aria-hidden="true">
               {paused ? "Paused" : CUE_TEXT[cue]}
             </p>
             <p className="mt-6 max-w-xs text-sm leading-6 text-foreground/75">
-              Breathe however feels right. Follow the orb, or simply rest.
+              Breathe however feels right. Follow the lines, or simply rest.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <Button variant="quiet" onClick={togglePause} aria-pressed={paused}>
@@ -322,7 +322,7 @@ export default function MomentFlow() {
 
         {step === "close" && (
           <section className="flex flex-col items-center" aria-labelledby="close-title">
-            <BreathingOrb className="mb-10" />
+            <BreathingLines className="mb-10" />
             <h1 id="close-title" ref={headingRef} tabIndex={-1} className={heading}>
               Thank you for pausing.
             </h1>

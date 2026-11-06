@@ -6,7 +6,7 @@ import DeleteConfirm from "@/components/journey/DeleteConfirm";
 import JourneyLandscape from "@/components/journey/JourneyLandscape";
 import JourneySummary from "@/components/journey/JourneySummary";
 import MomentEntry from "@/components/journey/MomentEntry";
-import WaveBackground from "@/components/WaveBackground";
+import SkyBackground from "@/components/SkyBackground";
 import SiteMark from "@/components/SiteMark";
 import { buttonClass } from "@/components/ui/Button";
 import { clearJourney, getJourneyCounts, useJourney, type Moment } from "@/lib/journey";
@@ -29,7 +29,7 @@ export default function JourneyView() {
 
   return (
     <div className="relative min-h-dvh">
-      <WaveBackground auto />
+      <SkyBackground auto />
       <div className="relative z-10 mx-auto w-full max-w-2xl px-6 pb-24 pt-4 sm:pt-6">
         <nav aria-label="Primary" className="flex items-center justify-between">
           <SiteMark />
@@ -39,7 +39,7 @@ export default function JourneyView() {
         </nav>
 
         <header className="mt-10 sm:mt-16">
-          <h1 className="font-display text-5xl font-extrabold tracking-tight sm:text-7xl">My journey</h1>
+          <h1 className="font-display text-5xl font-semibold tracking-tight sm:text-7xl">My journey</h1>
           <p className="mt-4 max-w-md text-base leading-7 text-foreground/85">
             A quiet record of the times you stopped, what you noticed, and what you hoped to do next.
           </p>

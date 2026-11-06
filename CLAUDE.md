@@ -21,7 +21,7 @@ yourself, and take one meaningful action away from the screen.
 ### The Moment flow (`/moment`)
 Breathe (30s, starts straight from home's "Begin a moment") → "Before you go" (reflection and action on one calm screen, both optional) → Close.
 - Breathing is a fixed gentle 4s inhale / 4s exhale with no hold. It guides, it doesn't force:
-  people can pause, skip, exit, or simply rest without following the orb.
+  people can pause, skip, exit, or simply rest without following the lines.
 - Breath cues are announced politely to screen readers; there is no progress bar. Escape never discards typed words.
 - One optional question: "What would make the rest of today feel more meaningful?"
 - Six action invitations (Reconnect, Create, Step Outside, Let Go, Make Space,
@@ -47,20 +47,18 @@ Breathe (30s, starts straight from home's "Begin a moment") → "Before you go" 
 
 ## Visual design principles
 
-- **Immersive and contemplative.** One luminous, organic orb at the center; everything else recedes.
-- **Purple branding.** Deep indigo night (dark) and soft lavender (light), with violet `#7e75ff` / `#ac84ff`,
-  blush `#fedeea`, and ink `#231332`. Misty layered hills, a lavender gradient pill for the primary action.
-  Use theme tokens in `globals.css`, not hard-coded colors.
-- **Time-of-day sky.** `useSky` tints the background by local hour (dawn, day, dusk, night); always dark enough for text.
-- **Dark only.** Deep indigo night; no light theme. Background is `WaveBackground`: layered, misty violet
-  ridges whose height, glow and crest lines rise and fall with `--breath` (own 4s/4s loop on home, journey and
-  settings; driven by the guided breath on /moment). Keep it soft so text stays readable.
-- **Type.** Bricolage Grotesque (bold display) for headings, the wordmark and reflections; DM Sans for UI text.
+- **Immersive and contemplative.** One quiet focal element (fine breathing lines); everything else recedes.
+- **Pastel dawn, light only.** A soft sky of pink, white light and periwinkle (`SkyBackground`), deep violet ink
+  (`#2a1a5e`) for text, and a pink-to-periwinkle gradient pill for the primary action. Reference: the
+  "Serenity Session" phone screen. Use theme tokens in `globals.css`, not hard-coded colors.
+- **Breathing lines, not a ball.** `BreathingLines`: a handful of fine gradient lines that gather into a swell
+  on the inhale and flatten on the exhale, over a pool of light. No orb.
+- **Time-of-day sky.** `useSky` tints the sky by local hour (dawn, day, dusk, night); always light enough for ink text.
+- **Type.** Fraunces (serif display) for headings, the wordmark and reflections; DM Sans for UI text.
 - **Space.** Generous whitespace, a narrow reading column, few elements per screen.
-- **Confident type.** Bold display headings, regular body text, comfortable line height.
-- **Supportive atmosphere.** Rings, glow, and background wash follow the breath and stay subtle.
-- **Motion.** One `--breath` value (0..1) drives the orb and atmosphere so they stay in sync.
-  Always respect `prefers-reduced-motion` (the orb rests and only gently brightens).
+- **Motion.** One `--breath` value (0..1) drives the lines, the pool of light and the clouds so they stay in sync
+  (own 4s/4s loop on home, journey and settings; driven by the guided breath on /moment).
+  Always respect `prefers-reduced-motion` (the lines rest and only gently brighten).
 - **Accessible.** WCAG AA contrast, visible focus, 44px touch targets, keyboard support.
 
 ## Development guidelines
@@ -79,14 +77,14 @@ Next.js 16 (App Router, Cache Components), React 19, TypeScript (strict), Tailwi
 - `src/app/` routes: `/` welcome, `/moment`, `/journey`, `/settings`
 - `src/components/` shared UI; `moment/` and `settings/` hold feature components; `ui/` holds Button and RadioCard
 - `src/lib/` `breath.ts` (timing), `sky.ts`, `sound.ts`, `preferences.ts` and `journey.ts` (localStorage stores), `actions.ts` (action copy)
-- `src/styles/` global styles, theme and orb tokens
+- `src/styles/` global styles, theme and breathing-line tokens
 - `public/assets/` static images, icons, fonts
 - `docs/` product and design documentation
 
 ### Conventions
 - Import from `src` with the `@/` alias.
 - Server components by default; add `"use client"` only when needed (state, effects, browser APIs).
-- Style with Tailwind utilities and theme tokens. Reuse `Button`, `RadioCard` and `BreathingOrb`.
+- Style with Tailwind utilities and theme tokens. Reuse `Button`, `RadioCard` and `BreathingLines`.
 - Use native, semantic controls and label every interactive element.
 - Keep components small, typed, and PascalCase.
 
