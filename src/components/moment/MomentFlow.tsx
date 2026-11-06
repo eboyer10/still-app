@@ -10,7 +10,7 @@ import SiteMark from "@/components/SiteMark";
 import RadioCard from "@/components/ui/RadioCard";
 import { CUSTOM_ACTION_ID, MOMENT_ACTIONS } from "@/lib/actions";
 import { usePreferences } from "@/lib/preferences";
-import { startBreathSound, type BreathSound } from "@/lib/sound";
+import { startBreathSound, unlockAudio, type BreathSound } from "@/lib/sound";
 import { addMoment, INTENTION_LIMIT, REFLECTION_LIMIT } from "@/lib/journey";
 import {
   BREATH_DURATION_MS,
@@ -40,7 +40,7 @@ const isInteractive = (target: EventTarget | null) =>
 
 export default function MomentFlow() {
   const router = useRouter();
-  const [{ sound }] = usePreferences();
+  const [{ sound }, updatePrefs] = usePreferences();
   const soundRef = useRef<BreathSound | null>(null);
   const [step, setStep] = useState<Step>("breathe");
   const [paused, setPaused] = useState(false);
@@ -188,7 +188,7 @@ export default function MomentFlow() {
         </div>
       )}
 
-      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-6 py-12 text-center">
+      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-6 py-12 text-center [text-shadow:0_1px_16px_rgb(9_7_40/0.85)]">
         {step === "breathe" && (
           <section className="flex flex-col items-center" aria-labelledby="breathe-title">
             <h1 id="breathe-title" ref={headingRef} tabIndex={-1} className="sr-only">
@@ -204,6 +204,16 @@ export default function MomentFlow() {
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <Button variant="quiet" onClick={togglePause} aria-pressed={paused}>
                 {paused ? "Resume" : "Pause"}
+              </Button>
+              <Button
+                variant="ghost"
+                aria-pressed={sound}
+                onClick={() => {
+                  unlockAudio();
+                  updatePrefs({ sound: !sound });
+                }}
+              >
+                {sound ? "Mute sound" : "Play sound"}
               </Button>
               <Button variant="ghost" onClick={() => setStep("keep")}>
                 Skip

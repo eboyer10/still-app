@@ -7,6 +7,7 @@ import SiteMark from "@/components/SiteMark";
 import ReminderPreviewCard from "@/components/settings/ReminderPreviewCard";
 import Button, { buttonClass } from "@/components/ui/Button";
 import RadioCard from "@/components/ui/RadioCard";
+import { unlockAudio } from "@/lib/sound";
 import { usePreferences, type ReminderFrequency } from "@/lib/preferences";
 
 const FREQUENCY_OPTIONS: { value: ReminderFrequency; title: string; description: string }[] = [
@@ -114,7 +115,10 @@ export default function SettingsForm() {
           <input
             type="checkbox"
             checked={preferences.sound}
-            onChange={(event) => update({ sound: event.target.checked })}
+            onChange={(event) => {
+              unlockAudio();
+              update({ sound: event.target.checked });
+            }}
             className="mt-1 size-5 accent-foreground"
           />
           <span>

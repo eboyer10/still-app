@@ -6,7 +6,7 @@ import { buttonClass } from "@/components/ui/Button";
 
 export default function WelcomeScreen() {
   return (
-    <main className="relative flex min-h-dvh flex-col items-center justify-center px-6 py-16 text-center sm:px-10 md:py-24">
+    <main className="relative flex min-h-dvh flex-col items-center justify-center px-6 py-16 text-center [text-shadow:0_1px_16px_rgb(9_7_40/0.8)] sm:px-10 md:py-24">
       <WaveBackground auto />
       <BreathingOrb auto compact className="mb-8 sm:mb-10" />
       <h1 className="font-display text-7xl font-extrabold tracking-tight sm:text-8xl">Still</h1>

@@ -152,28 +152,53 @@ body {
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  --sky-a: #150d3d;
-  --sky-b: #1b1055;
-  --haze: 226 190 255;
-  background: linear-gradient(180deg, var(--sky-a) 0%, var(--sky-b) 32%, #100a38 62%, #090720 100%);
-  transition: --sky-a 3s, --sky-b 3s;
+  /* A luminous horizon high up that deepens through violet into night, like soft dawn over misty hills. */
+  --s0: #2a1b66;
+  --s1: #4a2f9c;
+  --s2: #33208a;
+  --s3: #1f1360;
+  --s4: #120b3d;
+  --haze: 214 170 255;
+  --streak: 0.28;
+  background: linear-gradient(
+    180deg,
+    var(--s0) 0%,
+    var(--s1) 16%,
+    var(--s2) 30%,
+    var(--s3) 46%,
+    var(--s4) 64%,
+    #0a0828 82%,
+    #05041a 100%
+  );
 }
 
 /* The sky follows the local hour: only a tint, always dark enough for text. */
 .wave-bg[data-sky="dawn"] {
-  --sky-a: #2b1546;
-  --sky-b: #3b1b5c;
-  --haze: 255 190 210;
+  --s0: #8b5bc4;
+  --s1: #b07ad8;
+  --s2: #6a45b8;
+  --s3: #35208a;
+  --s4: #1a1060;
+  --haze: 255 205 232;
+  --streak: 0.6;
 }
 .wave-bg[data-sky="day"] {
-  --sky-a: #1b1468;
-  --sky-b: #271c7c;
-  --haze: 200 205 255;
+  --s0: #7f6ad8;
+  --s1: #a58af0;
+  --s2: #6556d0;
+  --s3: #352f96;
+  --s4: #1a1862;
+  --haze: 226 222 255;
+  --streak: 0.5;
 }
 .wave-bg[data-sky="dusk"] {
-  --sky-a: #2d1048;
-  --sky-b: #431661;
-  --haze: 255 175 225;
+  --s0: #9a4fb8;
+  --s1: #c26ccd;
+  --s2: #7440b4;
+  --s3: #3a1f7e;
+  --s4: #1a0f52;
+  --haze: 255 180 222;
+  --streak: 0.55;
 }
 
 .wave-bg-auto {
@@ -185,7 +210,9 @@ body {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(75% 38% at 50% 0%, rgb(var(--haze) / calc(0.2 + var(--breath) * 0.2)), transparent 72%),
+    radial-gradient(70% 34% at 50% 66%, rgb(12 8 48 / 0.55), transparent 100%),
+    radial-gradient(130% 5% at 50% 24%, rgb(255 244 252 / calc(var(--streak) + var(--breath) * 0.25)), transparent 100%),
+    radial-gradient(90% 22% at 50% 24%, rgb(var(--haze) / calc(0.25 + var(--breath) * 0.2)), transparent 100%),
     radial-gradient(60% 40% at 50% 46%, rgb(130 80 220 / calc(0.14 + var(--breath) * 0.12)), transparent 75%);
 }
 

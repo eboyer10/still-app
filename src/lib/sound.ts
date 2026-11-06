@@ -4,41 +4,67 @@ export type BreathSound = {
   stop: () => void;
 };
 
-/**
- * An optional, very soft two-note tone that swells and settles with the breath.
- * Returns null when audio isn't available or the browser hasn't allowed it yet.
- */
-export function startBreathSound(): BreathSound | null {
-  const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+let context: AudioContext | null = null;
+
+function getContext() {
+  if (context) return context;
+  const Ctx =
+    window.AudioContext ??
+    (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
   if (!Ctx) return null;
   try {
-    const ctx = new Ctx();
-    void ctx.resume();
-    const master = ctx.createGain();
-    master.gain.value = 0;
-    const filter = ctx.createBiquadFilter();
-    filter.type = "lowpass";
-    filter.frequency.value = 700;
-    filter.connect(master).connect(ctx.destination);
-    const oscillators = [174.6, 261.6].map((frequency) => {
-      const osc = ctx.createOscillator();
-      osc.type = "sine";
-      osc.frequency.value = frequency;
-      osc.connect(filter);
-      osc.start();
-      return osc;
-    });
-    return {
-      update: (breath) => master.gain.setTargetAtTime(0.012 + breath * 0.05, ctx.currentTime, 0.25),
-      stop: () => {
-        master.gain.setTargetAtTime(0, ctx.currentTime, 0.2);
-        window.setTimeout(() => {
-          oscillators.forEach((osc) => osc.stop());
-          void ctx.close();
-        }, 900);
-      },
-    };
+    context = new Ctx();
   } catch {
     return null;
   }
+  return context;
+}
+
+/**
+ * Browsers only allow audio after a tap or key press. Call this from a click handler
+ * (the sound toggle, Begin a moment) so the tone can start later without being blocked.
+ */
+export function unlockAudio() {
+  const ctx = getContext();
+  if (ctx && ctx.state !== "running") void ctx.resume();
+}
+
+// A soft open chord (D, A, D, F#) with a gentle low-pass, so it stays warm on small speakers.
+const PARTIALS: [frequency: number, level: number][] = [
+  [146.8, 0.5],
+  [220, 0.6],
+  [293.7, 0.45],
+  [370, 0.25],
+];
+
+/** Returns null when audio isn't available. The tone swells and settles with the breath. */
+export function startBreathSound(): BreathSound | null {
+  const ctx = getContext();
+  if (!ctx) return null;
+  unlockAudio();
+  const master = ctx.createGain();
+  master.gain.value = 0;
+  const filter = ctx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = 1100;
+  filter.connect(master).connect(ctx.destination);
+  const oscillators = PARTIALS.map(([frequency, level]) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.value = frequency;
+    osc.detune.value = (Math.random() - 0.5) * 8;
+    gain.gain.value = level;
+    osc.connect(gain).connect(filter);
+    osc.start();
+    return osc;
+  });
+  master.gain.setTargetAtTime(0.1, ctx.currentTime, 0.6);
+  return {
+    update: (breath) => master.gain.setTargetAtTime(0.07 + breath * 0.14, ctx.currentTime, 0.3),
+    stop: () => {
+      master.gain.setTargetAtTime(0, ctx.currentTime, 0.2);
+      window.setTimeout(() => oscillators.forEach((osc) => osc.stop()), 1000);
+    },
+  };
 }
