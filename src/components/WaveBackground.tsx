@@ -17,37 +17,38 @@ type Layer = {
 };
 
 const LAYERS: Layer[] = [
+  // Distant misty mountains.
   {
-    base: 30,
-    waves: [[8, 0.07, 0.4], [3, 0.19, 2.2]],
-    fill: ["rgb(232 200 255 / 0.42)", "rgb(110 70 200 / 0)"],
-    lift: -1.4,
+    base: 14,
+    waves: [[7, 0.09, 0.4], [3, 0.24, 2.2], [1.5, 0.5, 1]],
+    fill: ["rgb(235 205 255 / 0.5)", "rgb(150 105 225 / 0)"],
+    lift: -1.2,
     sway: 90,
-    blur: 6,
-    crest: true,
+    blur: 5,
   },
+  // Silky ribbons with glowing crests.
   {
-    base: 48,
-    waves: [[9, 0.055, 2.6], [4, 0.17, 0.9]],
-    fill: ["rgb(170 120 245 / 0.5)", "rgb(40 24 110 / 0.3)"],
+    base: 34,
+    waves: [[8, 0.05, 2.6], [3.5, 0.15, 0.9]],
+    fill: ["rgb(175 125 245 / 0.62)", "rgb(60 36 150 / 0.35)"],
     lift: -2.4,
     sway: 70,
-    blur: 3,
+    blur: 2,
     crest: true,
   },
   {
-    base: 66,
-    waves: [[8, 0.06, 4.4], [3, 0.2, 1.4]],
-    fill: ["rgb(80 50 180 / 0.5)", "rgb(14 9 52 / 0.85)"],
+    base: 54,
+    waves: [[8, 0.045, 4.4], [3, 0.17, 1.4]],
+    fill: ["rgb(95 58 205 / 0.8)", "rgb(12 9 56 / 0.96)"],
     lift: -3.6,
     sway: 55,
     blur: 1,
     crest: true,
   },
   {
-    base: 85,
+    base: 80,
     waves: [[5, 0.05, 1.1], [2, 0.16, 3.3]],
-    fill: ["rgb(10 8 38 / 0.95)", "rgb(8 6 30 / 1)"],
+    fill: ["rgb(8 7 32 / 0.96)", "rgb(5 4 24 / 1)"],
     lift: -5,
     sway: 45,
     blur: 0,
@@ -102,8 +103,8 @@ export default function WaveBackground({ auto = false }: { auto?: boolean }) {
                 <path
                   d={line}
                   fill="none"
-                  stroke="rgb(236 205 255 / 0.45)"
-                  strokeWidth="1"
+                  stroke="rgb(240 215 255 / 0.9)"
+                  strokeWidth="1.5"
                   vectorEffect="non-scaling-stroke"
                   className="wave-crest"
                 />

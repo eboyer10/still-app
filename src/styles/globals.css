@@ -67,6 +67,16 @@ body {
   place-items: center;
 }
 
+/* A soft pool of deep indigo behind the orb, so it reads against the light sky. */
+.orb::before {
+  content: "";
+  position: absolute;
+  inset: -55%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(20 10 70 / 0.62) 0%, rgb(20 10 70 / 0.3) 40%, transparent 68%);
+  pointer-events: none;
+}
+
 .orb-auto {
   animation: still-breath 8s ease-in-out infinite;
 }
@@ -152,53 +162,63 @@ body {
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  /* A luminous horizon high up that deepens through violet into night, like soft dawn over misty hills. */
-  --s0: #2a1b66;
-  --s1: #4a2f9c;
-  --s2: #33208a;
-  --s3: #1f1360;
-  --s4: #120b3d;
-  --haze: 214 170 255;
-  --streak: 0.28;
+  /* Soft pink-lavender glow at the top, deepening through violet into near-black navy (Satvika-style dawn). */
+  --s0: #b98ae0;
+  --s1: #a672d6;
+  --s2: #6a40b8;
+  --s3: #2e1c82;
+  --s4: #140e48;
+  --haze: 255 190 230;
+  --streak: 0.55;
   background: linear-gradient(
     180deg,
     var(--s0) 0%,
-    var(--s1) 16%,
+    var(--s1) 14%,
     var(--s2) 30%,
     var(--s3) 46%,
-    var(--s4) 64%,
-    #0a0828 82%,
-    #05041a 100%
+    var(--s4) 62%,
+    #0a0830 78%,
+    #05041c 100%
   );
 }
 
-/* The sky follows the local hour: only a tint, always dark enough for text. */
+/* The sky follows the local hour: only a tint, and the lower half stays dark so text reads. */
 .wave-bg[data-sky="dawn"] {
-  --s0: #8b5bc4;
-  --s1: #b07ad8;
-  --s2: #6a45b8;
-  --s3: #35208a;
-  --s4: #1a1060;
-  --haze: 255 205 232;
-  --streak: 0.6;
+  --s0: #d7a0e0;
+  --s1: #bb7fd8;
+  --s2: #7a47c0;
+  --haze: 255 200 225;
+  --streak: 0.7;
 }
 .wave-bg[data-sky="day"] {
-  --s0: #7f6ad8;
-  --s1: #a58af0;
-  --s2: #6556d0;
-  --s3: #352f96;
-  --s4: #1a1862;
-  --haze: 226 222 255;
-  --streak: 0.5;
+  --s0: #b49ae8;
+  --s1: #9c80de;
+  --s2: #6446c2;
+  --haze: 235 215 255;
+  --streak: 0.6;
 }
 .wave-bg[data-sky="dusk"] {
-  --s0: #9a4fb8;
-  --s1: #c26ccd;
-  --s2: #7440b4;
-  --s3: #3a1f7e;
-  --s4: #1a0f52;
-  --haze: 255 180 222;
-  --streak: 0.55;
+  --s0: #c78ad8;
+  --s1: #a860c8;
+  --s2: #6a38b0;
+  --s3: #321a78;
+  --haze: 255 175 215;
+  --streak: 0.6;
+}
+.wave-bg[data-sky="night"] {
+  --s0: #6a4aae;
+  --s1: #55389c;
+  --s2: #3a2486;
+  --streak: 0.3;
+}
+
+/* Deepens the lower half so text and buttons keep AA contrast over the lighter hills. */
+.wave-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 38%, rgb(10 7 40 / 0.45) 58%, rgb(8 6 34 / 0.75) 80%);
+  pointer-events: none;
 }
 
 .wave-bg-auto {
@@ -210,10 +230,9 @@ body {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(70% 34% at 50% 66%, rgb(12 8 48 / 0.55), transparent 100%),
-    radial-gradient(130% 5% at 50% 24%, rgb(255 244 252 / calc(var(--streak) + var(--breath) * 0.25)), transparent 100%),
-    radial-gradient(90% 22% at 50% 24%, rgb(var(--haze) / calc(0.25 + var(--breath) * 0.2)), transparent 100%),
-    radial-gradient(60% 40% at 50% 46%, rgb(130 80 220 / calc(0.14 + var(--breath) * 0.12)), transparent 75%);
+    radial-gradient(120% 4% at 50% 15%, rgb(255 246 252 / calc(var(--streak) + var(--breath) * 0.25)), transparent 100%),
+    radial-gradient(110% 14% at 50% 15%, rgb(var(--haze) / calc(0.35 + var(--breath) * 0.2)), transparent 100%),
+    radial-gradient(90% 30% at 50% 6%, rgb(var(--haze) / calc(0.25 + var(--breath) * 0.15)), transparent 100%);
 }
 
 .wave-layer {
@@ -233,7 +252,8 @@ body {
 }
 
 .wave-crest {
-  opacity: calc(0.25 + var(--breath) * 0.55);
+  opacity: calc(0.4 + var(--breath) * 0.5);
+  filter: drop-shadow(0 0 5px rgb(225 185 255 / 0.9));
 }
 
 @keyframes still-sway {
