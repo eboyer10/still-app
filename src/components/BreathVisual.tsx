@@ -84,16 +84,20 @@ function Bloom({ hue }: { hue: number }) {
 export default function BreathVisual({
   auto = false,
   compact = false,
+  small = false,
+  immersive = false,
   className = "",
 }: {
   auto?: boolean;
   compact?: boolean;
+  small?: boolean;
+  immersive?: boolean;
   className?: string;
 }) {
   const visual = useVisual();
   const [moodId] = useMood();
   const hue = getMood(moodId)?.hue ?? NEUTRAL_HUE;
-  const classes = ["bv", compact && "bv-compact", auto && "bv-auto", className].filter(Boolean).join(" ");
+  const classes = ["bv", compact && "bv-compact", small && "bv-small", immersive && "bv-immersive", auto && "bv-auto", className].filter(Boolean).join(" ");
 
   return (
     <div aria-hidden="true" className={classes} style={{ "--hue": hue } as CSSProperties}>

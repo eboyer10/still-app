@@ -10,7 +10,7 @@ export type Preferences = {
   windowStart: string;
   windowEnd: string;
   inAppReminders: boolean;
-  /** Soft tone that follows the breath. Off unless chosen. */
+  /** Soft tone that follows the breath. On by default, only ever started by a tap, and easy to mute. */
   sound: boolean;
   /** A tiny vibration at each breath phase, on phones that support it. Off unless chosen. */
   haptics: boolean;
@@ -23,7 +23,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   windowStart: "09:00",
   windowEnd: "17:00",
   inAppReminders: true,
-  sound: false,
+  sound: true,
   haptics: false,
   introSeen: false,
 };

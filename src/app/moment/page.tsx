@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function MomentPage() {
-  return <MomentFlow />;
+  return <MomentFlow initial="arrive" />;
 }

@@ -18,16 +18,15 @@ yourself, and take one meaningful action away from the screen.
 - Percentages, progress bars, goals, or charts that turn reflection into metrics. Calm cards and plain count pills are fine; never show gaps between visits.
 - Guilt-driven copy, urgency, or dark patterns.
 
-### The Moment flow (`/moment`)
-Breathe (30s, starts straight from home's "Begin a moment") → "Before you go" (reflection and action on one calm screen, both optional) → Close.
-- Breathing is a fixed gentle 4s inhale / 4s exhale with no hold. It guides, it doesn't force:
-  people can pause, skip, exit, or simply rest without following the lines.
+### The Moment flow (all on `/`, no page changes)
+Welcome → Step 1 Arrive (mood) → Step 2 Breathe (30s) → Step 3 Keep ("Before you go", both parts optional) → Close. `MomentFlow` holds every step in place; `/moment` just opens at Arrive. The "Still" wordmark or Exit restarts at the welcome.
+- Arrive: optional mood (`MoodPicker`). Tapping one recolours the shape and plays a ~4s preview of its tone, with a visible `SoundBadge` ("Playing 528 Hz") and a clear "Turn sound on/off" button. Audio only ever starts from a tap.
+- Breathing is a fixed gentle 4s inhale / 4s exhale with no hold. The shape (`BreathVisual immersive`) swells to fill the screen on the inhale and contracts on the exhale. People can pause, skip, exit, or simply rest.
 - Breath cues are announced politely to screen readers; there is no progress bar. Escape never discards typed words.
 - One optional question: "What would make the rest of today feel more meaningful?"
-- Six action invitations (Reconnect, Create, Step Outside, Let Go, Make Space,
-  Follow Your Curiosity) plus "Choose my own action". Keep wording soft and concise.
+- Six action invitations plus "My own". Keep wording soft and concise.
 - The close is calm: no counts, scores or "well done". If an action was chosen it is shown large with "The screen can wait." and "I'm heading off"; otherwise "Done". A subtle "View my journey" remains.
-- Sound is an opt-in setting (`sound`, off by default): a very soft tone at the mood's frequency (432 Hz by default) that follows the breath and stops on pause. Never autoplay.
+- Sound is on by default (`sound`) but only starts after a tap: a soft tone at the mood's frequency (432 Hz default) that follows the breath. Easy to mute everywhere.
 
 ### My Journey (`/journey`)
 - A calm, scannable bento of cards: "A line from before" (`LineFromBefore`, a random past reflection, "Show another"), stat pills (`JourneySummary`: pauses taken, intentions chosen, looked back on, acted upon: plain counts, no targets), and the landscape.

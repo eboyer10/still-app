@@ -38,6 +38,26 @@ const PARTIALS: [ratio: number, level: number][] = [
   [3, 0.12],
 ];
 
+let preview: BreathSound | null = null;
+let previewTimer: number | undefined;
+
+export function stopPreview() {
+  window.clearTimeout(previewTimer);
+  preview?.stop();
+  preview = null;
+}
+
+/** A short, soft sample of a tone, played from a tap so people hear the choice they just made. */
+export function playPreview(hz: number, ms = 4000): boolean {
+  stopPreview();
+  const tone = startBreathSound(hz);
+  if (!tone) return false;
+  preview = tone;
+  tone.update(0.7);
+  previewTimer = window.setTimeout(stopPreview, ms);
+  return true;
+}
+
 /** Returns null when audio isn't available. The tone swells and settles with the breath. */
 export function startBreathSound(hz: number): BreathSound | null {
   const ctx = getContext();

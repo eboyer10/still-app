@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { buttonClass } from "@/components/ui/Button";
 import { SITUATIONS } from "@/lib/situations";
@@ -9,7 +8,7 @@ import { FOLLOW_UP_LABELS, setFollowUp, useJourney, type FollowUpStatus } from "
 const OPTIONS: FollowUpStatus[] = ["did-it", "not-yet", "priorities-changed"];
 
 /** One gentle question about the latest unrevisited intention, and a way into the journey once there is one. */
-export default function HomeExtras() {
+export default function HomeExtras({ onSituation }: { onSituation: (id: string) => void }) {
   const { moments, ready } = useJourney();
   const [skipped, setSkipped] = useState(false);
   const [answered, setAnswered] = useState(0);
@@ -57,22 +56,23 @@ export default function HomeExtras() {
           </section>
         )
       )}
-      <div role="group" aria-label="Pause for a reason" className="mt-6 flex max-w-md flex-wrap justify-center gap-2">
-        {SITUATIONS.map((situation) => (
-          <Link
-            key={situation.id}
-            href={`/moment?for=${situation.id}`}
-            className="inline-flex min-h-11 items-center rounded-full bg-white/12 px-4 text-sm hover:bg-white/20"
-          >
-            {situation.label}
-          </Link>
-        ))}
-      </div>
-      {moments.length > 0 && (
-        <Link href="/journey" className={buttonClass("ghost", "mt-2 text-sm")}>
-          My journey
-        </Link>
-      )}
+      <details className="group mt-8 w-full max-w-md text-center">
+        <summary className="inline-flex min-h-11 cursor-pointer list-none items-center rounded-full px-4 text-sm text-foreground/85 hover:text-foreground [&::-webkit-details-marker]:hidden">
+          Pausing for something specific?
+        </summary>
+        <div role="group" aria-label="Pause for a reason" className="mt-2 flex flex-wrap justify-center gap-2">
+          {SITUATIONS.map((situation) => (
+            <button
+              key={situation.id}
+              type="button"
+              onClick={() => onSituation(situation.id)}
+              className="inline-flex min-h-11 items-center rounded-full bg-white/12 px-4 text-sm hover:bg-white/20"
+            >
+              {situation.label}
+            </button>
+          ))}
+        </div>
+      </details>
     </>
   );
 }

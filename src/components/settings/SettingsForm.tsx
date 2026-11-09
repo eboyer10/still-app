@@ -60,7 +60,7 @@ export default function SettingsForm() {
             update({ sound: checked });
           }}
           title="A soft tone that follows the breath"
-          description="Off unless you choose it. You can also mute it during a moment."
+          description="On by default, and only after you tap Begin. Turn it off here, or mute it during a moment."
         />
         <Toggle
           checked={preferences.haptics}

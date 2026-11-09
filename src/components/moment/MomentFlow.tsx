@@ -4,6 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import BreathVisual from "@/components/BreathVisual";
+import Greeting from "@/components/Greeting";
+import HomeExtras from "@/components/HomeExtras";
+import MoodPicker from "@/components/MoodPicker";
+import SoundBadge from "@/components/SoundBadge";
 import Button, { buttonClass } from "@/components/ui/Button";
 import SkyBackground from "@/components/SkyBackground";
 import SiteMark from "@/components/SiteMark";
@@ -23,7 +27,7 @@ import {
   type BreathCue,
 } from "@/lib/breath";
 
-type Step = "breathe" | "keep" | "close";
+type Step = "welcome" | "arrive" | "breathe" | "keep" | "close";
 
 const CUE_TEXT: Record<BreathCue, string> = {
   in: "Breathe in",
@@ -44,15 +48,26 @@ const isInteractive = (target: EventTarget | null) =>
   isTyping(target) ||
   (target instanceof HTMLElement && ["BUTTON", "A", "LABEL"].includes(target.tagName));
 
-export default function MomentFlow() {
+/** Home (`/`) starts at the welcome; /moment starts at "arrive". Everything else happens in place. */
+export default function MomentFlow({ initial = "welcome" }: { initial?: "welcome" | "arrive" }) {
+  const [run, setRun] = useState(0);
+  const restart = useCallback(() => setRun((n) => n + 1), []);
+  return <Flow key={run} initial={initial} onRestart={restart} />;
+}
+
+function Flow({ initial, onRestart }: { initial: "welcome" | "arrive"; onRestart: () => void }) {
   const router = useRouter();
+  const home = initial === "welcome";
+  const leave = useCallback(() => (home ? onRestart() : router.push("/")), [home, onRestart, router]);
+  const [picked, setPicked] = useState<string | null>(null);
   const [{ sound, haptics }, updatePrefs] = usePreferences();
   const [moodId] = useMood();
   const mood = getMood(moodId);
   const hz = mood?.hz ?? DEFAULT_HZ;
-  const situation = useSyncExternalStore(subscribeNever, readSituation, () => null);
+  const urlSituation = useSyncExternalStore(subscribeNever, readSituation, () => null);
+  const situation = picked ?? urlSituation;
   const soundRef = useRef<BreathSound | null>(null);
-  const [step, setStep] = useState<Step>("breathe");
+  const [step, setStep] = useState<Step>(initial);
   const [paused, setPaused] = useState(false);
   const [status, setStatus] = useState("");
   const [cue, setCue] = useState<BreathCue>("in");
@@ -113,6 +128,14 @@ export default function MomentFlow() {
     if (step !== "breathe") stageRef.current?.style.setProperty("--breath", REST_BREATH);
   }, [step]);
 
+  // Tells the stylesheet which step we are on, so only the welcome shows the tab bar.
+  useEffect(() => {
+    document.body.dataset.flow = step;
+    return () => {
+      delete document.body.dataset.flow;
+    };
+  }, [step]);
+
   // Move focus to each new step's heading so keyboard and screen reader users follow along.
   useEffect(() => {
     if (firstRender.current) {
@@ -132,10 +155,10 @@ export default function MomentFlow() {
   // Escape exits, Space pauses; neither fires while typing or on a focused control.
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !isTyping(event.target)) {
+      if (event.key === "Escape" && !isTyping(event.target) && (step !== "welcome" || !home)) {
         // Never throw away words someone has started to write.
         if (step === "keep" && (reflection.trim() || customAction.trim())) return;
-        router.push("/");
+        leave();
       } else if (
         event.key === " " &&
         step === "breathe" &&
@@ -147,7 +170,7 @@ export default function MomentFlow() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [router, step, togglePause, reflection, customAction]);
+  }, [leave, home, step, togglePause, reflection, customAction]);
 
   // A hidden tab shouldn't quietly use up the 30 seconds.
   useEffect(() => {
@@ -197,30 +220,85 @@ export default function MomentFlow() {
         {status}
       </p>
 
-      {step !== "breathe" && (
+      {step !== "breathe" && step !== "welcome" && (
         <div className="absolute left-4 top-3 z-20 sm:left-8 sm:top-5">
-          <SiteMark />
+          <SiteMark onNavigate={home ? onRestart : undefined} />
         </div>
       )}
 
-      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-6 pb-12 pt-20 text-center">
+      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-6 pb-32 pt-20 text-center">
+        {step === "welcome" && (
+          <section className="flex flex-col items-center" aria-labelledby="welcome-title">
+            <Greeting />
+            <h1 id="welcome-title" ref={headingRef} tabIndex={-1} className="mt-2 font-display text-6xl font-semibold tracking-tight sm:text-7xl">
+              Still
+            </h1>
+            <p className="mt-3 max-w-sm text-base leading-7 text-foreground/85">
+              A quiet moment to pause, reconnect, and take one meaningful step.
+            </p>
+            <BreathVisual auto compact className="my-8" />
+            <Button
+              className="px-10"
+              onClick={() => {
+                unlockAudio();
+                setStep("arrive");
+              }}
+            >
+              Begin a moment
+            </Button>
+            <p className="mt-3 text-sm text-foreground/80">Next, you&apos;ll say how you&apos;re arriving.</p>
+            <HomeExtras
+              onSituation={(id) => {
+                unlockAudio();
+                setPicked(id);
+                setStep("arrive");
+              }}
+            />
+          </section>
+        )}
+
+        {step === "arrive" && (
+          <section className="flex w-full flex-col items-center" aria-labelledby="arrive-title">
+            <p className="text-sm uppercase tracking-widest text-foreground/75">Step 1 · Arrive</p>
+            <h1 id="arrive-title" ref={headingRef} tabIndex={-1} className={`mt-3 ${heading}`}>
+              How are you arriving?
+            </h1>
+            <p className="mt-3 max-w-sm text-base leading-7 text-foreground/85">
+              Optional. Tap what feels closest. It sets the colour of your breath and its tone.
+            </p>
+            <BreathVisual auto small className="my-6" />
+            <MoodPicker />
+            <div className="mt-8 flex flex-col items-center gap-2 sm:flex-row">
+              <Button
+                onClick={() => {
+                  unlockAudio();
+                  setStep("breathe");
+                }}
+              >
+                Continue to breathing
+              </Button>
+              <Button variant="ghost" onClick={leave}>
+                Back
+              </Button>
+            </div>
+          </section>
+        )}
+
         {step === "breathe" && (
           <section className="flex flex-col items-center" aria-labelledby="breathe-title">
+            <BreathVisual immersive />
             <h1 id="breathe-title" ref={headingRef} tabIndex={-1} className="sr-only">
               Breathing moment
             </h1>
-            <p className="mb-8 text-sm uppercase tracking-widest text-foreground/75">First, breathe</p>
-            <BreathVisual />
-            <p className="mt-10 h-8 text-xl font-light tracking-wide sm:text-2xl" aria-hidden="true">
+            <p className="mb-8 text-sm uppercase tracking-widest text-foreground/75">Step 2 · Breathe</p>
+            <p className="h-12 text-3xl font-light tracking-wide sm:text-4xl" aria-hidden="true">
               {paused ? "Paused" : CUE_TEXT[cue]}
             </p>
-            <p className="mt-6 max-w-xs text-sm leading-6 text-foreground/85">
-              {situationLine(situation)}
-            </p>
-            {sound && mood && (
-              <p className="mt-2 text-xs text-foreground/75">
-                {mood.hz} Hz · {mood.label}
-              </p>
+            <p className="mt-6 max-w-xs text-sm leading-6 text-foreground/90">{situationLine(situation)}</p>
+            {sound && (
+              <div className="mt-4">
+                <SoundBadge hz={hz} playing={!paused} />
+              </div>
             )}
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <Button variant="quiet" onClick={togglePause} aria-pressed={paused}>
@@ -239,21 +317,21 @@ export default function MomentFlow() {
               <Button variant="ghost" onClick={() => setStep("keep")}>
                 Skip
               </Button>
-              <Link href="/" className={buttonClass("ghost")}>
+              <Button variant="ghost" onClick={leave}>
                 Exit
-              </Link>
+              </Button>
             </div>
           </section>
         )}
 
         {step === "keep" && (
           <section className="w-full" aria-labelledby="keep-title">
-            <h1 id="keep-title" ref={headingRef} tabIndex={-1} className={heading}>
+            <p className="text-sm uppercase tracking-widest text-foreground/75">Step 3 · Keep</p>
+            <h1 id="keep-title" ref={headingRef} tabIndex={-1} className={`mt-3 ${heading}`}>
               Before you go
             </h1>
             <p className="mt-3 text-base leading-7 text-foreground/85">
-              Next, keep what you like. Both parts are optional: write a line, choose one small thing, or press
-              Skip to finish.
+              Both parts are optional: write a line, choose one small thing, or press Skip to finish.
             </p>
             <form
               className="mt-8 flex flex-col items-center gap-8 text-left"
@@ -347,7 +425,7 @@ export default function MomentFlow() {
 
         {step === "close" && (
           <section className="flex flex-col items-center" aria-labelledby="close-title">
-            <BreathVisual compact className="mb-8" />
+            <BreathVisual compact className="mb-6" />
             <h1 id="close-title" ref={headingRef} tabIndex={-1} className={heading}>
               Thank you for pausing.
             </h1>
@@ -373,9 +451,9 @@ export default function MomentFlow() {
               </p>
             )}
             <div className="mt-10 flex flex-col items-center gap-2">
-              <Link href="/" className={buttonClass("quiet")}>
+              <Button variant="quiet" onClick={onRestart}>
                 {chosenText ? "I'm heading off" : "Done"}
-              </Link>
+              </Button>
               <Link href="/journey" className={buttonClass("ghost", "text-sm")}>
                 View my journey
               </Link>

@@ -23,7 +23,7 @@ export default function TabBar() {
   if (pathname.startsWith("/moment")) return null;
 
   return (
-    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-30 px-4 pb-3 pt-2">
+    <nav aria-label="Main" className="tabbar fixed inset-x-0 bottom-0 z-30 px-4 pb-3 pt-2">
       <ul className="m-0 mx-auto flex max-w-md list-none items-center justify-around rounded-full border border-white/15 bg-[#10185a]/85 p-1 backdrop-blur-xl">
         {ITEMS.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
