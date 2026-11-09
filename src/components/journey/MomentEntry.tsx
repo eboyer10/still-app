@@ -26,7 +26,7 @@ const longFormat = new Intl.DateTimeFormat(undefined, { weekday: "long", month: 
 const timeFormat = new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" });
 
 const fieldClass =
-  "w-full rounded-2xl border border-foreground/25 bg-white/60 px-4 py-3 text-base leading-7 placeholder:text-foreground/60";
+  "w-full rounded-2xl border border-foreground/25 bg-white/15 px-4 py-3 text-base leading-7 placeholder:text-foreground/60";
 
 export default function MomentEntry({ moment }: { moment: Moment }) {
   const anchor = `#moment-${moment.id}`;
@@ -115,7 +115,7 @@ export default function MomentEntry({ moment }: { moment: Moment }) {
       id={`moment-${moment.id}`}
       tabIndex={-1}
       aria-label={`Moment on ${longFormat.format(when)}`}
-      className="rise-in scroll-mt-24 rounded-3xl bg-white/50 outline-none backdrop-blur"
+      className="rise-in scroll-mt-24 rounded-3xl bg-white/12 outline-none backdrop-blur"
     >
       <button
         type="button"
@@ -132,9 +132,9 @@ export default function MomentEntry({ moment }: { moment: Moment }) {
           <span className={`mt-0.5 block font-display text-lg leading-snug ${open ? "" : "line-clamp-2"}`}>{preview}</span>
           {!open && (reflection || intention) && (
             <span className="mt-2 flex flex-wrap gap-2 text-xs text-foreground/85">
-              {reflection && <span className="rounded-full bg-white/60 px-2.5 py-1">Reflection</span>}
+              {reflection && <span className="rounded-full bg-white/15 px-2.5 py-1">Reflection</span>}
               {intention && (
-                <span className="rounded-full bg-white/60 px-2.5 py-1">
+                <span className="rounded-full bg-white/15 px-2.5 py-1">
                   Intention{status ? ` · ${FOLLOW_UP_LABELS[status]}` : ""}
                 </span>
               )}

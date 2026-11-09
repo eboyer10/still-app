@@ -8,7 +8,7 @@ const base =
 const variants: Record<ButtonVariant, string> = {
   primary:
     "bg-[linear-gradient(100deg,var(--btn-from),var(--btn-to))] text-[var(--btn-ink)] shadow-[0_8px_30px_-8px_var(--orb-glow)] hover:brightness-105",
-  quiet: "border border-foreground/25 text-foreground hover:bg-foreground/5",
+  quiet: "border border-foreground/25 text-foreground hover:bg-white/10",
   ghost: "text-foreground/85 underline-offset-4 hover:text-foreground hover:underline",
 };
 

@@ -35,7 +35,7 @@ export default function JourneyLandscape({ moments }: { moments: Moment[] }) {
   return (
     <figure>
       <div
-        className="relative h-44 overflow-hidden rounded-3xl border border-white/60 sm:h-60"
+        className="relative h-44 overflow-hidden rounded-3xl border border-white/20 sm:h-60"
         style={{ background: "var(--sky)" }}
       >
         <svg

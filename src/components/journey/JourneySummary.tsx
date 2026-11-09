@@ -2,7 +2,7 @@ import type { JourneyCounts } from "@/lib/journey";
 
 function Stat({ value, label }: { value: number; label: string }) {
   return (
-    <li className="rounded-2xl bg-white/50 px-4 py-3">
+    <li className="rounded-2xl bg-white/12 px-4 py-3">
       <span className="block font-display text-3xl font-semibold leading-none">{value}</span>
       <span className="mt-1 block text-sm leading-5 text-foreground/80">{label}</span>
     </li>

@@ -8,7 +8,7 @@ export const SITUATIONS: Situation[] = [
   { id: "sleep", label: "Winding down", line: "Let the day loosen its hold, one breath at a time." },
 ];
 
-export const DEFAULT_LINE = "Breathe however feels right. Follow the lines, or simply rest.";
+export const DEFAULT_LINE = "Breathe however feels right. Follow the shape as it opens and closes, or simply rest.";
 
 export function situationLine(id: string | null) {
   return SITUATIONS.find((s) => s.id === id)?.line ?? DEFAULT_LINE;

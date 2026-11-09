@@ -16,13 +16,13 @@ export async function saveReflectionImage(text: string, dateLabel: string) {
   if (!ctx) return;
 
   const sky = ctx.createLinearGradient(0, 0, 0, height);
-  sky.addColorStop(0, "#f3b4d4");
-  sky.addColorStop(0.5, "#f1dff6");
-  sky.addColorStop(1, "#b4b9f4");
+  sky.addColorStop(0, "#2f6fd0");
+  sky.addColorStop(0.5, "#4a3fc4");
+  sky.addColorStop(1, "#26207c");
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, width, height);
 
-  ctx.fillStyle = "#2a1a5e";
+  ctx.fillStyle = "#f4f6ff";
   ctx.textAlign = "center";
   ctx.textBaseline = "alphabetic";
   ctx.font = `600 60px ${serif}`;

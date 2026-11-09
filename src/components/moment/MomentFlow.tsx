@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import BreathingLines from "@/components/BreathingLines";
+import BreathVisual from "@/components/BreathVisual";
 import Button, { buttonClass } from "@/components/ui/Button";
 import SkyBackground from "@/components/SkyBackground";
 import SiteMark from "@/components/SiteMark";
 import RadioCard from "@/components/ui/RadioCard";
 import { CUSTOM_ACTION_ID, MOMENT_ACTIONS } from "@/lib/actions";
+import { useMood } from "@/lib/arrival";
+import { DEFAULT_HZ, getMood } from "@/lib/moods";
 import { usePreferences } from "@/lib/preferences";
 import { startBreathSound, unlockAudio, type BreathSound } from "@/lib/sound";
 import { situationLine } from "@/lib/situations";
@@ -45,6 +47,9 @@ const isInteractive = (target: EventTarget | null) =>
 export default function MomentFlow() {
   const router = useRouter();
   const [{ sound, haptics }, updatePrefs] = usePreferences();
+  const [moodId] = useMood();
+  const mood = getMood(moodId);
+  const hz = mood?.hz ?? DEFAULT_HZ;
   const situation = useSyncExternalStore(subscribeNever, readSituation, () => null);
   const soundRef = useRef<BreathSound | null>(null);
   const [step, setStep] = useState<Step>("breathe");
@@ -95,13 +100,13 @@ export default function MomentFlow() {
   // The optional tone only plays while the breath is running.
   useEffect(() => {
     if (!sound || step !== "breathe" || paused) return;
-    const tone = startBreathSound();
+    const tone = startBreathSound(hz);
     soundRef.current = tone;
     return () => {
       tone?.stop();
       soundRef.current = null;
     };
-  }, [sound, step, paused]);
+  }, [sound, step, paused, hz]);
 
   // Outside the breath, the lines simply rest.
   useEffect(() => {
@@ -204,13 +209,19 @@ export default function MomentFlow() {
             <h1 id="breathe-title" ref={headingRef} tabIndex={-1} className="sr-only">
               Breathing moment
             </h1>
-            <BreathingLines />
-            <p className="mt-12 h-8 text-xl font-light tracking-wide sm:text-2xl" aria-hidden="true">
+            <p className="mb-8 text-sm uppercase tracking-widest text-foreground/75">First, breathe</p>
+            <BreathVisual />
+            <p className="mt-10 h-8 text-xl font-light tracking-wide sm:text-2xl" aria-hidden="true">
               {paused ? "Paused" : CUE_TEXT[cue]}
             </p>
             <p className="mt-6 max-w-xs text-sm leading-6 text-foreground/85">
               {situationLine(situation)}
             </p>
+            {sound && mood && (
+              <p className="mt-2 text-xs text-foreground/75">
+                {mood.hz} Hz · {mood.label}
+              </p>
+            )}
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <Button variant="quiet" onClick={togglePause} aria-pressed={paused}>
                 {paused ? "Resume" : "Pause"}
@@ -241,7 +252,8 @@ export default function MomentFlow() {
               Before you go
             </h1>
             <p className="mt-3 text-base leading-7 text-foreground/85">
-              Both parts are optional. Skip whatever doesn&apos;t call to you.
+              Next, keep what you like. Both parts are optional: write a line, choose one small thing, or press
+              Skip to finish.
             </p>
             <form
               className="mt-8 flex flex-col items-center gap-8 text-left"
@@ -261,7 +273,7 @@ export default function MomentFlow() {
                   maxLength={REFLECTION_LIMIT}
                   rows={3}
                   placeholder="A word, a sentence, anything at all."
-                  className="mt-3 w-full resize-none rounded-2xl border border-foreground/20 bg-transparent px-5 py-4 text-base leading-7 placeholder:text-foreground/85"
+                  className="mt-3 w-full resize-none rounded-2xl border border-foreground/20 bg-white/10 px-5 py-4 text-base leading-7 placeholder:text-foreground/70"
                 />
                 <p className="mt-2 px-1 text-xs text-foreground/85">
                   Saved privately on this device. You can edit or delete it anytime in My journey.
@@ -317,7 +329,7 @@ export default function MomentFlow() {
                       onChange={(event) => setCustomAction(event.target.value)}
                       maxLength={INTENTION_LIMIT}
                       placeholder="What feels right for you?"
-                      className="min-h-11 w-full rounded-2xl border border-foreground/20 bg-transparent px-5 text-base placeholder:text-foreground/85"
+                      className="min-h-11 w-full rounded-2xl border border-foreground/20 bg-white/10 px-5 text-base placeholder:text-foreground/70"
                     />
                   </div>
                 )}
@@ -335,7 +347,7 @@ export default function MomentFlow() {
 
         {step === "close" && (
           <section className="flex flex-col items-center" aria-labelledby="close-title">
-            <BreathingLines className="mb-10" />
+            <BreathVisual compact className="mb-8" />
             <h1 id="close-title" ref={headingRef} tabIndex={-1} className={heading}>
               Thank you for pausing.
             </h1>

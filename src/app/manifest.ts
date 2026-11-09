@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "A quiet moment to pause, reconnect, and take one meaningful step.",
     start_url: "/",
     display: "standalone",
-    background_color: "#f6ecfa",
-    theme_color: "#c4b8f6",
+    background_color: "#1a2670",
+    theme_color: "#2a2a8c",
     icons: [{ src: "/icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" }],
   };
 }

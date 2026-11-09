@@ -19,7 +19,7 @@ export default function LineFromBefore({ moments }: { moments: Moment[] }) {
   return (
     <section
       aria-labelledby="line-title"
-      className="relative overflow-hidden rounded-3xl bg-white/55 p-6 backdrop-blur sm:p-8"
+      className="relative overflow-hidden rounded-3xl bg-white/14 p-6 backdrop-blur sm:p-8"
     >
       <MomentGlyph moment={moment} className="absolute right-4 top-4 size-16 opacity-60" />
       <h2 id="line-title" className="text-xs uppercase tracking-widest text-foreground/80">

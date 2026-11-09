@@ -30,8 +30,8 @@ export default function MomentGlyph({ moment, className = "size-12" }: { moment:
     <svg viewBox="0 0 48 48" aria-hidden="true" className={className}>
       <defs>
         <linearGradient id={id} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#e979b4" />
-          <stop offset="1" stopColor="#7482f0" />
+          <stop offset="0" stopColor="#ff9fd0" />
+          <stop offset="1" stopColor="#a8b4ff" />
         </linearGradient>
       </defs>
       {paths.map((d, i) => (

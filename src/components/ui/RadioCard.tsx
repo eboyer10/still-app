@@ -28,7 +28,7 @@ export default function RadioCard({
         checked={checked}
         onChange={() => onChange(value)}
       />
-      <span className="block rounded-2xl border border-foreground/15 px-5 py-4 text-left transition-colors hover:border-foreground/30 peer-checked:border-foreground/85 peer-checked:bg-foreground/5 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-foreground">
+      <span className="block rounded-2xl border border-foreground/25 px-5 py-4 text-left transition-colors hover:border-foreground/30 peer-checked:border-foreground/85 peer-checked:bg-white/15 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-foreground">
         <span className="block text-base font-medium">{title}</span>
         {description ? (
           <span className="mt-1 block text-sm leading-6 text-foreground/80">

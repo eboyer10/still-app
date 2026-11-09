@@ -43,7 +43,7 @@ export default function JourneyView() {
   return (
     <div className="relative min-h-dvh">
       <SkyBackground auto />
-      <div className="relative z-10 mx-auto w-full max-w-3xl px-5 pb-24 pt-4 sm:px-6 sm:pt-6">
+      <div className="relative z-10 mx-auto w-full max-w-3xl px-5 pb-32 pt-4 sm:px-6 sm:pt-6">
         <nav aria-label="Primary" className="flex items-center justify-between">
           <SiteMark />
           <Link href="/settings" className={buttonClass("ghost", "text-sm")}>
@@ -66,10 +66,10 @@ export default function JourneyView() {
               <div className="sm:col-span-2">
                 <LineFromBefore moments={moments} />
               </div>
-              <section aria-label="Summary" className="rounded-3xl bg-white/35 p-4 backdrop-blur [&>ul>li]:flex [&>ul>li]:flex-col [&>ul>li]:justify-center">
+              <section aria-label="Summary" className="rounded-3xl bg-white/10 p-4 backdrop-blur [&>ul>li]:flex [&>ul>li]:flex-col [&>ul>li]:justify-center">
                 <JourneySummary counts={getJourneyCounts(moments)} />
               </section>
-              <section aria-label="Your journey as a landscape" className="rounded-3xl bg-white/35 p-4 backdrop-blur">
+              <section aria-label="Your journey as a landscape" className="rounded-3xl bg-white/10 p-4 backdrop-blur">
                 <JourneyLandscape moments={moments} />
               </section>
             </div>
@@ -83,7 +83,7 @@ export default function JourneyView() {
                     aria-pressed={filter === option.value}
                     onClick={() => setFilter(option.value)}
                     className={`min-h-11 rounded-full px-5 text-sm transition-colors ${
-                      filter === option.value ? "bg-foreground text-background" : "bg-white/50 hover:bg-white/75"
+                      filter === option.value ? "bg-white text-[var(--btn-ink)]" : "bg-white/12 hover:bg-white/20"
                     }`}
                   >
                     {option.label}

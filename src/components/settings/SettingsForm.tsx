@@ -19,7 +19,7 @@ function Toggle({
   description: string;
 }) {
   return (
-    <label className="flex min-h-11 cursor-pointer items-start gap-3 rounded-3xl bg-white/50 p-5 backdrop-blur">
+    <label className="flex min-h-11 cursor-pointer items-start gap-3 rounded-3xl bg-white/12 p-5 backdrop-blur">
       <input
         type="checkbox"
         checked={checked}
@@ -38,7 +38,7 @@ export default function SettingsForm() {
   const [preferences, update] = usePreferences();
 
   return (
-    <div className="mx-auto w-full max-w-xl px-5 py-4 sm:px-6 sm:py-6">
+    <div className="mx-auto w-full max-w-xl px-5 pb-32 pt-4 sm:px-6 sm:pt-6">
       <SkyBackground auto />
       <nav aria-label="Primary" className="flex items-center justify-between">
         <SiteMark />
