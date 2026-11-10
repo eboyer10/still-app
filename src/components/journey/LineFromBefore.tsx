@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Button from "@/components/ui/Button";
 import type { Moment } from "@/lib/journey";
-import MomentGlyph from "@/components/journey/MomentGlyph";
+import MomentShape from "@/components/journey/MomentShape";
 
 const dateFormat = new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric" });
 
@@ -21,7 +21,9 @@ export default function LineFromBefore({ moments }: { moments: Moment[] }) {
       aria-labelledby="line-title"
       className="relative overflow-hidden rounded-3xl bg-white/14 p-6 backdrop-blur sm:p-8"
     >
-      <MomentGlyph moment={moment} className="absolute right-4 top-4 size-16 opacity-60" />
+      <div className="absolute right-4 top-4 opacity-80">
+        <MomentShape moment={moment} className="size-14" />
+      </div>
       <h2 id="line-title" className="text-xs uppercase tracking-widest text-foreground/80">
         A line from before
       </h2>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { getMood } from "@/lib/moods";
 
 export type FollowUpStatus = "did-it" | "not-yet" | "priorities-changed";
 
@@ -28,6 +29,8 @@ export type Moment = {
   completedAt: string;
   /** true = the full 30 seconds; false = the person skipped ahead. */
   breathCompleted: boolean;
+  /** The feeling the person arrived with (a mood id), if they chose one. */
+  mood?: string;
   /** Present only if the person wrote one. */
   reflection?: { text: string; editedAt?: string };
   /** Present only if the person chose one. */
@@ -38,6 +41,7 @@ type JourneyData = { version: 1; moments: Moment[] };
 
 export type NewMoment = {
   breathCompleted: boolean;
+  mood?: string | null;
   reflection?: string;
   intention?: { source: "preset" | "custom"; presetId?: string; text: string };
 };
@@ -69,12 +73,13 @@ function parseIntention(value: unknown): Intention | undefined {
 
 function parseMoment(value: unknown): Moment | null {
   if (!isRecord(value)) return null;
-  const { id, completedAt, breathCompleted, reflection, intention } = value;
+  const { id, completedAt, breathCompleted, reflection, intention, mood } = value;
   if (typeof id !== "string" || !id) return null;
   if (typeof completedAt !== "string" || Number.isNaN(Date.parse(completedAt))) return null;
   if (typeof breathCompleted !== "boolean") return null;
 
   const moment: Moment = { id, completedAt, breathCompleted };
+  if (typeof mood === "string" && getMood(mood)) moment.mood = mood;
   if (isRecord(reflection) && typeof reflection.text === "string" && reflection.text.trim()) {
     moment.reflection = { text: reflection.text };
     if (typeof reflection.editedAt === "string") moment.reflection.editedAt = reflection.editedAt;
@@ -185,6 +190,7 @@ export function addMoment(input: NewMoment): boolean {
     completedAt: new Date().toISOString(),
     breathCompleted: input.breathCompleted,
   };
+  if (input.mood && getMood(input.mood)) moment.mood = input.mood;
   const reflection = input.reflection?.trim();
   if (reflection) moment.reflection = { text: reflection };
   const text = input.intention?.text.trim();

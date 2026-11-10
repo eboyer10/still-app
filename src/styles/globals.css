@@ -119,8 +119,27 @@ body {
   pointer-events: none;
 }
 
+/* Hairlines at low strength, so the words laid over the shape always stay readable. */
 .bv-immersive .bv-svg {
   transform: scale(calc(0.3 + var(--breath) * 1.05));
+  opacity: 0.4;
+}
+
+.bv-immersive .bv-svg :is(polygon, ellipse, circle) {
+  vector-effect: non-scaling-stroke;
+}
+
+.bv-immersive .bv-glow {
+  opacity: calc(0.15 + var(--breath) * 0.3);
+}
+
+/* A soft dark halo behind the words in a session. */
+.session-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(closest-side at 50% 50%, rgb(5 7 28 / 0.72), rgb(5 7 28 / 0.35) 55%, transparent 100%);
 }
 
 .bv-immersive .bv-glow {
@@ -216,8 +235,8 @@ body {
   }
 }
 
-/* The full-screen session owns the whole screen: no tab bar behind it. */
-body[data-session] .tabbar {
+/* The full-screen session owns the whole screen: no menu button behind it. */
+body[data-session] .menu-root {
   display: none;
 }
 

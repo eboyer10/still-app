@@ -19,7 +19,7 @@ yourself, and take one meaningful action away from the screen.
 - Guilt-driven copy, urgency, or dark patterns.
 
 ### Today and the Moment (`/`)
-Today is the whole home: greeting, a living `BreathVisual`, a three-line "how a moment goes", a 3×3 grid of nine feelings, and a floating "Begin a moment" button always in reach above the tab bar. `/moment` just redirects here.
+Today is the whole home: greeting, a living `BreathVisual`, a three-line "how a moment goes", a 3×3 grid of nine feelings, and a floating "Begin a moment" button always in reach at the bottom. `/moment` just redirects here.
 - Feelings (`moods.ts`) each have their own shape (geometry with n sides, or a bloom with n petals), colour (hue) and tone (396, 417, 432, 528, 639, 741, 852, 963, 111 Hz). Tapping one morphs the shape and backdrop colour and plays a ~4s tone preview with a `SoundBadge`. Copy says "traditionally linked", never a health claim. The choice lasts for the tab session (`sessionStorage`). Until one is chosen, the shape is random per page load.
 - Begin opens `Session`, a full-screen layer on the same page (no navigation): Breathe (30s) → Keep ("Before you go", both parts optional) → Close. Exit/Escape return to Today.
 - Breathing is a fixed gentle 4s inhale / 4s exhale with no hold. The shape (`BreathVisual size="immersive"`) swells to fill the screen on the inhale and contracts on the exhale. People can pause, skip, exit, or simply rest.
@@ -31,17 +31,16 @@ Today is the whole home: greeting, a living `BreathVisual`, a three-line "how a 
 
 ### My Journey (`/journey`)
 - A calm, scannable bento of cards: "A line from before" (`LineFromBefore`, a random past reflection, "Show another"), stat pills (`JourneySummary`: pauses taken, intentions chosen, looked back on, acted upon: plain counts, no targets), and the landscape.
-- Filter pills (All / Reflections / Intentions, `aria-pressed`), then month-grouped compact cards (`MomentEntry`) with a per-moment glyph (`MomentGlyph`). Cards expand (also via `#moment-<id>`) to show the reflection, intention and follow-up.
+- Filter pills (All / Reflections / Intentions, `aria-pressed`), then month-grouped compact cards (`MomentEntry`) each drawn as the shape and colour of the feeling it began with (`MomentShape`; `Moment.mood` is optional). Cards expand (also via `#moment-<id>`) to show the reflection, intention and follow-up.
 - An "Options" menu per entry: edit/remove reflection, edit/remove intention, remove moment, save reflection as an image (`shareImage.ts`, local canvas, opt-in).
 - Follow-up is neutral and optional: "I did it", "Not yet", "My priorities changed". None is framed as better.
 - Never invent data: a Moment shows only what the person actually gave. No placeholders.
-- `JourneyLandscape`: each Moment is one light on a misty ridge, oldest to newest, evenly spaced so gaps are never shown. A ring marks a kept reflection; a small star marks an intention.
+- "Your shapes": a row of small mood shapes, one per Moment, newest first, linking to the entry. No gaps are ever shown.
 - Everything is editable and deletable (per reflection, per intention, per Moment, or all data).
 
 ### Navigation
-- Today is the hub. Follow-ups live on Today (`FollowUpCard`). The bottom `TabBar` is the main navigation.
-- The `TabBar` is persistent (hidden during a Session). Every sub-screen also has the "Still" wordmark (`SiteMark`) top-left
-  as the one way back to the beginning (hidden during the breathing step). Moment keeps Exit.
+- Today is the hub. Follow-ups live on Today (`FollowUpCard`). A top-right `MenuButton` (Today, Journey, Settings, Support) is the one navigation.
+- The menu button is persistent and hidden during a Session, which keeps Exit.
 
 ## Visual design principles
 
@@ -50,7 +49,7 @@ Today is the whole home: greeting, a living `BreathVisual`, a three-line "how a 
   and the Kinorama geometric breathing videos. Use theme tokens in `globals.css`.
 - **Shape + colour + tone belong together.** `BreathVisual` (geometry or bloom, driven by `--breath`) and `Backdrop` take
   their `--hue` from the feeling via `useShape`; hue changes animate (`@property --hue`).
-- **Navigation.** A three-tab labelled `TabBar` (Today, Journey, Settings), hidden while a Session is open.
+- **Navigation.** A single `MenuButton` top-right opens a labelled menu panel (Escape closes). The breathing shape in a Session is drawn faint with a soft scrim behind the words, so text stays readable while it still swells large.
 - **Type.** Fraunces (serif display) for headings and reflections; DM Sans for UI text.
 - **Space.** Generous whitespace, a narrow column, few elements per screen.
 - **Motion.** One `--breath` value (0..1) drives the shape, glow and backdrop (own 8s loop on Today, Journey and Settings;

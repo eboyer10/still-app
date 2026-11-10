@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans, Fraunces, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import Backdrop from "@/components/Backdrop";
-import TabBar from "@/components/TabBar";
+import MenuButton from "@/components/MenuButton";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -37,7 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col"><Backdrop auto />
         {children}
-        <TabBar />
+        <MenuButton />
       </body>
     </html>
   );

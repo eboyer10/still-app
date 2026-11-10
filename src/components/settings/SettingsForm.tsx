@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import SiteMark from "@/components/SiteMark";
-import { buttonClass } from "@/components/ui/Button";
 import { unlockAudio } from "@/lib/sound";
 import { usePreferences } from "@/lib/preferences";
 
@@ -37,13 +36,8 @@ export default function SettingsForm() {
   const [preferences, update] = usePreferences();
 
   return (
-    <div className="mx-auto w-full max-w-xl px-5 pb-32 pt-4 sm:px-6 sm:pt-6">
-      <nav aria-label="Primary" className="flex items-center justify-between">
-        <SiteMark />
-        <Link href="/journey" className={buttonClass("ghost", "text-sm")}>
-          My journey
-        </Link>
-      </nav>
+    <div className="mx-auto w-full max-w-xl px-5 pb-16 pt-4 sm:px-6 sm:pt-6">
+      <SiteMark />
       <h1 className="mt-8 font-display text-4xl font-semibold tracking-tight sm:text-5xl">Settings</h1>
       <p className="mt-3 text-base leading-7 text-foreground/85">
         Small choices for how a moment feels. Everything stays on this device.

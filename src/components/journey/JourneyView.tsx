@@ -3,10 +3,9 @@
 import Link from "next/link";
 import EmptyJourney from "@/components/journey/EmptyJourney";
 import DeleteConfirm from "@/components/journey/DeleteConfirm";
-import JourneyLandscape from "@/components/journey/JourneyLandscape";
+import MomentShape from "@/components/journey/MomentShape";
 import JourneySummary from "@/components/journey/JourneySummary";
 import MomentEntry from "@/components/journey/MomentEntry";
-import SiteMark from "@/components/SiteMark";
 import { buttonClass } from "@/components/ui/Button";
 import LineFromBefore from "@/components/journey/LineFromBefore";
 import { useState } from "react";
@@ -41,16 +40,9 @@ export default function JourneyView() {
 
   return (
     <div className="relative min-h-dvh">
-      <div className="relative z-10 mx-auto w-full max-w-3xl px-5 pb-32 pt-4 sm:px-6 sm:pt-6">
-        <nav aria-label="Primary" className="flex items-center justify-between">
-          <SiteMark />
-          <Link href="/settings" className={buttonClass("ghost", "text-sm")}>
-            Settings
-          </Link>
-        </nav>
-
-        <header className="mt-8 sm:mt-12">
-          <h1 className="font-display text-5xl font-semibold tracking-tight sm:text-6xl">My journey</h1>
+      <div className="relative z-10 mx-auto w-full max-w-3xl px-5 pb-16 pt-20 sm:px-6">
+        <header className="mt-2">
+          <h1 className="font-display text-5xl font-semibold tracking-tight sm:text-6xl">Your journey</h1>
           <p className="mt-4 max-w-md text-base leading-7 text-foreground/85">
             A quiet record of the times you stopped, what you noticed, and what you hoped to do next.
           </p>
@@ -67,8 +59,17 @@ export default function JourneyView() {
               <section aria-label="Summary" className="rounded-3xl bg-white/10 p-4 backdrop-blur [&>ul>li]:flex [&>ul>li]:flex-col [&>ul>li]:justify-center">
                 <JourneySummary counts={getJourneyCounts(moments)} />
               </section>
-              <section aria-label="Your journey as a landscape" className="rounded-3xl bg-white/10 p-4 backdrop-blur">
-                <JourneyLandscape moments={moments} />
+              <section aria-label="Your shapes" className="rounded-3xl bg-white/10 p-4 backdrop-blur">
+                <h2 className="text-xs uppercase tracking-widest text-foreground/80">Your shapes</h2>
+                <ul className="mt-3 flex list-none flex-wrap gap-2 p-0">
+                  {moments.slice(0, 24).map((m) => (
+                    <li key={m.id}>
+                      <a href={`#moment-${m.id}`} aria-label={`Moment on ${new Date(m.completedAt).toLocaleDateString()}`} className="block rounded-2xl">
+                        <MomentShape moment={m} className="size-9" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </section>
             </div>
 

@@ -4,7 +4,7 @@ import { buttonClass } from "@/components/ui/Button";
 
 export default function EmptyJourney() {
   return (
-    <div className="flex flex-col items-center py-12 text-center sm:py-20">
+    <div className="flex flex-col items-center py-10 text-center sm:py-16">
       <BreathVisual size="compact" auto className="mb-10" />
       <h2 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">
         Your journey begins with a single pause.

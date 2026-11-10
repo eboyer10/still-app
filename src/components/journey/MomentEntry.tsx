@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import DeleteConfirm from "@/components/journey/DeleteConfirm";
 import FollowUpPicker from "@/components/journey/FollowUpPicker";
-import MomentGlyph from "@/components/journey/MomentGlyph";
+import MomentShape from "@/components/journey/MomentShape";
+import { getMood } from "@/lib/moods";
 import Button from "@/components/ui/Button";
 import { saveReflectionImage } from "@/lib/shareImage";
 import {
@@ -124,10 +125,11 @@ export default function MomentEntry({ moment }: { moment: Moment }) {
         onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center gap-4 rounded-3xl px-4 py-4 text-left sm:px-5"
       >
-        <MomentGlyph moment={moment} />
+        <MomentShape moment={moment} />
         <span className="min-w-0 flex-1">
           <span className="block text-sm text-foreground/80">
             {dateFormat.format(when)} · {timeFormat.format(when)}
+            {moment.mood && getMood(moment.mood) ? ` · ${getMood(moment.mood)?.label}` : ""}
           </span>
           <span className={`mt-0.5 block font-display text-lg leading-snug ${open ? "" : "line-clamp-2"}`}>{preview}</span>
           {!open && (reflection || intention) && (

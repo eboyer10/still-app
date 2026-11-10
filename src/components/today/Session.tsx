@@ -36,7 +36,7 @@ const heading = "font-display text-3xl font-bold leading-tight tracking-tight ou
  * The guided moment, a full-screen layer over Today: breathe, keep, close. No navigation, no page change.
  * Everything after the breath is optional and only saved on this device.
  */
-export default function Session({ hz, moodLabel, onExit }: { hz: number; moodLabel: string | null; onExit: () => void }) {
+export default function Session({ hz, moodId, moodLabel, onExit }: { hz: number; moodId: string | null; moodLabel: string | null; onExit: () => void }) {
   const [{ sound, haptics }, updatePrefs] = usePreferences();
   const soundRef = useRef<BreathSound | null>(null);
   const [step, setStep] = useState<Step>("breathe");
@@ -161,6 +161,7 @@ export default function Session({ hz, moodLabel, onExit }: { hz: number; moodLab
             : { source: "preset" as const, presetId: actionId ?? undefined, text: chosenText }
           : undefined;
       const ok = addMoment({
+        mood: moodId,
         breathCompleted: breathCompleted.current,
         reflection: keepAnything && keepReflection ? reflection : undefined,
         intention,
@@ -183,9 +184,11 @@ export default function Session({ hz, moodLabel, onExit }: { hz: number; moodLab
         {status}
       </p>
 
+      <div className="session-scrim" aria-hidden="true" />
+
       <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-6 py-16 text-center">
         {step === "breathe" && (
-          <section className="flex flex-col items-center" aria-labelledby="breathe-title">
+          <section className="flex flex-col items-center [text-shadow:0_1px_14px_rgb(5_7_28/0.95)]" aria-labelledby="breathe-title">
             <BreathVisual size="immersive" />
             <h1 id="breathe-title" ref={headingRef} tabIndex={-1} className="sr-only">
               Breathing moment
@@ -203,11 +206,12 @@ export default function Session({ hz, moodLabel, onExit }: { hz: number; moodLab
               </div>
             )}
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <Button variant="quiet" onClick={togglePause} aria-pressed={paused}>
+              <Button variant="quiet" className="bg-[#070a1f]/60 backdrop-blur" onClick={togglePause} aria-pressed={paused}>
                 {paused ? "Resume" : "Pause"}
               </Button>
               <Button
                 variant="ghost"
+                className="bg-[#070a1f]/60 backdrop-blur"
                 aria-pressed={sound}
                 onClick={() => {
                   unlockAudio();
@@ -216,10 +220,10 @@ export default function Session({ hz, moodLabel, onExit }: { hz: number; moodLab
               >
                 {sound ? "Mute sound" : "Play sound"}
               </Button>
-              <Button variant="ghost" onClick={() => setStep("keep")}>
+              <Button variant="ghost" className="bg-[#070a1f]/60 backdrop-blur" onClick={() => setStep("keep")}>
                 Skip
               </Button>
-              <Button variant="ghost" onClick={onExit}>
+              <Button variant="ghost" className="bg-[#070a1f]/60 backdrop-blur" onClick={onExit}>
                 Exit
               </Button>
             </div>

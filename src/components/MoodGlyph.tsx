@@ -1,7 +1,7 @@
 /** A tiny drawing of a feeling's own shape: an n-sided outline, or a rosette with n petals. */
-export default function MoodGlyph({ kind, n, className = "size-8" }: { kind: "geometry" | "bloom"; n: number; className?: string }) {
+export default function MoodGlyph({ kind, n, hue, className = "size-8" }: { kind: "geometry" | "bloom"; n: number; hue: number; className?: string }) {
   return (
-    <svg viewBox="0 0 32 32" aria-hidden="true" className={className} fill="none" strokeWidth="1.3" style={{ stroke: "hsl(var(--tile-hue) 90% 80%)" }}>
+    <svg viewBox="0 0 32 32" aria-hidden="true" className={className} fill="none" strokeWidth="1.3" style={{ stroke: `hsl(${hue} 90% 80%)` }}>
       {kind === "geometry" ? (
         <>
           <polygon
