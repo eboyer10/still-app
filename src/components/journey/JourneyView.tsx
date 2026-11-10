@@ -3,7 +3,7 @@
 import Link from "next/link";
 import EmptyJourney from "@/components/journey/EmptyJourney";
 import DeleteConfirm from "@/components/journey/DeleteConfirm";
-import MomentShape from "@/components/journey/MomentShape";
+import JourneyShape from "@/components/journey/JourneyShape";
 import JourneySummary from "@/components/journey/JourneySummary";
 import MomentEntry from "@/components/journey/MomentEntry";
 import { buttonClass } from "@/components/ui/Button";
@@ -56,20 +56,17 @@ export default function JourneyView() {
               <div className="sm:col-span-2">
                 <LineFromBefore moments={moments} />
               </div>
-              <section aria-label="Summary" className="rounded-3xl bg-white/10 p-4 backdrop-blur [&>ul>li]:flex [&>ul>li]:flex-col [&>ul>li]:justify-center">
-                <JourneySummary counts={getJourneyCounts(moments)} />
+              <section aria-label="Your shape" className="rounded-3xl bg-white/10 p-5 backdrop-blur sm:col-span-2">
+                <h2 className="text-xs uppercase tracking-widest text-foreground/80">Your shape</h2>
+                <p className="mt-2 max-w-md text-sm leading-6 text-foreground/85">
+                  Each pause adds one shape, in the form and colour of the feeling you began with.
+                </p>
+                <div className="mt-4">
+                  <JourneyShape moments={moments} />
+                </div>
               </section>
-              <section aria-label="Your shapes" className="rounded-3xl bg-white/10 p-4 backdrop-blur">
-                <h2 className="text-xs uppercase tracking-widest text-foreground/80">Your shapes</h2>
-                <ul className="mt-3 flex list-none flex-wrap gap-2 p-0">
-                  {moments.slice(0, 24).map((m) => (
-                    <li key={m.id}>
-                      <a href={`#moment-${m.id}`} aria-label={`Moment on ${new Date(m.completedAt).toLocaleDateString()}`} className="block rounded-2xl">
-                        <MomentShape moment={m} className="size-9" />
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+              <section aria-label="Summary" className="sm:col-span-2 rounded-3xl bg-white/10 p-4 backdrop-blur [&>ul>li]:flex [&>ul>li]:flex-col [&>ul>li]:justify-center">
+                <JourneySummary counts={getJourneyCounts(moments)} />
               </section>
             </div>
 

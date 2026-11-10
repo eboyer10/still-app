@@ -35,7 +35,7 @@ Today is the whole home: greeting, a living `BreathVisual`, a three-line "how a 
 - An "Options" menu per entry: edit/remove reflection, edit/remove intention, remove moment, save reflection as an image (`shareImage.ts`, local canvas, opt-in).
 - Follow-up is neutral and optional: "I did it", "Not yet", "My priorities changed". None is framed as better.
 - Never invent data: a Moment shows only what the person actually gave. No placeholders.
-- "Your shapes": a row of small mood shapes, one per Moment, newest first, linking to the entry. No gaps are ever shown.
+- "Your shape" (`JourneyShape`): all Moments gathered into one sunflower-spiral picture, each in its feeling's form and colour, evenly spaced so gaps are never shown.
 - Everything is editable and deletable (per reflection, per intention, per Moment, or all data).
 
 ### Navigation

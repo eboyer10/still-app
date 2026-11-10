@@ -1,7 +1,18 @@
 /** A tiny drawing of a feeling's own shape: an n-sided outline, or a rosette with n petals. */
-export default function MoodGlyph({ kind, n, hue, className = "size-8" }: { kind: "geometry" | "bloom"; n: number; hue: number; className?: string }) {
+type GlyphProps = { kind: "geometry" | "bloom"; n: number; hue: number };
+
+export default function MoodGlyph({ kind, n, hue, className = "size-8" }: GlyphProps & { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden="true" className={className} fill="none" strokeWidth="1.3" style={{ stroke: `hsl(${hue} 90% 80%)` }}>
+      <GlyphShapes kind={kind} n={n} />
+    </svg>
+  );
+}
+
+/** The drawing alone, on a 32x32 grid, for placing inside a larger SVG. */
+export function GlyphShapes({ kind, n }: Pick<GlyphProps, "kind" | "n">) {
+  return (
+    <>
       {kind === "geometry" ? (
         <>
           <polygon
@@ -25,6 +36,6 @@ export default function MoodGlyph({ kind, n, hue, className = "size-8" }: { kind
           <ellipse key={k} cx="22" cy="16" rx="8" ry="3.2" transform={`rotate(${(k * 360) / n} 16 16)`} />
         ))
       )}
-    </svg>
+    </>
   );
 }
