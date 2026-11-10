@@ -39,7 +39,7 @@ Today is the whole home: greeting, a living `BreathVisual`, a three-line "how a 
 - Everything is editable and deletable (per reflection, per intention, per Moment, or all data).
 
 ### Navigation
-- Home asks gentle follow-ups (up to three per visit, newest first, "Ask me later" to skip) about unrevisited intentions (`HomeExtras`), and shows "My journey" only once a Moment exists. The bottom `TabBar` is the main navigation; home also shows a "How Still works" guide. Situation chips (`situations.ts`) link to `/moment?for=<id>` and add a gentle line to the moment.
+- Today is the hub. Follow-ups live on Today (`FollowUpCard`). The bottom `TabBar` is the main navigation.
 - The `TabBar` is persistent (hidden during a Session). Every sub-screen also has the "Still" wordmark (`SiteMark`) top-left
   as the one way back to the beginning (hidden during the breathing step). Moment keeps Exit.
 
@@ -72,7 +72,7 @@ Next.js 16 (App Router, Cache Components), React 19, TypeScript (strict), Tailwi
 ### Structure
 - `src/app/` routes: `/` Today, `/moment` (redirects to `/`), `/journey`, `/settings`, `/support`; `manifest.ts` and `icon.svg` make it installable (no service worker)
 - `src/components/` shared UI; `moment/` and `settings/` hold feature components; `ui/` holds Button and RadioCard
-- `src/lib/` `breath.ts` (timing), `sky.ts`, `sound.ts`, `preferences.ts` and `journey.ts` (localStorage stores), `actions.ts` (action copy), `situations.ts`, `shareImage.ts`
+- `src/lib/` `breath.ts` (timing), `sky.ts` (time-of-day greeting), `moods.ts`, `arrival.ts` (feeling + shape), `sound.ts`, `preferences.ts` and `journey.ts` (localStorage stores), `actions.ts` (action copy), `shareImage.ts`
 - `src/styles/` global styles, theme and breathing-line tokens
 - `public/assets/` static images, icons, fonts
 - `docs/` product and design documentation
