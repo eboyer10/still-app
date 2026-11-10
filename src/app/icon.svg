@@ -1,12 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f6fe0"/><stop offset="1" stop-color="#2a1f86"/></linearGradient>
-    <linearGradient id="ln" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffc4e4"/><stop offset="1" stop-color="#b8c4ff"/></linearGradient>
-  </defs>
-  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
-  <g fill="none" stroke="url(#ln)" stroke-width="3.5" stroke-linecap="round">
-    <path d="M20 64 C 40 64, 44 28, 64 28 S 88 64, 108 64"/>
-    <path d="M20 64 C 40 64, 44 100, 64 100 S 88 64, 108 64"/>
-    <path d="M20 64 C 44 64, 50 46, 64 46 S 84 64, 108 64" opacity=".6"/>
+  <defs><radialGradient id="g" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#3d46c8"/><stop offset="1" stop-color="#070a1f"/></radialGradient></defs>
+  <rect width="128" height="128" rx="28" fill="url(#g)"/>
+  <g fill="none" stroke="#e6e9ff" stroke-width="2.2" stroke-linejoin="round">
+    <polygon points="64,22 100,43 100,85 64,106 28,85 28,43"/>
+    <polygon points="64,36 88,50 88,78 64,92 40,78 40,50" opacity=".7"/>
+    <polygon points="64,50 76,57 76,71 64,78 52,71 52,57" opacity=".5"/>
   </g>
 </svg>

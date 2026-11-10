@@ -16,9 +16,9 @@ export async function saveReflectionImage(text: string, dateLabel: string) {
   if (!ctx) return;
 
   const sky = ctx.createLinearGradient(0, 0, 0, height);
-  sky.addColorStop(0, "#2f6fd0");
-  sky.addColorStop(0.5, "#4a3fc4");
-  sky.addColorStop(1, "#26207c");
+  sky.addColorStop(0, "#2a2f8c");
+  sky.addColorStop(0.5, "#151a5c");
+  sky.addColorStop(1, "#070a1f");
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, width, height);
 

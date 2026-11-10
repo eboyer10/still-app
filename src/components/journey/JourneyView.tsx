@@ -6,7 +6,6 @@ import DeleteConfirm from "@/components/journey/DeleteConfirm";
 import JourneyLandscape from "@/components/journey/JourneyLandscape";
 import JourneySummary from "@/components/journey/JourneySummary";
 import MomentEntry from "@/components/journey/MomentEntry";
-import SkyBackground from "@/components/SkyBackground";
 import SiteMark from "@/components/SiteMark";
 import { buttonClass } from "@/components/ui/Button";
 import LineFromBefore from "@/components/journey/LineFromBefore";
@@ -42,7 +41,6 @@ export default function JourneyView() {
 
   return (
     <div className="relative min-h-dvh">
-      <SkyBackground auto />
       <div className="relative z-10 mx-auto w-full max-w-3xl px-5 pb-32 pt-4 sm:px-6 sm:pt-6">
         <nav aria-label="Primary" className="flex items-center justify-between">
           <SiteMark />
@@ -90,7 +88,7 @@ export default function JourneyView() {
                   </button>
                 ))}
               </div>
-              <Link href="/moment" className={buttonClass("primary", "px-6")}>
+              <Link href="/" className={buttonClass("primary", "px-6")}>
                 Begin a moment
               </Link>
             </div>

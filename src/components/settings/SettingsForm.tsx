@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import SkyBackground from "@/components/SkyBackground";
 import SiteMark from "@/components/SiteMark";
 import { buttonClass } from "@/components/ui/Button";
 import { unlockAudio } from "@/lib/sound";
@@ -39,7 +38,6 @@ export default function SettingsForm() {
 
   return (
     <div className="mx-auto w-full max-w-xl px-5 pb-32 pt-4 sm:px-6 sm:pt-6">
-      <SkyBackground auto />
       <nav aria-label="Primary" className="flex items-center justify-between">
         <SiteMark />
         <Link href="/journey" className={buttonClass("ghost", "text-sm")}>

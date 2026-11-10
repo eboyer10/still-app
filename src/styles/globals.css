@@ -7,25 +7,32 @@
   initial-value: 0;
 }
 
-/* A soft pastel dawn: pink, white light and periwinkle, with deep violet ink for text. */
+/* The feeling's colour. Registered so a new choice melts from one hue to the next. */
+@property --hue {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 250;
+}
+
+/* Near-black night, with light shapes and one aura colour that comes from how you arrive. */
 :root {
   color-scheme: dark;
 
-  --background: #1a2670;
-  --foreground: #f4f6ff;
+  --background: #070a1f;
+  --foreground: #f2f4ff;
 
-  /* Glowing points on the journey landscape card. */
+  /* Lights on the journey landscape card. */
   --orb-core: #ffffff;
-  --orb-glow: rgb(170 185 255 / 0.7);
+  --orb-glow: rgb(160 175 255 / 0.7);
 
-  --btn-from: #ffc4e4;
-  --btn-to: #b8c4ff;
-  --btn-ink: #1a1250;
+  --btn-from: #ffffff;
+  --btn-to: #d9defc;
+  --btn-ink: #0a0d2a;
 
-  --sky: linear-gradient(180deg, #5d72e6 0%, #3d42b4 60%, #2a2a8c 100%);
-  --ridge-far: rgb(170 180 255 / 0.35);
-  --ridge-mid: rgb(120 110 235 / 0.7);
-  --ridge-near: rgb(28 24 100 / 0.92);
+  --sky: linear-gradient(180deg, #2a2f8c 0%, #151a5c 62%, #0a0d2e 100%);
+  --ridge-far: rgb(150 160 255 / 0.3);
+  --ridge-mid: rgb(110 100 230 / 0.6);
+  --ridge-near: rgb(10 12 50 / 0.95);
 }
 
 @theme inline {
@@ -52,24 +59,6 @@ body {
   outline: none;
 }
 
-/* ---------- Breath visual: geometry that gathers and opens with the breath ---------- */
-
-.bv {
-  --hue: 260;
-  --bv-size: clamp(16rem, 76vw, 25rem);
-  position: relative;
-  width: var(--bv-size);
-  aspect-ratio: 1;
-}
-
-.bv-compact {
-  --bv-size: clamp(13rem, 60vw, 19rem);
-}
-
-.bv-auto {
-  animation: still-breath 8s ease-in-out infinite;
-}
-
 @keyframes still-breath {
   0%,
   100% {
@@ -80,8 +69,43 @@ body {
   }
 }
 
+/* ---------- Night backdrop ---------- */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  transition: --hue 1s ease;
+  background:
+    radial-gradient(70% 44% at 50% 26%, hsl(var(--hue) 75% 52% / calc(0.22 + var(--breath) * 0.2)), transparent 100%),
+    radial-gradient(90% 50% at 50% 112%, hsl(calc(var(--hue) + 40) 70% 38% / 0.4), transparent 100%),
+    var(--background);
+}
+
+.backdrop-auto {
+  animation: still-breath 8s ease-in-out infinite;
+}
+
+/* ---------- Breath visual: geometry or a bloom that gathers and opens with the breath ---------- */
+
+.bv {
+  position: relative;
+  width: var(--bv-size);
+  aspect-ratio: 1;
+  transition: --hue 1s ease;
+}
+
+.bv-hero {
+  --bv-size: clamp(14rem, min(78vw, 38vh), 24rem);
+}
+
+.bv-compact {
+  --bv-size: clamp(11rem, 52vw, 16rem);
+}
+
 .bv-small {
-  --bv-size: clamp(8.5rem, 36vw, 11rem);
+  --bv-size: clamp(8rem, 34vw, 10rem);
 }
 
 /* During the guided breath the shape fills the screen behind the words: small on the exhale, huge on the inhale. */
@@ -103,11 +127,15 @@ body {
   transform: scale(calc(0.35 + var(--breath) * 1.1));
 }
 
+.bv-auto {
+  animation: still-breath 8s ease-in-out infinite;
+}
+
 .bv-glow {
   position: absolute;
   inset: -18%;
   border-radius: 50%;
-  background: radial-gradient(closest-side, hsl(var(--hue) 90% 68% / 0.38), transparent 100%);
+  background: radial-gradient(closest-side, hsl(var(--hue) 90% 62% / 0.4), transparent 100%);
   opacity: calc(0.35 + var(--breath) * 0.55);
   transform: scale(calc(0.8 + var(--breath) * 0.3));
 }
@@ -152,7 +180,8 @@ body {
   }
 }
 
-/* Sound playing indicator */
+/* ---------- Sound playing indicator ---------- */
+
 .eq {
   display: inline-flex;
   align-items: flex-end;
@@ -187,102 +216,9 @@ body {
   }
 }
 
-/* The tab bar belongs to the welcome screen; the guided steps are full-screen and quiet. */
-body[data-flow]:not([data-flow="welcome"]) .tabbar {
+/* The full-screen session owns the whole screen: no tab bar behind it. */
+body[data-session] .tabbar {
   display: none;
-}
-
-/* Soft wash behind the moment screens; follows the same --breath value. */
-.moment-atmosphere {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(ellipse at 50% 42%, rgb(150 160 255 / 0.55), transparent 62%);
-  opacity: calc(0.2 + var(--breath) * 0.4);
-}
-
-/* ---------- Deep sky ---------- */
-
-.sky-bg {
-  --k0: #2f6fd0;
-  --k1: #3f55cc;
-  --k2: #5547c2;
-  --cloud: 170 190 255;
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-  background:
-    radial-gradient(70% 40% at 50% 38%, rgb(255 255 255 / calc(0.05 + var(--breath) * 0.08)), transparent 100%),
-    linear-gradient(180deg, var(--k0) 0%, var(--k1) 55%, var(--k2) 100%);
-}
-
-/* The sky follows the local hour: a tint only, always dark enough for light text. */
-.sky-bg[data-sky="dawn"] {
-  --k0: #2a68b8;
-  --k1: #4a58c4;
-  --k2: #85509f;
-}
-.sky-bg[data-sky="day"] {
-  --k0: #2f6fd0;
-  --k1: #3f55cc;
-  --k2: #5547c2;
-}
-.sky-bg[data-sky="dusk"] {
-  --k0: #3a47b0;
-  --k1: #6644b4;
-  --k2: #a04a92;
-}
-.sky-bg[data-sky="night"] {
-  --k0: #121c58;
-  --k1: #211e76;
-  --k2: #38288c;
-}
-
-.sky-bg-auto {
-  animation: still-breath 8s ease-in-out infinite;
-}
-
-.sky-cloud {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(var(--cloud) / 0.9), rgb(var(--cloud) / 0));
-  opacity: calc(0.12 + var(--breath) * 0.14);
-  animation: still-cloud 60s ease-in-out infinite alternate;
-}
-
-.sky-cloud-a {
-  left: -15%;
-  top: 6%;
-  width: 70%;
-  height: 28%;
-}
-
-.sky-cloud-b {
-  right: -20%;
-  top: 52%;
-  width: 80%;
-  height: 34%;
-  animation-duration: 80s;
-  animation-direction: alternate-reverse;
-}
-
-.sky-cloud-c {
-  left: 10%;
-  bottom: -10%;
-  width: 90%;
-  height: 30%;
-  animation-duration: 100s;
-}
-
-@keyframes still-cloud {
-  from {
-    transform: translateX(-6%);
-  }
-  to {
-    transform: translateX(6%);
-  }
 }
 
 .rise-in {
@@ -319,10 +255,9 @@ body[data-flow]:not([data-flow="welcome"]) .tabbar {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sky-bg-auto,
+  .backdrop-auto,
   .bv-auto,
   .bv-bloom-all,
-  .sky-cloud,
   .eq i,
   .rise-in,
   .landscape-light {
@@ -331,7 +266,7 @@ body[data-flow]:not([data-flow="welcome"]) .tabbar {
 
   /* No movement: the shapes rest at mid-breath and only gently brighten. */
   .bv-auto,
-  .sky-bg-auto {
+  .backdrop-auto {
     --breath: 0.5;
   }
 

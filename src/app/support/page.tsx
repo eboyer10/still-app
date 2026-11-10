@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import SiteMark from "@/components/SiteMark";
-import SkyBackground from "@/components/SkyBackground";
 
 export const metadata: Metadata = {
   title: "Support · Still",
@@ -11,7 +10,6 @@ const linkClass = "underline underline-offset-4 hover:text-foreground";
 export default function SupportPage() {
   return (
     <main className="relative mx-auto min-h-dvh w-full max-w-xl px-6 pb-32 pt-4 sm:pt-6">
-      <SkyBackground auto />
       <SiteMark />
       <h1 className="mt-10 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
         If you need more than a pause

@@ -1,10 +1,6 @@
-import type { Metadata } from "next";
-import MomentFlow from "@/components/moment/MomentFlow";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "A moment · Still",
-};
-
+/** Older links land on Today, where the moment now begins. */
 export default function MomentPage() {
-  return <MomentFlow initial="arrive" />;
+  redirect("/");
 }

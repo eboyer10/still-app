@@ -18,15 +18,16 @@ yourself, and take one meaningful action away from the screen.
 - Percentages, progress bars, goals, or charts that turn reflection into metrics. Calm cards and plain count pills are fine; never show gaps between visits.
 - Guilt-driven copy, urgency, or dark patterns.
 
-### The Moment flow (all on `/`, no page changes)
-Welcome → Step 1 Arrive (mood) → Step 2 Breathe (30s) → Step 3 Keep ("Before you go", both parts optional) → Close. `MomentFlow` holds every step in place; `/moment` just opens at Arrive. The "Still" wordmark or Exit restarts at the welcome.
-- Arrive: optional mood (`MoodPicker`). Tapping one recolours the shape and plays a ~4s preview of its tone, with a visible `SoundBadge` ("Playing 528 Hz") and a clear "Turn sound on/off" button. Audio only ever starts from a tap.
-- Breathing is a fixed gentle 4s inhale / 4s exhale with no hold. The shape (`BreathVisual immersive`) swells to fill the screen on the inhale and contracts on the exhale. People can pause, skip, exit, or simply rest.
+### Today and the Moment (`/`)
+Today is the whole home: greeting, a living `BreathVisual`, a three-line "how a moment goes", a 3×3 grid of nine feelings, and a floating "Begin a moment" button always in reach above the tab bar. `/moment` just redirects here.
+- Feelings (`moods.ts`) each have their own shape (geometry with n sides, or a bloom with n petals), colour (hue) and tone (396, 417, 432, 528, 639, 741, 852, 963, 111 Hz). Tapping one morphs the shape and backdrop colour and plays a ~4s tone preview with a `SoundBadge`. Copy says "traditionally linked", never a health claim. The choice lasts for the tab session (`sessionStorage`). Until one is chosen, the shape is random per page load.
+- Begin opens `Session`, a full-screen layer on the same page (no navigation): Breathe (30s) → Keep ("Before you go", both parts optional) → Close. Exit/Escape return to Today.
+- Breathing is a fixed gentle 4s inhale / 4s exhale with no hold. The shape (`BreathVisual size="immersive"`) swells to fill the screen on the inhale and contracts on the exhale. People can pause, skip, exit, or simply rest.
 - Breath cues are announced politely to screen readers; there is no progress bar. Escape never discards typed words.
-- One optional question: "What would make the rest of today feel more meaningful?"
-- Six action invitations plus "My own". Keep wording soft and concise.
-- The close is calm: no counts, scores or "well done". If an action was chosen it is shown large with "The screen can wait." and "I'm heading off"; otherwise "Done". A subtle "View my journey" remains.
-- Sound is on by default (`sound`) but only starts after a tap: a soft tone at the mood's frequency (432 Hz default) that follows the breath. Easy to mute everywhere.
+- One optional question: "What would make the rest of today feel more meaningful?" Six action invitations plus "My own".
+- The close is calm: no counts, scores or "well done". A chosen action is shown large with "The screen can wait."; "I'm heading off" or "Done"; a subtle "View my journey".
+- Sound is on by default (`sound`) but only ever starts from a tap. Easy to turn off on Today, in the session, and in Settings.
+- Follow-up (`FollowUpCard`) on Today: up to three unrevisited intentions per visit, newest first, "Ask me later".
 
 ### My Journey (`/journey`)
 - A calm, scannable bento of cards: "A line from before" (`LineFromBefore`, a random past reflection, "Show another"), stat pills (`JourneySummary`: pauses taken, intentions chosen, looked back on, acted upon: plain counts, no targets), and the landscape.
@@ -39,26 +40,21 @@ Welcome → Step 1 Arrive (mood) → Step 2 Breathe (30s) → Step 3 Keep ("Befo
 
 ### Navigation
 - Home asks gentle follow-ups (up to three per visit, newest first, "Ask me later" to skip) about unrevisited intentions (`HomeExtras`), and shows "My journey" only once a Moment exists. The bottom `TabBar` is the main navigation; home also shows a "How Still works" guide. Situation chips (`situations.ts`) link to `/moment?for=<id>` and add a gentle line to the moment.
-- The `TabBar` is persistent (hidden during the moment). Every screen also has the "Still" wordmark (`SiteMark`) top-left
+- The `TabBar` is persistent (hidden during a Session). Every sub-screen also has the "Still" wordmark (`SiteMark`) top-left
   as the one way back to the beginning (hidden during the breathing step). Moment keeps Exit.
 
 ## Visual design principles
 
-- **Immersive and contemplative.** One quiet focal element (the breath visual); everything else recedes.
-- **Deep blue sky, light ink.** A Calm-style gradient from bright blue to indigo (`SkyBackground`, tinted by local
-  hour), near-white text, frosted `bg-white/10-15` cards, and a pink-to-periwinkle gradient pill for the primary action.
-  Use theme tokens in `globals.css`, not hard-coded colors.
-- **Breath visual, random each load.** `BreathVisual` picks nested octagon *geometry* or an orbit *bloom* at random on
-  every page load (`useVisual`), tinted by the arrival mood's hue. No orb, no lines.
-- **Mood at arrival.** `MoodPicker` on home (optional, kept for the tab session in `sessionStorage`, `useMood`).
-  Each of nine moods (`moods.ts`) sets the visual's colour and the tone's frequency (396, 417, 432, 528, 639, 741,
-  852, 963, 111 Hz). Copy says "traditionally linked", never a health claim.
-- **Guidance.** A labelled `TabBar` (Home, Pause, Journey, Settings) on every screen except /moment; home explains
-  Arrive, Breathe, Keep; each moment step says what comes next ("First, breathe", "Next, keep what you like").
-- **Type.** Fraunces (serif display) for headings, the wordmark and reflections; DM Sans for UI text.
-- **Space.** Generous whitespace, a narrow reading column, few elements per screen.
-- **Motion.** One `--breath` value (0..1) drives the visual, glow and clouds (own 8s loop on home, journey and
-  settings; driven by the guided breath on /moment). Always respect `prefers-reduced-motion` (the visual rests).
+- **Night, with one living shape.** Near-black `#070a1f` with a soft aura in the chosen feeling's colour (`Backdrop`),
+  near-white text, frosted `bg-white/[0.06-0.15]` cards, white primary pill. Reference: Calm's deep, immersive screens
+  and the Kinorama geometric breathing videos. Use theme tokens in `globals.css`.
+- **Shape + colour + tone belong together.** `BreathVisual` (geometry or bloom, driven by `--breath`) and `Backdrop` take
+  their `--hue` from the feeling via `useShape`; hue changes animate (`@property --hue`).
+- **Navigation.** A three-tab labelled `TabBar` (Today, Journey, Settings), hidden while a Session is open.
+- **Type.** Fraunces (serif display) for headings and reflections; DM Sans for UI text.
+- **Space.** Generous whitespace, a narrow column, few elements per screen.
+- **Motion.** One `--breath` value (0..1) drives the shape, glow and backdrop (own 8s loop on Today, Journey and Settings;
+  driven by the guided breath in Session). Always respect `prefers-reduced-motion` (the shape rests).
 - **Accessible.** WCAG AA contrast, visible focus, 44px touch targets, keyboard support.
 
 ## Development guidelines
@@ -74,7 +70,7 @@ Next.js 16 (App Router, Cache Components), React 19, TypeScript (strict), Tailwi
 - `npm run lint` — ESLint (must pass before pushing)
 
 ### Structure
-- `src/app/` routes: `/` welcome, `/moment`, `/journey`, `/settings`, `/support`; `manifest.ts` and `icon.svg` make it installable (no service worker)
+- `src/app/` routes: `/` Today, `/moment` (redirects to `/`), `/journey`, `/settings`, `/support`; `manifest.ts` and `icon.svg` make it installable (no service worker)
 - `src/components/` shared UI; `moment/` and `settings/` hold feature components; `ui/` holds Button and RadioCard
 - `src/lib/` `breath.ts` (timing), `sky.ts`, `sound.ts`, `preferences.ts` and `journey.ts` (localStorage stores), `actions.ts` (action copy), `situations.ts`, `shareImage.ts`
 - `src/styles/` global styles, theme and breathing-line tokens
