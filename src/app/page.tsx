@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Today from "@/components/today/Today";
+import Dashboard from "@/components/health/Dashboard";
 
 export const metadata: Metadata = {
   title: "Still",
 };
 
 export default function Home() {
-  return <Today />;
+  return <Dashboard />;
 }

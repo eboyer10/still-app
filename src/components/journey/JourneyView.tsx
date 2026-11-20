@@ -86,7 +86,7 @@ export default function JourneyView() {
                   </button>
                 ))}
               </div>
-              <Link href="/" className={buttonClass("primary", "px-6")}>
+              <Link href="/moment" className={buttonClass("primary", "px-6")}>
                 Begin a moment
               </Link>
             </div>

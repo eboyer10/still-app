@@ -12,7 +12,7 @@ export default function EmptyJourney() {
       <p className="mt-4 max-w-sm text-base leading-7 text-foreground/85">
         When you take a moment, what you choose to keep will gather here, only on this device.
       </p>
-      <Link href="/" className={buttonClass("primary", "mt-10 px-8")}>
+      <Link href="/moment" className={buttonClass("primary", "mt-10 px-8")}>
         Begin a moment
       </Link>
     </div>

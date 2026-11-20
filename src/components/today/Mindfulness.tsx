@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import BreathVisual from "@/components/BreathVisual";
 import FollowUpCard from "@/components/FollowUpCard";
@@ -24,10 +25,10 @@ const GREETING: Record<Sky, string> = {
 const STEPS = ["Choose a feeling", "Breathe for 30 seconds", "Keep what you like"];
 
 /**
- * Today is the whole home: a living shape, nine feelings, and one Begin button that is always in reach.
+ * A living shape, nine feelings, and one Begin button that is always in reach.
  * Choosing a feeling changes the shape, the colour and the tone right where you are.
  */
-export default function Today() {
+export default function Mindfulness() {
   const [moodId, setMood] = useMood();
   const { mood } = useShape();
   const [{ sound }, updatePrefs] = usePreferences();
@@ -64,9 +65,10 @@ export default function Today() {
 
   return (
     <>
-      <main className="mx-auto flex w-full max-w-xl flex-col items-center px-5 pb-36 pt-8 text-center" aria-hidden={session || undefined} inert={session || undefined}>
+      <main className="mx-auto flex w-full max-w-xl flex-col items-center overflow-x-clip px-5 pb-36 pt-8 text-center" aria-hidden={session || undefined} inert={session || undefined}>
+        <Link href="/" className="mb-5 inline-flex min-h-11 items-center text-sm text-foreground/80 hover:underline">← Today</Link>
         <p className="text-sm uppercase tracking-widest text-foreground/75">{GREETING[sky]}</p>
-        <h1 className="mt-1 font-display text-5xl font-semibold tracking-tight">Still</h1>
+        <h1 className="mt-1 font-display text-5xl font-semibold tracking-tight">Mindfulness</h1>
 
         <BreathVisual auto className="my-6" />
 

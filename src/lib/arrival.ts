@@ -3,7 +3,7 @@
 import { useMemo, useSyncExternalStore } from "react";
 import { MOODS, NEUTRAL_HUE, getMood, type Mood, type ShapeKind } from "@/lib/moods";
 
-/* ---------- Mood: chosen on Today, kept for this visit only ---------- */
+/* ---------- Mood: chosen in Mindfulness, kept for this visit only ---------- */
 
 const MOOD_KEY = "still:mood";
 const moodListeners = new Set<() => void>();

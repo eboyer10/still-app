@@ -33,7 +33,7 @@ const isInteractive = (target: EventTarget | null) =>
 const heading = "font-display text-3xl font-bold leading-tight tracking-tight outline-none sm:text-5xl";
 
 /**
- * The guided moment, a full-screen layer over Today: breathe, keep, close. No navigation, no page change.
+ * The guided moment, a full-screen layer over Mindfulness: breathe, keep, close. No navigation, no page change.
  * Everything after the breath is optional and only saved on this device.
  */
 export default function Session({ hz, moodId, moodLabel, onExit }: { hz: number; moodId: string | null; moodLabel: string | null; onExit: () => void }) {

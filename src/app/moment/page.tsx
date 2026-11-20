@@ -1,6 +1,8 @@
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import Mindfulness from "@/components/today/Mindfulness";
 
-/** Older links land on Today, where the moment now begins. */
+export const metadata: Metadata = { title: "Mindfulness · Still" };
+
 export default function MomentPage() {
-  redirect("/");
+  return <Mindfulness />;
 }
