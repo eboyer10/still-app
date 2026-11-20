@@ -78,8 +78,8 @@ body {
   pointer-events: none;
   transition: --hue 1s ease;
   background:
-    radial-gradient(70% 44% at 50% 26%, hsl(var(--hue) 75% 52% / calc(0.22 + var(--breath) * 0.2)), transparent 100%),
-    radial-gradient(90% 50% at 50% 112%, hsl(calc(var(--hue) + 40) 70% 38% / 0.4), transparent 100%),
+    radial-gradient(70% 44% at 50% 26%, hsl(var(--hue) 75% 52% / calc(0.12 + var(--breath) * 0.035)), transparent 100%),
+    radial-gradient(90% 50% at 50% 112%, hsl(calc(var(--hue) + 40) 55% 32% / 0.24), transparent 100%),
     var(--background);
 }
 
@@ -87,116 +87,71 @@ body {
   animation: still-breath 8s ease-in-out infinite;
 }
 
-/* ---------- Breath visual: geometry or a bloom that gathers and opens with the breath ---------- */
+/* ---------- Breathing orb ---------- */
 
 .bv {
   position: relative;
+  isolation: isolate;
   width: var(--bv-size);
   aspect-ratio: 1;
-  transition: --hue 1s ease;
+  flex: none;
+  transition: --hue 1.5s ease;
+  pointer-events: none;
 }
 
 .bv-hero {
-  --bv-size: clamp(14rem, min(78vw, 38vh), 24rem);
+  --bv-size: clamp(12rem, min(68vw, 36dvh), 20rem);
 }
 
 .bv-compact {
-  --bv-size: clamp(11rem, 52vw, 16rem);
+  --bv-size: clamp(10rem, 44vw, 16rem);
 }
 
-.bv-small {
-  --bv-size: clamp(8rem, 34vw, 10rem);
-}
-
-/* During the guided breath the shape fills the screen behind the words: small on the exhale, huge on the inhale. */
 .bv-immersive {
-  --bv-size: 120vmin;
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  translate: -50% -50%;
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* Hairlines at low strength, so the words laid over the shape always stay readable. */
-.bv-immersive .bv-svg {
-  transform: scale(calc(0.3 + var(--breath) * 1.05));
-  opacity: 0.22;
-}
-
-.bv-immersive .bv-svg :is(polygon, ellipse, circle) {
-  vector-effect: non-scaling-stroke;
-}
-
-.bv-immersive .bv-glow {
-  opacity: calc(0.08 + var(--breath) * 0.16);
-}
-
-/* A soft dark halo behind the words in a session. */
-.session-scrim {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: radial-gradient(closest-side at 50% 50%, rgb(5 7 28 / 0.72), rgb(5 7 28 / 0.35) 55%, transparent 100%);
-}
-
-.bv-immersive .bv-glow {
-  transform: scale(calc(0.35 + var(--breath) * 1.1));
+  --bv-size: min(17rem, 64vw, 40dvh);
 }
 
 .bv-auto {
   animation: still-breath 8s ease-in-out infinite;
 }
 
-.bv-glow {
+.bv-halo {
   position: absolute;
-  inset: -18%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, hsl(var(--hue) 90% 62% / 0.4), transparent 100%);
-  opacity: calc(0.35 + var(--breath) * 0.55);
-  transform: scale(calc(0.8 + var(--breath) * 0.3));
+  inset: -2%;
+  background: radial-gradient(closest-side, hsl(var(--hue) 59% 63% / 0.35), transparent);
+  opacity: calc(0.46 + var(--breath) * 0.17);
 }
 
-.bv-svg {
+.bv-orb {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
+  inset: 9%;
+  border-radius:
+    calc(48% + var(--breath) * 2%) 52% 49% 51% /
+    53% calc(48% + var(--breath) * 2%) 52% 47%;
+  transform: rotate(calc(-9deg + var(--breath) * 5deg)) scale(calc(0.86 + var(--breath) * 0.14));
+  background:
+    radial-gradient(ellipse 46% 45% at 57% 46%, #0b101e 27%, rgb(12 18 34 / 0.95) 58%, rgb(13 20 43 / 0.55) 82%, transparent 112%),
+    radial-gradient(ellipse 44% 46% at 43% 56%, hsl(calc(var(--hue) - 23) 61% 23% / 0.87), transparent 112%),
+    conic-gradient(
+      from 29deg at 51% 49%,
+      hsl(calc(var(--hue) + 30) 43% 72%),
+      hsl(calc(var(--hue) + 18) 48% 42%) 14%,
+      hsl(calc(var(--hue) + 37) 52% 75%) 32%,
+      hsl(calc(var(--hue) - 47) 50% 70%) 52%,
+      hsl(calc(var(--hue) - 62) 52% 56%) 69%,
+      hsl(calc(var(--hue) - 40) 56% 76%) 84%,
+      hsl(calc(var(--hue) + 30) 43% 72%) 100%
+    );
+  box-shadow: inset 0 0 0.95rem #131627, 0 0 1.25rem hsl(var(--hue) 58% 65% / 0.18);
 }
 
-.bv-svg * {
-  transform-box: view-box;
-  transform-origin: 50% 50%;
-}
-
-.bv-poly-all {
-  transform: scale(calc(0.7 + var(--breath) * 0.3));
-}
-
-.bv-layer {
-  transform: rotate(calc(var(--breath) * var(--spin)));
-}
-
-.bv-bloom-all {
-  animation: still-turn 120s linear infinite;
-}
-
-.bv-petal {
-  transform: scale(calc(0.5 + var(--breath) * 0.5));
-}
-
-.bv-disc {
-  transform: scale(calc(0.9 + var(--breath) * 0.14));
-  filter: drop-shadow(0 0 5px rgb(255 255 255 / 0.9)) drop-shadow(0 0 14px hsl(var(--hue) 90% 75% / 0.7));
-}
-
-@keyframes still-turn {
-  to {
-    transform: rotate(360deg);
-  }
+.bv-orb::after {
+  content: "";
+  position: absolute;
+  inset: 2%;
+  border-radius: inherit;
+  background: radial-gradient(ellipse 65% 31% at 39% 9%, white, transparent 77%);
+  opacity: 0.12;
 }
 
 /* ---------- Sound playing indicator ---------- */
@@ -276,26 +231,15 @@ body[data-session] .menu-root {
 @media (prefers-reduced-motion: reduce) {
   .backdrop-auto,
   .bv-auto,
-  .bv-bloom-all,
   .eq i,
   .rise-in,
   .landscape-light {
     animation: none !important;
   }
 
-  /* No movement: the shapes rest at mid-breath and only gently brighten. */
-  .bv-auto,
+  .bv,
   .backdrop-auto {
     --breath: 0.5;
-  }
-
-  .bv-glow,
-  .bv-immersive .bv-glow {
-    transform: none;
-  }
-
-  .bv-immersive .bv-svg {
-    transform: scale(0.85);
   }
 
   *,

@@ -33,10 +33,19 @@ const isInteractive = (target: EventTarget | null) =>
 const heading = "font-display text-3xl font-bold leading-tight tracking-tight outline-none sm:text-5xl";
 
 /**
- * The guided moment, a full-screen layer over Today: breathe, keep, close. No navigation, no page change.
+ * The guided moment, a full-screen layer: breathe, keep, close. No navigation, no page change.
  * Everything after the breath is optional and only saved on this device.
  */
-export default function Session({ hz, moodId, moodLabel, onExit }: { hz: number; moodId: string | null; moodLabel: string | null; onExit: () => void }) {
+export default function Session({
+  hz, moodId, moodLabel, onExit, onDone = onExit, doneLabel,
+}: {
+  hz: number;
+  moodId: string | null;
+  moodLabel: string | null;
+  onExit: () => void;
+  onDone?: () => void;
+  doneLabel?: string;
+}) {
   const [{ sound, haptics }, updatePrefs] = usePreferences();
   const soundRef = useRef<BreathSound | null>(null);
   const [step, setStep] = useState<Step>("breathe");
@@ -184,21 +193,19 @@ export default function Session({ hz, moodId, moodLabel, onExit }: { hz: number;
         {status}
       </p>
 
-      <div className="session-scrim" aria-hidden="true" />
-
       <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-6 py-16 text-center">
         {step === "breathe" && (
           <section className="flex flex-col items-center [text-shadow:0_1px_14px_rgb(5_7_28/0.95)]" aria-labelledby="breathe-title">
-            <BreathVisual size="immersive" />
             <h1 id="breathe-title" ref={headingRef} tabIndex={-1} className="sr-only">
               Breathing moment
             </h1>
-            <p className="mb-8 text-sm uppercase tracking-widest text-foreground/75">Breathe{moodLabel ? ` · ${moodLabel}` : ""}</p>
+            {moodLabel && <p className="text-sm text-foreground/75">{moodLabel}</p>}
+            <BreathVisual size="immersive" className="mb-4" />
             <p className="h-12 text-3xl font-light tracking-wide sm:text-4xl" aria-hidden="true">
               {paused ? "Paused" : CUE_TEXT[cue]}
             </p>
             <p className="mt-6 max-w-xs text-sm leading-6 text-foreground/90">
-              Follow the shape as it opens and closes, or simply rest.
+              Let the orb set the pace, or breathe in your own time.
             </p>
             {sound && (
               <div className="mt-4">
@@ -349,8 +356,8 @@ export default function Session({ hz, moodId, moodLabel, onExit }: { hz: number;
               </p>
             )}
             <div className="mt-10 flex flex-col items-center gap-2">
-              <Button variant="quiet" onClick={onExit}>
-                {chosenText ? "I'm heading off" : "Done"}
+              <Button variant="quiet" onClick={onDone}>
+                {doneLabel ?? (chosenText ? "I'm heading off" : "Done")}
               </Button>
               <Link href="/journey" className={buttonClass("ghost", "text-sm")}>
                 View my journey

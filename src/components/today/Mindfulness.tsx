@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import BreathVisual from "@/components/BreathVisual";
 import FollowUpCard from "@/components/FollowUpCard";
@@ -8,9 +9,8 @@ import SoundBadge from "@/components/SoundBadge";
 import Session from "@/components/today/Session";
 import Button from "@/components/ui/Button";
 import { useMood } from "@/lib/arrival";
-import { DEFAULT_HZ, MOODS } from "@/lib/moods";
+import { DEFAULT_HZ, getMood, MOODS } from "@/lib/moods";
 import { usePreferences } from "@/lib/preferences";
-import { useShape } from "@/lib/arrival";
 import { useSky, type Sky } from "@/lib/sky";
 import { playPreview, stopPreview, unlockAudio } from "@/lib/sound";
 
@@ -24,12 +24,12 @@ const GREETING: Record<Sky, string> = {
 const STEPS = ["Choose a feeling", "Breathe for 30 seconds", "Keep what you like"];
 
 /**
- * Today is the whole home: a living shape, nine feelings, and one Begin button that is always in reach.
- * Choosing a feeling changes the shape, the colour and the tone right where you are.
+ * A living shape, nine feelings, and one Begin button that is always in reach.
+ * Choosing a feeling changes the orb’s tint and the tone.
  */
-export default function Today() {
+export default function Mindfulness() {
   const [moodId, setMood] = useMood();
-  const { mood } = useShape();
+  const mood = getMood(moodId);
   const [{ sound }, updatePrefs] = usePreferences();
   const [previewing, setPreviewing] = useState(false);
   const [session, setSession] = useState(false);
@@ -64,9 +64,10 @@ export default function Today() {
 
   return (
     <>
-      <main className="mx-auto flex w-full max-w-xl flex-col items-center px-5 pb-36 pt-8 text-center" aria-hidden={session || undefined} inert={session || undefined}>
+      <main className="mx-auto flex w-full max-w-xl flex-col items-center overflow-x-clip px-5 pb-36 pt-8 text-center" aria-hidden={session || undefined} inert={session || undefined}>
+        <Link href="/" className="mb-5 inline-flex min-h-11 items-center text-sm text-foreground/80 hover:underline">← Today</Link>
         <p className="text-sm uppercase tracking-widest text-foreground/75">{GREETING[sky]}</p>
-        <h1 className="mt-1 font-display text-5xl font-semibold tracking-tight">Still</h1>
+        <h1 className="mt-1 font-display text-5xl font-semibold tracking-tight">Mindfulness</h1>
 
         <BreathVisual auto className="my-6" />
 
@@ -81,7 +82,7 @@ export default function Today() {
 
         <fieldset className="mt-6 w-full">
           <legend className="mx-auto font-display text-2xl font-semibold">How are you arriving?</legend>
-          <p className="mt-1 text-sm text-foreground/80">Optional. Each feeling has its own shape, colour and tone.</p>
+          <p className="mt-1 text-sm text-foreground/80">Optional. Each feeling has its own colour and tone.</p>
           <div className="mt-4 grid grid-cols-3 gap-2">
             {MOODS.map((m) => (
               <label key={m.id} className="cursor-pointer">
@@ -116,7 +117,7 @@ export default function Today() {
               </>
             ) : (
               <p className="text-sm leading-6 text-foreground/85">
-                Tap a feeling and the shape above will become its own{sound ? ", and you will hear its tone" : ""}. Or skip it
+                Choose a feeling to tint the orb{sound ? ", and you will hear its tone" : ""}. Or skip it
                 and just begin.
               </p>
             )}
@@ -151,6 +152,7 @@ export default function Today() {
         <div className="mt-6 w-full">
           <FollowUpCard />
         </div>
+        <Link href="/listen" className="mt-4 inline-flex min-h-11 items-center text-sm text-foreground/85 underline underline-offset-4">Explore listening on Spotify</Link>
       </main>
 
       <div className="fixed inset-x-0 bottom-6 z-20 flex justify-center px-5">

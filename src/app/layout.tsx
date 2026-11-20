@@ -21,7 +21,7 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   title: "Still",
-  description: "A quiet space for mindfulness and reflection.",
+  description: "A quiet space for mindfulness and everyday health.",
   appleWebApp: { capable: true, title: "Still", statusBarStyle: "black-translucent" },
 };
 

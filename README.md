@@ -1,6 +1,6 @@
 # Still
 
-A quiet space for mindfulness and reflection.
+A quiet space for mindfulness, reflection, and everyday health.
 
 Built with Next.js, React, TypeScript and Tailwind CSS.
 
