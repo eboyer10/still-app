@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Dashboard from "@/components/health/Dashboard";
+import HomeExperience from "@/components/today/HomeExperience";
 
 export const metadata: Metadata = {
   title: "Still",
 };
 
 export default function Home() {
-  return <Dashboard />;
+  return <HomeExperience />;
 }

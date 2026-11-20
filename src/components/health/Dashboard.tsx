@@ -84,6 +84,14 @@ export default function Dashboard() {
         </div>
       </section>
 
+      <section aria-labelledby="listening-title" className="mt-5 flex flex-wrap items-center justify-between gap-x-5 gap-y-3 rounded-3xl border border-[#c4c5ff]/15 bg-[#161c34]/70 p-5 sm:mt-6 sm:px-6">
+        <div>
+          <h2 id="listening-title" className="font-display text-xl sm:text-2xl">Listen</h2>
+          <p className="mt-1 text-sm leading-relaxed text-foreground/75">Guided meditation, soft piano, and nature sounds on Spotify.</p>
+        </div>
+        <Link href="/listen" className={buttonClass("quiet", "px-5 text-sm")}>Explore listening <span aria-hidden="true" className="ml-2">→</span></Link>
+      </section>
+
       {setupDone ? (
         <Link href="/setup" className="mt-5 inline-flex min-h-11 items-center gap-2 text-sm text-foreground/85 underline-offset-4 hover:underline">
           Preferences & imports <span aria-hidden="true">→</span>

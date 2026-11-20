@@ -19,20 +19,24 @@ yourself, and take one meaningful action away from the screen.
 - Guilt-driven copy, urgency, or dark patterns.
 
 ### Today and health setup
+- On a first visit, welcome offers one guided breath or a direct route to Today. After the pause, people can set up their dashboard or explore it. The welcome is also available at `/welcome`.
 - Today (`/`) offers the guided pause, a link to Journey, and four health spaces: Movement, Food & drink, Sleep, and Care & monitoring.
 - Each space has a local log with editable entries. Care includes upcoming visits, visit notes, and readings. Today shows recent entries and the next visit.
 - Optional setup (`/setup`) lets people order the health spaces, note ongoing conditions and monitoring priorities, and import selected categories from Apple Health exports or compatible CSV files. The monitoring note appears in Care.
 
 ### Mindfulness and the Moment (`/moment`)
 Mindfulness has a greeting, a living `BreathVisual`, a three-line "how a moment goes", a 3×3 grid of nine feelings, and a floating "Begin a moment" button always in reach at the bottom.
-- Feelings (`moods.ts`) each have their own shape (geometry with n sides, or a bloom with n petals), colour (hue) and tone (396, 417, 432, 528, 639, 741, 852, 963, 111 Hz). Tapping one morphs the shape and backdrop colour and plays a ~4s tone preview with a `SoundBadge`. Copy says "traditionally linked", never a health claim. The choice lasts for the tab session (`sessionStorage`). Until one is chosen, the shape is random per page load.
-- Begin opens `Session`, a full-screen layer on the same page (no navigation): Breathe (30s) → Keep ("Before you go", both parts optional) → Close. Exit/Escape return to Mindfulness.
-- Breathing is a fixed gentle 4s inhale / 4s exhale with no hold. The shape (`BreathVisual size="immersive"`) swells to fill the screen on the inhale and contracts on the exhale. People can pause, skip, exit, or simply rest.
+- Feelings (`moods.ts`) each have their own shape (geometry with n sides, or a bloom with n petals), colour (hue) and tone (396, 417, 432, 528, 639, 741, 852, 963, 111 Hz). Tapping one tints the orb and backdrop and plays a ~4s tone preview with a `SoundBadge`. Copy says "traditionally linked", never a health claim. The choice lasts for the tab session (`sessionStorage`).
+- Begin opens `Session`, a full-screen layer on the same page (no navigation): Breathe (30s) → Keep ("Before you go", both parts optional) → Close. Exit or Escape returns to the screen that opened the session.
+- Breathing is a fixed gentle 4s inhale / 4s exhale with no hold. The orb (`BreathVisual size="immersive"`) gently swells on the inhale and contracts on the exhale, above the breath cue. People can pause, skip, exit, or simply rest.
 - Breath cues are announced politely to screen readers; there is no progress bar. Escape never discards typed words.
 - One optional question: "What would make the rest of today feel more meaningful?" Six action invitations plus "My own".
 - The close is calm: no counts, scores or "well done". A chosen action is shown large with "The screen can wait."; "I'm heading off" or "Done"; a subtle "View my journey".
 - Sound is on by default (`sound`) but only ever starts from a tap. Easy to turn off in Mindfulness, in the session, and in Settings.
 - Follow-up (`FollowUpCard`) in Mindfulness: up to three unrevisited intentions per visit, newest first, "Ask me later".
+
+### Listen (`/listen`)
+- Three curated Spotify picks cover guided meditation, soft piano, and nature sounds. The player loads when selected. The direct Spotify link is always available.
 
 ### My Journey (`/journey`)
 - A calm, scannable bento of cards: "A line from before" (`LineFromBefore`, a random past reflection, "Show another"), stat pills (`JourneySummary`: pauses taken, intentions chosen, looked back on, acted upon: plain counts, no targets), and the landscape.
@@ -44,21 +48,17 @@ Mindfulness has a greeting, a living `BreathVisual`, a three-line "how a moment 
 - Everything is editable and deletable (per reflection, per intention, per Moment, or all data).
 
 ### Navigation
-- Today is the hub. The top-right `MenuButton` links to Today, Mindfulness, Journey, Settings, and Support.
+- Today is the hub. The top-right `MenuButton` links to Today, Mindfulness, Listen, Journey, Settings, and Support.
 - The menu button is persistent and hidden during a Session, which keeps Exit.
 
 ## Visual design principles
 
-- **Night, with one living shape.** Near-black `#070a1f` with a soft aura in the chosen feeling's colour (`Backdrop`),
-  near-white text, frosted `bg-white/[0.06-0.15]` cards, white primary pill. Reference: Calm's deep, immersive screens
-  and the Kinorama geometric breathing videos. Use theme tokens in `globals.css`.
-- **Shape + colour + tone belong together.** `BreathVisual` (geometry or bloom, driven by `--breath`) and `Backdrop` take
-  their `--hue` from the feeling via `useShape`; hue changes animate (`@property --hue`).
-- **Navigation.** A single `MenuButton` top-right opens a labelled menu panel (Escape closes). The breathing shape in a Session is drawn faint with a soft scrim behind the words, so text stays readable while it still swells large.
+- **Night, with a breathing orb.** Near-black `#070a1f` with a quiet aura in the chosen feeling’s colour (`Backdrop`), near-white text, frosted cards, and a white primary pill.
+- **Orb and tone.** `BreathVisual` has an asymmetric rim of blue and lilac around a dark centre. The mood gently tints the orb, and the original mood glyphs remain in the feeling picker and Journey.
+- **Navigation.** A single top-right `MenuButton` opens a labelled menu panel. Escape closes it.
 - **Type.** Fraunces (serif display) for headings and reflections; DM Sans for UI text.
 - **Space.** Generous whitespace, a narrow column, few elements per screen.
-- **Motion.** One `--breath` value (0..1) drives the shape, glow and backdrop (own 8s loop on Today, Journey and Settings;
-  driven by the guided breath in Session). Always respect `prefers-reduced-motion` (the shape rests).
+- **Motion.** One `--breath` value (0..1) drives the orb, glow, and backdrop. The guided session drives the orb in time with the cue. The orb rests when reduced motion is enabled.
 - **Accessible.** WCAG AA contrast, visible focus, 44px touch targets, keyboard support.
 
 ## Development guidelines
@@ -74,9 +74,9 @@ Next.js 16 (App Router, Cache Components), React 19, TypeScript (strict), Tailwi
 - `npm run lint` — ESLint (must pass before pushing)
 
 ### Structure
-- `src/app/` routes: `/` Today, `/moment` Mindfulness, `/health/[area]`, `/setup`, `/journey`, `/settings`, `/support`; `manifest.ts` and `icon.svg` make it installable (no service worker)
+- `src/app/` routes: `/` Today, `/welcome`, `/moment` Mindfulness, `/listen`, `/health/[area]`, `/setup`, `/journey`, `/settings`, `/support`; `manifest.ts` and `icon.svg` make it installable (no service worker)
 - `src/components/` shared UI; `moment/` and `settings/` hold feature components; `ui/` holds Button and RadioCard
-- `src/lib/` `breath.ts` (timing), `sky.ts` (time-of-day greeting), `moods.ts`, `arrival.ts` (feeling + shape), `sound.ts`, `preferences.ts` and `journey.ts` (localStorage stores), `actions.ts` (action copy), `shareImage.ts`
+- `src/lib/` `breath.ts` (timing), `sky.ts` (time-of-day greeting), `moods.ts`, `arrival.ts` (selected feeling), `sound.ts`, `preferences.ts` and `journey.ts` (localStorage stores), `actions.ts` (action copy), `shareImage.ts`
 - `src/styles/` global styles, theme and breathing-line tokens
 - `public/assets/` static images, icons, fonts
 - `docs/` product and design documentation

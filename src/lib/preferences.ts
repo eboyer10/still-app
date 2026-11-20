@@ -14,7 +14,7 @@ export type Preferences = {
   sound: boolean;
   /** A tiny vibration at each breath phase, on phones that support it. Off unless chosen. */
   haptics: boolean;
-  /** The short first-run note on the home screen has been dismissed. */
+  /** The person has continued from the welcome screen. */
   introSeen: boolean;
 };
 
