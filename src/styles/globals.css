@@ -91,7 +91,7 @@ body {
 .bv {
   position: relative;
   isolation: isolate;
-  width: var(--bv-size);
+  width: var(--orb-width, var(--bv-size));
   aspect-ratio: 1;
   flex: none;
   transition: --hue 1.5s ease;
@@ -118,55 +118,75 @@ body {
   position: absolute;
   inset: -59%;
   background:
-    radial-gradient(ellipse 49% 43% at 47% 49%, hsl(calc(var(--hue) - 31) 63% 60% / 0.24), transparent 100%),
-    radial-gradient(ellipse 46% 45% at 54% 52%, hsl(calc(var(--hue) + 20) 56% 59% / 0.22), transparent 100%);
+    radial-gradient(ellipse 48% 40% at 44% 51%, hsl(calc(var(--hue) - 31) 56% 55% / 0.25), transparent 100%),
+    radial-gradient(ellipse 43% 48% at 56% 49%, hsl(calc(var(--hue) + 22) 46% 55% / 0.25), transparent 100%);
   opacity: calc(0.53 + var(--breath) * 0.16);
 }
 
-.bv-shape {
+.bv-form {
   position: absolute;
-  inset: -17%;
-  width: 134%;
-  height: 134%;
-  opacity: calc(0.2 + var(--breath) * 0.12);
-  transform: rotate(calc(-16deg + var(--breath) * 27deg)) scale(calc(0.88 + var(--breath) * 0.12));
+  inset: 0;
+  transform: rotate(calc(-5deg + var(--breath) * 9deg)) scale(calc(0.88 + var(--breath) * 0.12));
+  filter: drop-shadow(0 0 0.85rem hsl(var(--hue) 50% 68% / 0.17));
 }
 
-.bv-shape path,
-.bv-shape ellipse {
-  vector-effect: non-scaling-stroke;
+.bv-shape,
+.bv-orb,
+.bv-core {
+  position: absolute;
+  inset: 0;
+  transition: clip-path 1.15s cubic-bezier(0.36, 0, 0.22, 1);
+}
+
+.bv-shape {
+  clip-path: var(--orb-rim);
+  opacity: calc(0.28 + var(--breath) * 0.11);
+  transform: scale(calc(0.97 + var(--breath) * 0.03));
+  background: conic-gradient(
+    from 36deg,
+    hsl(calc(var(--hue) + 18) 51% 78%),
+    transparent 23%,
+    hsl(calc(var(--hue) - 44) 49% 71%) 48%,
+    transparent 70%,
+    hsl(calc(var(--hue) - 17) 52% 76%) 87%,
+    hsl(calc(var(--hue) + 18) 51% 78%)
+  );
 }
 
 .bv-orb {
-  position: absolute;
-  inset: 9%;
-  border-radius:
-    calc(48% + var(--breath) * 2%) 52% 49% 51% /
-    53% calc(48% + var(--breath) * 2%) 52% 47%;
-  transform: rotate(calc(-9deg + var(--breath) * 5deg)) scale(calc(0.86 + var(--breath) * 0.14));
+  clip-path: var(--orb-body);
   background:
-    radial-gradient(ellipse 46% 45% at 57% 46%, #0b101e 27%, rgb(12 18 34 / 0.95) 58%, rgb(13 20 43 / 0.55) 82%, transparent 112%),
-    radial-gradient(ellipse 44% 46% at 43% 56%, hsl(calc(var(--hue) - 23) 61% 23% / 0.87), transparent 112%),
+    radial-gradient(ellipse at 42% 11%, rgb(220 229 255 / 0.4), transparent 31%),
+    radial-gradient(ellipse at 71% 82%, hsl(calc(var(--hue) + 22) 62% 74% / 0.44), transparent 29%),
     conic-gradient(
       from 29deg at 51% 49%,
-      hsl(calc(var(--hue) + 30) 43% 72%),
-      hsl(calc(var(--hue) + 18) 48% 42%) 14%,
-      hsl(calc(var(--hue) + 37) 52% 75%) 32%,
-      hsl(calc(var(--hue) - 47) 50% 70%) 52%,
-      hsl(calc(var(--hue) - 62) 52% 56%) 69%,
-      hsl(calc(var(--hue) - 40) 56% 76%) 84%,
-      hsl(calc(var(--hue) + 30) 43% 72%) 100%
+      hsl(calc(var(--hue) + 28) 38% 65%),
+      hsl(calc(var(--hue) + 18) 44% 31%) 16%,
+      hsl(calc(var(--hue) + 34) 44% 64%) 35%,
+      hsl(calc(var(--hue) - 39) 42% 56%) 54%,
+      hsl(calc(var(--hue) - 61) 49% 47%) 73%,
+      hsl(calc(var(--hue) - 42) 51% 65%) 88%,
+      hsl(calc(var(--hue) + 28) 38% 65%)
     );
-  box-shadow: inset 0 0 0.95rem #131627, 0 0 1.25rem hsl(var(--hue) 58% 65% / 0.18);
+}
+
+.bv-depth {
+  position: absolute;
+  inset: 0;
+  filter: blur(clamp(0.38rem, 1.15vw, 0.95rem));
+  transform: translate(calc(1.5% + var(--breath) * 0.7%), calc(-0.6% - var(--breath) * 0.4%)) scale(0.87, 0.85);
+}
+
+.bv-core {
+  clip-path: var(--orb-body);
+  background: radial-gradient(ellipse at 56% 46%, #0b101e 31%, #11182c 59%, hsl(var(--hue) 29% 24%) 81%);
 }
 
 .bv-orb::after {
   content: "";
   position: absolute;
-  inset: 2%;
-  border-radius: inherit;
-  background: radial-gradient(ellipse 65% 31% at 39% 9%, white, transparent 77%);
-  opacity: 0.12;
+  inset: 0;
+  background: radial-gradient(ellipse 67% 34% at 35% 7%, rgb(221 225 253 / 0.21), transparent 83%);
 }
 
 /* The full-screen session owns the whole screen: no menu button behind it. */

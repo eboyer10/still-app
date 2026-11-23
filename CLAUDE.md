@@ -25,7 +25,7 @@ yourself, and take one meaningful action away from the screen.
 - Optional setup (`/setup`) lets people order the health spaces, note ongoing conditions and monitoring priorities, and import selected categories from Apple Health exports or compatible CSV files. The monitoring note appears in Care.
 
 ### Mindfulness and the Moment (`/moment`)
-Mindfulness has a greeting, a living `BreathVisual`, a three-line "how a moment goes", a 3×3 grid of nine feelings, and a floating "Begin a moment" button always in reach at the bottom.
+Mindfulness keeps the orb close to the nine feeling choices. They appear side by side on wider screens. "Begin a moment" opens the guided pause.
 - Feelings (`moods.ts`) give the orb an outline, a tint, and a musical root note. The choice lasts for the tab session (`sessionStorage`).
 - Begin opens `Session`, a full-screen layer on the same page (no navigation): Breathe (30s) → Keep ("Before you go", both parts optional) → Close. Exit or Escape returns to the screen that opened the session.
 - Breathing is a fixed gentle 4s inhale / 4s exhale with no hold. The orb (`BreathVisual size="immersive"`) gently swells on the inhale and contracts on the exhale, above the breath cue. People can pause, skip, exit, or simply rest.
@@ -53,7 +53,7 @@ Mindfulness has a greeting, a living `BreathVisual`, a three-line "how a moment 
 ## Visual design principles
 
 - **Night, with a breathing orb.** Near-black `#070a1f` with a quiet aura in the chosen feeling’s colour (`Backdrop`), near-white text, frosted cards, and a white primary pill.
-- **Orb and tone.** `BreathVisual` has an asymmetric rim of blue and lilac around a dark centre. The mood tints the orb and selects the translucent, moving outline. A broad radial light fades from the orb into the page. The picker and Journey use the same glyph and palette.
+- **Orb and tone.** `BreathVisual` has an asymmetric rim of blue and lilac around a dark centre. The mood changes the breathing orb’s silhouette and tint. The glassy core, translucent rim, picker, and Journey share the same contour. A broad radial light fades from the orb into the page.
 - **Navigation.** A single top-right `MenuButton` opens a labelled menu panel. Escape closes it.
 - **Type.** Fraunces (serif display) for headings and reflections; DM Sans for UI text.
 - **Space.** Generous whitespace, a narrow column, few elements per screen.

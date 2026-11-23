@@ -65,15 +65,15 @@ export default function Dashboard() {
       <section aria-labelledby="mindfulness-title" className="relative isolate rounded-[2rem] border border-[#d4c7ff]/20 bg-white/[0.035]">
         <div className="relative z-10 px-5 py-8 sm:px-9 sm:py-10">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#dfd2ff]">Mindfulness</p>
-          <h2 id="mindfulness-title" className="mt-3 max-w-[13ch] font-display text-3xl leading-tight tracking-tight sm:text-5xl">A moment to breathe</h2>
+          <h2 id="mindfulness-title" className="mt-3 max-w-[min(13ch,64%)] font-display text-3xl leading-tight tracking-tight sm:text-5xl">A moment to breathe</h2>
           <p className="mt-3 max-w-[28ch] text-sm leading-relaxed text-foreground/85 sm:max-w-md sm:text-base">Take a guided pause and keep a reflection if you like.</p>
           <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 sm:mt-6">
             <Link href="/moment" className={buttonClass("primary", "text-sm sm:text-base")}>Take a moment</Link>
             <Link href="/journey" className={buttonClass("ghost", "px-3 text-sm sm:text-base")}>My journey</Link>
           </div>
         </div>
-        <div aria-hidden="true" className="pointer-events-none absolute right-0 top-2 opacity-40 sm:right-[5%] sm:top-1/2 sm:-translate-y-1/2 sm:opacity-100 lg:right-[10%]">
-          <BreathVisual auto size="compact" />
+        <div aria-hidden="true" className="pointer-events-none absolute right-1 top-3 opacity-90 sm:right-[5%] sm:top-1/2 sm:-translate-y-1/2 sm:opacity-100 lg:right-[10%]">
+          <BreathVisual auto size="compact" className="max-sm:[--orb-width:clamp(7rem,36vw,10rem)]" />
         </div>
       </section>
 

@@ -1,49 +1,29 @@
 import { useId } from "react";
-import type { ShapeKind } from "@/lib/moods";
+import type { Mood } from "@/lib/moods";
+import { getOrbOutline } from "@/lib/orbOutline";
 
-function roundedOutline(sides: number) {
-  const corners = Array.from({ length: sides }, (_, index) => {
-    const angle = index * 2 * Math.PI / sides - Math.PI / 2;
-    return [16 + 12 * Math.cos(angle), 16 + 12 * Math.sin(angle)];
-  });
-  const near = (a: number[], b: number[]) =>
-    a.map((point, axis) => (point + (b[axis] - point) * 0.24).toFixed(2)).join(" ");
-  return corners.map((corner, index) => {
-    const previous = corners[(index + sides - 1) % sides];
-    const next = corners[(index + 1) % sides];
-    const start = index === 0 ? "M" : "L";
-    return `${start}${near(corner, previous)} Q${corner.map((value) => value.toFixed(2)).join(" ")} ${near(corner, next)}`;
-  }).join(" ") + " Z";
-}
-
-export default function MoodGlyph({ kind, n, hue, className = "size-8" }: {
-  kind: ShapeKind;
-  n: number;
+export default function MoodGlyph({ mood, hue, className = "size-8" }: {
+  mood?: Pick<Mood, "kind" | "n"> | null;
   hue: number;
   className?: string;
 }) {
   const gradient = useId();
+  const points = getOrbOutline(mood)
+    .map(([x, y]) => `${(50 + x).toFixed(2)},${(50 + y).toFixed(2)}`)
+    .join(" ");
 
   return (
-    <svg viewBox="0 0 32 32" aria-hidden="true" className={className} fill="none" strokeWidth="1">
+    <svg viewBox="0 0 100 100" aria-hidden="true" className={className} fill="none">
       <defs>
         <linearGradient id={gradient} x1="0%" y1="80%" x2="95%" y2="15%">
-          <stop stopColor={`hsl(${hue - 16} 57% 72%)`} />
-          <stop offset=".48" stopColor={`hsl(${hue} 64% 85%)`} />
-          <stop offset="1" stopColor={`hsl(${hue + 18} 48% 77%)`} />
+          <stop stopColor={`hsl(${hue - 22} 52% 69%)`} />
+          <stop offset=".48" stopColor={`hsl(${hue} 55% 83%)`} />
+          <stop offset="1" stopColor={`hsl(${hue + 20} 45% 73%)`} />
         </linearGradient>
       </defs>
       <g stroke={`url(#${gradient})`}>
-        {kind === "geometry" ? (
-          <>
-            <path d={roundedOutline(n)} />
-            <path d={roundedOutline(n)} transform="translate(5.6 5.6) scale(.65) rotate(12 16 16)" opacity=".55" />
-          </>
-        ) : (
-          Array.from({ length: n }, (_, index) => (
-            <ellipse key={index} cx="21" cy="16" rx="8.5" ry="3.5" transform={`rotate(${index * 360 / n} 16 16)`} opacity=".8" />
-          ))
-        )}
+        <polygon points={points} strokeWidth="3" />
+        <polygon points={points} transform="translate(9 12) scale(.78)" fill={`hsl(${hue} 45% 71% / 0.1)`} opacity=".65" strokeWidth="1.8" />
       </g>
     </svg>
   );
