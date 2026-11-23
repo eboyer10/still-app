@@ -37,8 +37,12 @@
   --font-display: var(--font-fraunces), Georgia, serif;
 }
 
+html,
 body {
   overflow-x: clip;
+}
+
+body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -166,6 +170,10 @@ body {
 }
 
 /* The full-screen session owns the whole screen: no menu button behind it. */
+body[data-session] {
+  overflow: hidden;
+}
+
 body[data-session] .menu-root {
   display: none;
 }

@@ -119,6 +119,7 @@ export default function Session({
     };
   }, []);
   useEffect(() => {
+    stageRef.current?.scrollTo({ top: 0 });
     headingRef.current?.focus({ preventScroll: true });
   }, [step]);
 
