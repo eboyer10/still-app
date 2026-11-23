@@ -52,8 +52,8 @@ Mindfulness keeps the orb close to the nine feeling choices. They appear side by
 
 ## Visual design principles
 
-- **Night, with a breathing orb.** Near-black `#070a1f` with a quiet aura in the chosen feeling’s colour (`Backdrop`), near-white text, frosted cards, and a white primary pill.
-- **Orb and tone.** `BreathVisual` has an asymmetric rim of blue and lilac around a dark centre. The mood changes the breathing orb’s silhouette and tint. The glassy core, translucent rim, picker, and Journey share the same contour. A broad radial light fades from the orb into the page.
+- **Night, with a breathing orb.** Near-black `#070a1f` with a subtle navy-to-plum gradient and a quiet aura in the chosen feeling’s colour (`Backdrop`), near-white text, frosted cards, and a white primary pill.
+- **Orb and tone.** `BreathVisual` has an asymmetric rim of blue and lilac around a dark centre. The mood changes the breathing orb’s silhouette and tint. The glassy core, translucent ripples, picker, and Journey share the same contour. Ripples spread and fade with distance from the orb. A broad radial light fades from the orb into the page.
 - **Navigation.** A single top-right `MenuButton` opens a labelled menu panel. Escape closes it.
 - **Type.** Fraunces (serif display) for headings and reflections; DM Sans for UI text.
 - **Space.** Generous whitespace, a narrow column, few elements per screen.

@@ -19,6 +19,7 @@
   color-scheme: dark;
 
   --background: #070a1f;
+  --night-gradient: linear-gradient(145deg, #121b35, #0a0e25 48%, #181127);
   --foreground: #f2f4ff;
 
   --orb-glow: rgb(160 175 255 / 0.7);
@@ -26,7 +27,6 @@
   --btn-from: #ffffff;
   --btn-to: #d9defc;
   --btn-ink: #0a0d2a;
-
 }
 
 @theme inline {
@@ -43,7 +43,8 @@ body {
 }
 
 body {
-  background: var(--background);
+  background: var(--night-gradient), var(--background);
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
 }
@@ -77,9 +78,9 @@ body {
   pointer-events: none;
   transition: --hue 1s ease;
   background:
-    radial-gradient(70% 44% at 50% 26%, hsl(var(--hue) 75% 52% / calc(0.12 + var(--breath) * 0.035)), transparent 100%),
-    radial-gradient(90% 50% at 50% 112%, hsl(calc(var(--hue) + 40) 55% 32% / 0.24), transparent 100%),
-    var(--background);
+    radial-gradient(70% 54% at 61% 28%, hsl(var(--hue) 55% 51% / calc(0.09 + var(--breath) * 0.035)), transparent 100%),
+    radial-gradient(80% 45% at 29% 102%, hsl(calc(var(--hue) + 28) 46% 36% / 0.14), transparent 100%),
+    var(--night-gradient), var(--background);
 }
 
 .backdrop-auto {
@@ -140,10 +141,13 @@ body {
 
 .bv-shape {
   clip-path: var(--orb-rim);
-  opacity: calc(0.28 + var(--breath) * 0.11);
-  transform: scale(calc(0.97 + var(--breath) * 0.03));
+  opacity: calc(var(--ripple-opacity) * (0.76 + var(--breath) * 0.24));
+  transform: scale(calc(
+    0.97 + var(--ripple-index) * (0.095 + var(--ripple-index) * 0.011)
+    + var(--breath) * (0.03 + var(--ripple-index) * 0.018)
+  ));
   background: conic-gradient(
-    from 36deg,
+    from calc(36deg + var(--ripple-index) * 9deg),
     hsl(calc(var(--hue) + 18) 51% 78%),
     transparent 23%,
     hsl(calc(var(--hue) - 44) 49% 71%) 48%,
