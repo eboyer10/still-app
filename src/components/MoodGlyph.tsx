@@ -6,11 +6,13 @@ function roundedOutline(sides: number) {
     const angle = index * 2 * Math.PI / sides - Math.PI / 2;
     return [16 + 12 * Math.cos(angle), 16 + 12 * Math.sin(angle)];
   });
-  const midpoint = (a: number[], b: number[]) => a.map((point, axis) => (point + b[axis]) / 2).join(" ");
+  const near = (a: number[], b: number[]) =>
+    a.map((point, axis) => (point + (b[axis] - point) * 0.24).toFixed(2)).join(" ");
   return corners.map((corner, index) => {
+    const previous = corners[(index + sides - 1) % sides];
     const next = corners[(index + 1) % sides];
-    const start = index === 0 ? `M${midpoint(corners[sides - 1], corner)}` : "";
-    return `${start} Q${corner.join(" ")} ${midpoint(corner, next)}`;
+    const start = index === 0 ? "M" : "L";
+    return `${start}${near(corner, previous)} Q${corner.map((value) => value.toFixed(2)).join(" ")} ${near(corner, next)}`;
   }).join(" ") + " Z";
 }
 

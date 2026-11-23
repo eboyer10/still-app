@@ -32,6 +32,7 @@ const FILTERS: { value: Filter; label: string }[] = [
 export default function JourneyView() {
   const { moments, ready } = useJourney();
   const [filter, setFilter] = useState<Filter>("all");
+  const reflected = moments.filter((moment) => moment.reflection);
   const shown = moments.filter((m) =>
     filter === "reflections" ? m.reflection : filter === "intentions" ? m.intention : true,
   );
@@ -51,8 +52,8 @@ export default function JourneyView() {
           <EmptyJourney />
         ) : (
           <>
-            {moments.some((moment) => moment.reflection) && (
-              <div className="mt-8"><LineFromBefore moments={moments} /></div>
+            {reflected.length > 1 && (
+              <div className="mt-8"><LineFromBefore moments={reflected} /></div>
             )}
 
             <h2 className="mt-9 font-display text-2xl sm:text-3xl">Saved moments</h2>

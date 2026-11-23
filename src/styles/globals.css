@@ -121,10 +121,10 @@ body {
 
 .bv-shape {
   position: absolute;
-  inset: -14%;
-  width: 128%;
-  height: 128%;
-  opacity: calc(0.15 + var(--breath) * 0.11);
+  inset: -17%;
+  width: 134%;
+  height: 134%;
+  opacity: calc(0.2 + var(--breath) * 0.12);
   transform: rotate(calc(-16deg + var(--breath) * 27deg)) scale(calc(0.88 + var(--breath) * 0.12));
 }
 

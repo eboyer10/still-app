@@ -131,7 +131,9 @@ export default function MomentEntry({ moment }: { moment: Moment }) {
             <time dateTime={moment.completedAt}>{dateFormat.format(when)} · {timeFormat.format(when)}</time>
             {moment.mood && getMood(moment.mood) ? ` · ${getMood(moment.mood)?.label}` : ""}
           </span>
-          <span className={`mt-0.5 block font-display text-lg leading-snug ${open ? "" : "line-clamp-2"}`}>{preview}</span>
+          {(!open || (!reflection && !intention)) && (
+            <span className="mt-0.5 line-clamp-2 font-display text-lg leading-snug">{preview}</span>
+          )}
           {!open && (reflection || intention) && (
             <span className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-foreground/85">
               {reflection && <span className="text-[#becdf8]">Reflection</span>}
