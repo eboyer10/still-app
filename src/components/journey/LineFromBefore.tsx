@@ -19,15 +19,15 @@ export default function LineFromBefore({ moments }: { moments: Moment[] }) {
   return (
     <section
       aria-labelledby="line-title"
-      className="relative overflow-hidden rounded-3xl bg-white/14 p-6 backdrop-blur sm:p-8"
+      className="relative overflow-hidden rounded-3xl border border-[#bfcbff]/15 bg-[linear-gradient(120deg,#1d2b4b70,#231c3f70)] p-5 sm:p-8"
     >
-      <div className="absolute right-4 top-4 opacity-80">
-        <MomentShape moment={moment} className="size-14" />
+      <div className="absolute right-4 top-4 opacity-45">
+        <MomentShape moment={moment} className="size-10" />
       </div>
-      <h2 id="line-title" className="text-xs uppercase tracking-widest text-foreground/80">
+      <h2 id="line-title" className="pr-12 text-sm font-medium text-[#d0dcff]">
         A line from before
       </h2>
-      <blockquote className="mt-4 max-w-md whitespace-pre-wrap font-display text-2xl font-medium leading-snug sm:text-3xl">
+      <blockquote className="relative mt-4 max-w-lg whitespace-pre-wrap break-words font-display text-2xl font-medium leading-snug sm:text-3xl">
         {moment.reflection?.text}
       </blockquote>
       <div className="mt-5 flex flex-wrap items-center justify-between gap-2">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { isSoundscape, type Soundscape } from "@/lib/sound";
 
 export type ReminderFrequency = "off" | "daily" | "few-per-week" | "weekdays";
 
@@ -10,8 +11,8 @@ export type Preferences = {
   windowStart: string;
   windowEnd: string;
   inAppReminders: boolean;
-  /** Soft tone that follows the breath. On by default, only ever started by a tap, and easy to mute. */
-  sound: boolean;
+  /** Optional audio during the breath. */
+  soundscape: Soundscape;
   /** A tiny vibration at each breath phase, on phones that support it. Off unless chosen. */
   haptics: boolean;
   /** The person has continued from the welcome screen. */
@@ -23,7 +24,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   windowStart: "09:00",
   windowEnd: "17:00",
   inAppReminders: true,
-  sound: true,
+  soundscape: "silent",
   haptics: false,
   introSeen: false,
 };
@@ -35,7 +36,7 @@ const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
 function parse(raw: string | null): Preferences {
   if (!raw) return DEFAULT_PREFERENCES;
   try {
-    const data = JSON.parse(raw) as Partial<Preferences>;
+    const data = JSON.parse(raw) as Partial<Preferences> & { sound?: boolean };
     return {
       reminderFrequency: FREQUENCIES.includes(data.reminderFrequency as ReminderFrequency)
         ? (data.reminderFrequency as ReminderFrequency)
@@ -50,7 +51,7 @@ function parse(raw: string | null): Preferences {
         typeof data.inAppReminders === "boolean"
           ? data.inAppReminders
           : DEFAULT_PREFERENCES.inAppReminders,
-      sound: typeof data.sound === "boolean" ? data.sound : DEFAULT_PREFERENCES.sound,
+      soundscape: isSoundscape(data.soundscape) ? data.soundscape : data.sound === true ? "music" : DEFAULT_PREFERENCES.soundscape,
       haptics: typeof data.haptics === "boolean" ? data.haptics : DEFAULT_PREFERENCES.haptics,
       introSeen: typeof data.introSeen === "boolean" ? data.introSeen : DEFAULT_PREFERENCES.introSeen,
     };

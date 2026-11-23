@@ -5,7 +5,7 @@ import { useState } from "react";
 import SiteMark from "@/components/SiteMark";
 import Button from "@/components/ui/Button";
 import { clearHealth } from "@/lib/healthStore";
-import { unlockAudio } from "@/lib/sound";
+import SoundPicker from "@/components/today/SoundPicker";
 import { usePreferences } from "@/lib/preferences";
 
 function Toggle({
@@ -66,15 +66,9 @@ export default function SettingsForm() {
 
       <h2 className="mt-10 text-lg font-medium">During a moment</h2>
       <div className="mt-4 grid gap-3">
-        <Toggle
-          checked={preferences.sound}
-          onChange={(checked) => {
-            unlockAudio();
-            update({ sound: checked });
-          }}
-          title="A soft tone that follows the breath"
-          description="On by default, and only after you tap Begin. Turn it off here, or mute it during a moment."
-        />
+        <div className="rounded-3xl border border-white/15 bg-white/[0.055] p-4">
+          <SoundPicker label="Breathing sound" value={preferences.soundscape} onChange={(value) => update({ soundscape: value })} />
+        </div>
         <Toggle
           checked={preferences.haptics}
           onChange={(checked) => {

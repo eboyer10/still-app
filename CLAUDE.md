@@ -19,32 +19,31 @@ yourself, and take one meaningful action away from the screen.
 - Guilt-driven copy, urgency, or dark patterns.
 
 ### Today and health setup
-- On a first visit, welcome offers one guided breath or a direct route to Today. After the pause, people can set up their dashboard or explore it. The welcome is also available at `/welcome`.
+- On a first visit, welcome offers one guided breath or a direct route to Today. After the pause, people can save a first health entry or skip to the dashboard. The welcome is also available at `/welcome`.
 - Today (`/`) offers the guided pause, a link to Journey, and four health spaces: Movement, Food & drink, Sleep, and Care & monitoring.
 - Each space has a local log with editable entries. Care includes upcoming visits, visit notes, and readings. Today shows recent entries and the next visit.
 - Optional setup (`/setup`) lets people order the health spaces, note ongoing conditions and monitoring priorities, and import selected categories from Apple Health exports or compatible CSV files. The monitoring note appears in Care.
 
 ### Mindfulness and the Moment (`/moment`)
 Mindfulness has a greeting, a living `BreathVisual`, a three-line "how a moment goes", a 3×3 grid of nine feelings, and a floating "Begin a moment" button always in reach at the bottom.
-- Feelings (`moods.ts`) each have their own shape (geometry with n sides, or a bloom with n petals), colour (hue) and tone (396, 417, 432, 528, 639, 741, 852, 963, 111 Hz). Tapping one tints the orb and backdrop and plays a ~4s tone preview with a `SoundBadge`. Copy says "traditionally linked", never a health claim. The choice lasts for the tab session (`sessionStorage`).
+- Feelings (`moods.ts`) give the orb an outline, a tint, and a musical root note. The choice lasts for the tab session (`sessionStorage`).
 - Begin opens `Session`, a full-screen layer on the same page (no navigation): Breathe (30s) → Keep ("Before you go", both parts optional) → Close. Exit or Escape returns to the screen that opened the session.
 - Breathing is a fixed gentle 4s inhale / 4s exhale with no hold. The orb (`BreathVisual size="immersive"`) gently swells on the inhale and contracts on the exhale, above the breath cue. People can pause, skip, exit, or simply rest.
 - Breath cues are announced politely to screen readers; there is no progress bar. Escape never discards typed words.
 - One optional question: "What would make the rest of today feel more meaningful?" Six action invitations plus "My own".
 - The close is calm: no counts, scores or "well done". A chosen action is shown large with "The screen can wait."; "I'm heading off" or "Done"; a subtle "View my journey".
-- Sound is on by default (`sound`) but only ever starts from a tap. Easy to turn off in Mindfulness, in the session, and in Settings.
+- The first breath starts silent. Optional soft music uses the feeling’s frequency as a note. Ocean waves and silence are available in the session and Settings.
 - Follow-up (`FollowUpCard`) in Mindfulness: up to three unrevisited intentions per visit, newest first, "Ask me later".
 
 ### Listen (`/listen`)
-- Three curated Spotify picks cover guided meditation, soft piano, and nature sounds. The player loads when selected. The direct Spotify link is always available.
+- Three curated Spotify picks cover guided meditation, soft piano, and nature sounds. Mindfulness links to meditation and Sleep links to nature sounds. The player loads when selected.
 
 ### My Journey (`/journey`)
-- A calm, scannable bento of cards: "A line from before" (`LineFromBefore`, a random past reflection, "Show another"), stat pills (`JourneySummary`: pauses taken, intentions chosen, looked back on, acted upon: plain counts, no targets), and the landscape.
+- A timeline groups saved moments by month and puts reflections and intentions first. "A line from before" brings back a past reflection when available.
 - Filter pills (All / Reflections / Intentions, `aria-pressed`), then month-grouped compact cards (`MomentEntry`) each drawn as the shape and colour of the feeling it began with (`MomentShape`; `Moment.mood` is optional). Cards expand (also via `#moment-<id>`) to show the reflection, intention and follow-up.
 - An "Options" menu per entry: edit/remove reflection, edit/remove intention, remove moment, save reflection as an image (`shareImage.ts`, local canvas, opt-in).
 - Follow-up is neutral and optional: "I did it", "Not yet", "My priorities changed". None is framed as better.
 - Never invent data: a Moment shows only what the person actually gave. No placeholders.
-- "Your shape" (`JourneyShape`): all Moments gathered into one sunflower-spiral picture, each in its feeling's form and colour, evenly spaced so gaps are never shown.
 - Everything is editable and deletable (per reflection, per intention, per Moment, or all data).
 
 ### Navigation
@@ -54,7 +53,7 @@ Mindfulness has a greeting, a living `BreathVisual`, a three-line "how a moment 
 ## Visual design principles
 
 - **Night, with a breathing orb.** Near-black `#070a1f` with a quiet aura in the chosen feeling’s colour (`Backdrop`), near-white text, frosted cards, and a white primary pill.
-- **Orb and tone.** `BreathVisual` has an asymmetric rim of blue and lilac around a dark centre. The mood gently tints the orb, and the original mood glyphs remain in the feeling picker and Journey.
+- **Orb and tone.** `BreathVisual` has an asymmetric rim of blue and lilac around a dark centre. The mood tints the orb and selects the translucent, moving outline. A broad radial light fades from the orb into the page. The picker and Journey use the same glyph and palette.
 - **Navigation.** A single top-right `MenuButton` opens a labelled menu panel. Escape closes it.
 - **Type.** Fraunces (serif display) for headings and reflections; DM Sans for UI text.
 - **Space.** Generous whitespace, a narrow column, few elements per screen.

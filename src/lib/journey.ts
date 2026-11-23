@@ -266,30 +266,10 @@ export function clearJourney() {
   emit();
 }
 
-// ---- derived values (computed on read, never stored) ----
-
-export type JourneyCounts = {
-  momentsTaken: number;
-  intentionsChosen: number;
-  /** Any follow-up recorded, including "Not yet" and "My priorities changed". */
-  intentionsRevisited: number;
-  /** Only "I did it". */
-  intentionsActedOn: number;
-};
-
-export function getJourneyCounts(moments: Moment[]): JourneyCounts {
-  const intentions = moments.flatMap((m) => (m.intention ? [m.intention] : []));
-  return {
-    momentsTaken: moments.length,
-    intentionsChosen: intentions.length,
-    intentionsRevisited: intentions.filter((i) => i.followUp).length,
-    intentionsActedOn: intentions.filter((i) => i.followUp?.status === "did-it").length,
-  };
-}
-
 const subscribeNever = () => () => {};
 
-/** `ready` is false during server render and hydration, so the UI never flashes an empty state. */
+/** Wait for browser data before showing the timeline or empty state. */
+
 export function useJourney() {
   const moments = useSyncExternalStore(subscribe, read, () => EMPTY);
   const ready = useSyncExternalStore(subscribeNever, () => true, () => false);

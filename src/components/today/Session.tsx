@@ -4,14 +4,14 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Backdrop from "@/components/Backdrop";
 import BreathVisual from "@/components/BreathVisual";
-import SoundBadge from "@/components/SoundBadge";
+import SoundPicker from "@/components/today/SoundPicker";
 import Button, { buttonClass } from "@/components/ui/Button";
 import RadioCard from "@/components/ui/RadioCard";
 import { CUSTOM_ACTION_ID, MOMENT_ACTIONS } from "@/lib/actions";
 import { BREATH_DURATION_MS, breathCue, breathValue, useBreathTimer, type BreathCue } from "@/lib/breath";
 import { addMoment, INTENTION_LIMIT, REFLECTION_LIMIT } from "@/lib/journey";
 import { usePreferences } from "@/lib/preferences";
-import { startBreathSound, unlockAudio, type BreathSound } from "@/lib/sound";
+import { startBreathSound, unlockAudio, type BreathSound, type Soundscape } from "@/lib/sound";
 
 type Step = "breathe" | "keep" | "close";
 
@@ -37,7 +37,7 @@ const heading = "font-display text-3xl font-bold leading-tight tracking-tight ou
  * Everything after the breath is optional and only saved on this device.
  */
 export default function Session({
-  hz, moodId, moodLabel, onExit, onDone = onExit, doneLabel,
+  hz, moodId, moodLabel, onExit, onDone = onExit, doneLabel, quietStart = false,
 }: {
   hz: number;
   moodId: string | null;
@@ -45,8 +45,11 @@ export default function Session({
   onExit: () => void;
   onDone?: () => void;
   doneLabel?: string;
+  quietStart?: boolean;
 }) {
-  const [{ sound, haptics }, updatePrefs] = usePreferences();
+  const [{ soundscape, haptics }, updatePrefs] = usePreferences();
+  const [welcomeSound, setWelcomeSound] = useState<Soundscape>("silent");
+  const sound = quietStart ? welcomeSound : soundscape;
   const soundRef = useRef<BreathSound | null>(null);
   const [step, setStep] = useState<Step>("breathe");
   const [paused, setPaused] = useState(false);
@@ -92,13 +95,13 @@ export default function Session({
     onComplete: finishBreath,
   });
 
-  // The tone only plays while the breath is running.
+  // Audio only plays while the breath is running.
   useEffect(() => {
-    if (!sound || step !== "breathe" || paused) return;
-    const tone = startBreathSound(hz);
-    soundRef.current = tone;
+    if (sound === "silent" || step !== "breathe" || paused) return;
+    const audio = startBreathSound(hz, sound);
+    soundRef.current = audio;
     return () => {
-      tone?.stop();
+      audio?.stop();
       soundRef.current = null;
     };
   }, [sound, step, paused, hz]);
@@ -186,7 +189,7 @@ export default function Session({
       role="dialog"
       aria-modal="true"
       aria-label="A moment"
-      className="fixed inset-0 z-40 overflow-y-auto bg-background"
+      className="fixed inset-0 z-40 overflow-x-hidden overflow-y-auto bg-background"
     >
       <Backdrop />
       <p className="sr-only" role="status" aria-live="polite">
@@ -207,25 +210,16 @@ export default function Session({
             <p className="mt-6 max-w-xs text-sm leading-6 text-foreground/90">
               Let the orb set the pace, or breathe in your own time.
             </p>
-            {sound && (
-              <div className="mt-4">
-                <SoundBadge hz={hz} playing={!paused} />
-              </div>
-            )}
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-5">
+              <SoundPicker value={sound} onChange={(value) => {
+                if (value !== "silent") unlockAudio();
+                if (quietStart) setWelcomeSound(value);
+                else updatePrefs({ soundscape: value });
+              }} />
+            </div>
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
               <Button variant="quiet" className="bg-[#070a1f]/60 backdrop-blur" onClick={togglePause} aria-pressed={paused}>
                 {paused ? "Resume" : "Pause"}
-              </Button>
-              <Button
-                variant="ghost"
-                className="bg-[#070a1f]/60 backdrop-blur"
-                aria-pressed={sound}
-                onClick={() => {
-                  unlockAudio();
-                  updatePrefs({ sound: !sound });
-                }}
-              >
-                {sound ? "Mute sound" : "Play sound"}
               </Button>
               <Button variant="ghost" className="bg-[#070a1f]/60 backdrop-blur" onClick={() => setStep("keep")}>
                 Skip

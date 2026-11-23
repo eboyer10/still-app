@@ -62,7 +62,7 @@ export default function Dashboard() {
         </p>
       </header>
 
-      <section aria-labelledby="mindfulness-title" className="relative isolate overflow-hidden rounded-[2rem] border border-[#d4c7ff]/20 bg-[radial-gradient(ellipse_at_83%_50%,#352963_0%,#221943_38%,#14142e_78%)]">
+      <section aria-labelledby="mindfulness-title" className="relative isolate rounded-[2rem] border border-[#d4c7ff]/20 bg-white/[0.035]">
         <div className="relative z-10 px-5 py-8 sm:px-9 sm:py-10">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#dfd2ff]">Mindfulness</p>
           <h2 id="mindfulness-title" className="mt-3 max-w-[13ch] font-display text-3xl leading-tight tracking-tight sm:text-5xl">A moment to breathe</h2>
@@ -72,7 +72,7 @@ export default function Dashboard() {
             <Link href="/journey" className={buttonClass("ghost", "px-3 text-sm sm:text-base")}>My journey</Link>
           </div>
         </div>
-        <div aria-hidden="true" className="pointer-events-none absolute -right-8 top-2 opacity-30 sm:right-[5%] sm:top-1/2 sm:-translate-y-1/2 sm:opacity-100 lg:right-[10%]">
+        <div aria-hidden="true" className="pointer-events-none absolute right-0 top-2 opacity-40 sm:right-[5%] sm:top-1/2 sm:-translate-y-1/2 sm:opacity-100 lg:right-[10%]">
           <BreathVisual auto size="compact" />
         </div>
       </section>

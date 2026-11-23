@@ -1,90 +1,108 @@
-export type BreathSound = {
-  /** breath is 0..1, the same value that drives the visual. */
-  update: (breath: number) => void;
-  stop: () => void;
-};
+export const SOUNDS = {
+  silent: "Silence",
+  music: "Soft music",
+  waves: "Ocean waves",
+} as const;
+
+export type Soundscape = keyof typeof SOUNDS;
+
+export function isSoundscape(value: unknown): value is Soundscape {
+  return typeof value === "string" && Object.hasOwn(SOUNDS, value);
+}
 
 let context: AudioContext | null = null;
 
 function getContext() {
   if (context) return context;
-  const Ctx =
-    window.AudioContext ??
+  const Audio = window.AudioContext ??
     (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-  if (!Ctx) return null;
+  if (!Audio) return null;
   try {
-    context = new Ctx();
+    context = new Audio();
   } catch {
     return null;
   }
   return context;
 }
 
-/**
- * Browsers only allow audio after a tap or key press. Call this from a click handler
- * (the sound toggle, Begin a moment) so the tone can start later without being blocked.
- */
 export function unlockAudio() {
   const ctx = getContext();
-  if (ctx && ctx.state !== "running") void ctx.resume();
+  if (ctx && ctx.state !== "running") void ctx.resume().catch(() => {});
 }
 
-// The chosen tone with a soft octave and fifth above it, so low tones still carry on phone and laptop
-// speakers. The slightly detuned pair makes a slow, gentle shimmer.
-const PARTIALS: [ratio: number, level: number][] = [
-  [1, 0.6],
-  [1.0025, 0.4],
-  [2, 0.3],
-  [3, 0.12],
-];
+function makeMusic(ctx: AudioContext, output: AudioNode, hz: number) {
+  const start = ctx.currentTime;
+  const chords = [[1, 5 / 4, 3 / 2], [1, 7 / 6, 4 / 3], [1, 9 / 8, 3 / 2], [1, 5 / 4, 3 / 2]];
 
-let preview: BreathSound | null = null;
-let previewTimer: number | undefined;
-
-export function stopPreview() {
-  window.clearTimeout(previewTimer);
-  preview?.stop();
-  preview = null;
+  return [1, 2, 0].map((note, voice) => {
+    const oscillator = ctx.createOscillator();
+    const envelope = ctx.createGain();
+    envelope.gain.value = 0;
+    const level = [0.28, 0.22, 0.15][voice];
+    for (let bar = 0; bar < 8; bar++) {
+      const at = start + bar * 4 + voice * 0.38;
+      const ratio = chords[bar % chords.length][note];
+      // The last voice plays the exact mood frequency. The lower notes soften its presence.
+      oscillator.frequency.setValueAtTime(hz * ratio * (voice === 2 ? 1 : 0.5), at);
+      envelope.gain.setValueAtTime(0, at);
+      envelope.gain.linearRampToValueAtTime(level, at + 0.9);
+      envelope.gain.linearRampToValueAtTime(0, at + 3.95);
+    }
+    oscillator.connect(envelope).connect(output);
+    oscillator.start();
+    return oscillator;
+  });
 }
 
-/** A short, soft sample of a tone, played from a tap so people hear the choice they just made. */
-export function playPreview(hz: number, ms = 4000): boolean {
-  stopPreview();
-  const tone = startBreathSound(hz);
-  if (!tone) return false;
-  preview = tone;
-  tone.update(0.7);
-  previewTimer = window.setTimeout(stopPreview, ms);
-  return true;
+function makeWaves(ctx: AudioContext, output: AudioNode) {
+  const samples = ctx.createBuffer(1, ctx.sampleRate * 3, ctx.sampleRate);
+  const data = samples.getChannelData(0);
+  let previous = 0;
+  for (let i = 0; i < data.length; i++) {
+    previous = (previous + (Math.random() * 2 - 1) * 0.045) / 1.045;
+    data[i] = previous * 2.4;
+  }
+  // Fade the splice on both sides so there is no click when the buffer loops.
+  for (let i = 0; i < 256; i++) {
+    data[i] *= i / 256;
+    data[data.length - 1 - i] *= i / 256;
+  }
+
+  const noise = ctx.createBufferSource();
+  noise.buffer = samples;
+  noise.loop = true;
+  const filter = ctx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = 700;
+  noise.connect(filter).connect(output);
+  noise.start();
+  return [noise];
 }
 
-/** Returns null when audio isn't available. The tone swells and settles with the breath. */
-export function startBreathSound(hz: number): BreathSound | null {
+export type BreathSound = {
+  update: (breath: number) => void;
+  stop: () => void;
+};
+
+export function startBreathSound(hz: number, soundscape: Exclude<Soundscape, "silent">): BreathSound | null {
   const ctx = getContext();
   if (!ctx) return null;
   unlockAudio();
-  const master = ctx.createGain();
-  master.gain.value = 0;
-  const filter = ctx.createBiquadFilter();
-  filter.type = "lowpass";
-  filter.frequency.value = Math.max(1100, hz * 3.4);
-  filter.connect(master).connect(ctx.destination);
-  const oscillators = PARTIALS.map(([ratio, level]) => {
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = "sine";
-    osc.frequency.value = hz * ratio;
-    gain.gain.value = level;
-    osc.connect(gain).connect(filter);
-    osc.start();
-    return osc;
-  });
-  master.gain.setTargetAtTime(0.1, ctx.currentTime, 0.6);
+  const volume = ctx.createGain();
+  volume.gain.value = 0;
+  volume.connect(ctx.destination);
+  const sources = soundscape === "music" ? makeMusic(ctx, volume, hz) : makeWaves(ctx, volume);
+  sources[0].onended = () => volume.disconnect();
+  const update = (breath: number) => {
+    volume.gain.setTargetAtTime(0.07 + breath * 0.14, ctx.currentTime, 0.25);
+  };
+  update(0);
+
   return {
-    update: (breath) => master.gain.setTargetAtTime(0.07 + breath * 0.14, ctx.currentTime, 0.3),
+    update,
     stop: () => {
-      master.gain.setTargetAtTime(0, ctx.currentTime, 0.2);
-      window.setTimeout(() => oscillators.forEach((osc) => osc.stop()), 1000);
+      volume.gain.setTargetAtTime(0, ctx.currentTime, 0.09);
+      sources.forEach((source) => source.stop(ctx.currentTime + 0.45));
     },
   };
 }

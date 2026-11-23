@@ -1,41 +1,48 @@
-/** A tiny drawing of a feeling's own shape: an n-sided outline, or a rosette with n petals. */
-type GlyphProps = { kind: "geometry" | "bloom"; n: number; hue: number };
+import { useId } from "react";
+import type { ShapeKind } from "@/lib/moods";
 
-export default function MoodGlyph({ kind, n, hue, className = "size-8" }: GlyphProps & { className?: string }) {
-  return (
-    <svg viewBox="0 0 32 32" aria-hidden="true" className={className} fill="none" strokeWidth="1.3" style={{ stroke: `hsl(${hue} 90% 80%)` }}>
-      <GlyphShapes kind={kind} n={n} />
-    </svg>
-  );
+function roundedOutline(sides: number) {
+  const corners = Array.from({ length: sides }, (_, index) => {
+    const angle = index * 2 * Math.PI / sides - Math.PI / 2;
+    return [16 + 12 * Math.cos(angle), 16 + 12 * Math.sin(angle)];
+  });
+  const midpoint = (a: number[], b: number[]) => a.map((point, axis) => (point + b[axis]) / 2).join(" ");
+  return corners.map((corner, index) => {
+    const next = corners[(index + 1) % sides];
+    const start = index === 0 ? `M${midpoint(corners[sides - 1], corner)}` : "";
+    return `${start} Q${corner.join(" ")} ${midpoint(corner, next)}`;
+  }).join(" ") + " Z";
 }
 
-/** The drawing alone, on a 32x32 grid, for placing inside a larger SVG. */
-export function GlyphShapes({ kind, n }: Pick<GlyphProps, "kind" | "n">) {
+export default function MoodGlyph({ kind, n, hue, className = "size-8" }: {
+  kind: ShapeKind;
+  n: number;
+  hue: number;
+  className?: string;
+}) {
+  const gradient = useId();
+
   return (
-    <>
-      {kind === "geometry" ? (
-        <>
-          <polygon
-            points={Array.from({ length: n }, (_, k) => {
-              const a = ((k * 360) / n - 90) * (Math.PI / 180);
-              return `${(16 + 12 * Math.cos(a)).toFixed(1)},${(16 + 12 * Math.sin(a)).toFixed(1)}`;
-            }).join(" ")}
-            strokeLinejoin="round"
-          />
-          <polygon
-            points={Array.from({ length: n }, (_, k) => {
-              const a = ((k * 360) / n - 90 + 12) * (Math.PI / 180);
-              return `${(16 + 6.5 * Math.cos(a)).toFixed(1)},${(16 + 6.5 * Math.sin(a)).toFixed(1)}`;
-            }).join(" ")}
-            strokeLinejoin="round"
-            opacity="0.7"
-          />
-        </>
-      ) : (
-        Array.from({ length: n }, (_, k) => (
-          <ellipse key={k} cx="22" cy="16" rx="8" ry="3.2" transform={`rotate(${(k * 360) / n} 16 16)`} />
-        ))
-      )}
-    </>
+    <svg viewBox="0 0 32 32" aria-hidden="true" className={className} fill="none" strokeWidth="1">
+      <defs>
+        <linearGradient id={gradient} x1="0%" y1="80%" x2="95%" y2="15%">
+          <stop stopColor={`hsl(${hue - 16} 57% 72%)`} />
+          <stop offset=".48" stopColor={`hsl(${hue} 64% 85%)`} />
+          <stop offset="1" stopColor={`hsl(${hue + 18} 48% 77%)`} />
+        </linearGradient>
+      </defs>
+      <g stroke={`url(#${gradient})`}>
+        {kind === "geometry" ? (
+          <>
+            <path d={roundedOutline(n)} />
+            <path d={roundedOutline(n)} transform="translate(5.6 5.6) scale(.65) rotate(12 16 16)" opacity=".55" />
+          </>
+        ) : (
+          Array.from({ length: n }, (_, index) => (
+            <ellipse key={index} cx="21" cy="16" rx="8.5" ry="3.5" transform={`rotate(${index * 360 / n} 16 16)`} opacity=".8" />
+          ))
+        )}
+      </g>
+    </svg>
   );
 }

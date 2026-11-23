@@ -2,34 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { SPOTIFY_SUGGESTIONS } from "@/lib/listening";
 import Button from "@/components/ui/Button";
 
-const suggestions = [
-  {
-    category: "Guided meditation",
-    title: "The Power of the Pause",
-    description: "A 10-minute guided meditation for slowing down.",
-    path: "episode/6qOXRcpjooYVGfFajscUVP",
-    color: "#d0c2ff",
-  },
-  {
-    category: "Calm music",
-    title: "Wake Up Gently",
-    description: "Soft piano for an unhurried start to the day.",
-    path: "playlist/37i9dQZF1DX7cZxYLqLUJl",
-    color: "#f4c7a4",
-  },
-  {
-    category: "Nature sounds",
-    title: "Nature Sounds",
-    description: "Rain, birdsong, and the sounds of the forest.",
-    path: "playlist/37i9dQZF1DX4PP3DA4J0N8",
-    color: "#aee9cd",
-  },
-] as const;
-
 export default function Listening() {
-  const [selected, setSelected] = useState<(typeof suggestions)[number] | null>(null);
+  const [selected, setSelected] = useState<(typeof SPOTIFY_SUGGESTIONS)[number] | null>(null);
   const playerHeading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     if (selected) playerHeading.current?.focus();
@@ -44,10 +21,10 @@ export default function Listening() {
       </header>
 
       <ul className="mt-7 grid gap-3 md:grid-cols-3">
-        {suggestions.map((suggestion) => {
+        {SPOTIFY_SUGGESTIONS.map((suggestion) => {
           const open = selected === suggestion;
           return (
-            <li key={suggestion.path} className="flex min-w-0 flex-col rounded-3xl border border-white/12 bg-white/[0.055] p-5">
+            <li key={suggestion.id} id={suggestion.id} tabIndex={-1} className="flex scroll-mt-8 min-w-0 flex-col rounded-3xl border border-white/12 bg-white/[0.055] p-5">
               <p className="text-sm" style={{ color: suggestion.color }}>{suggestion.category}</p>
               <h2 className="mt-3 font-display text-2xl">{suggestion.title}</h2>
               <p className="mb-5 mt-2 flex-1 text-sm leading-6 text-foreground/80">{suggestion.description}</p>

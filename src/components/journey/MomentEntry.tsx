@@ -36,7 +36,7 @@ export default function MomentEntry({ moment }: { moment: Moment }) {
   const [editing, setEditing] = useState<Editing>(null);
   const [draft, setDraft] = useState("");
 
-  // Lights on the landscape link here: open the card they point to.
+  // Keep deep links to individual moments working.
   useEffect(() => {
     const onHash = () => {
       if (window.location.hash === anchor) setOpen(true);
@@ -109,34 +109,34 @@ export default function MomentEntry({ moment }: { moment: Moment }) {
     );
   };
 
-  const preview = reflection?.text ?? intention?.text ?? "A pause, kept quietly.";
+  const preview = reflection?.text ?? intention?.text ?? "Breathing pause";
 
   return (
     <article
       id={`moment-${moment.id}`}
       tabIndex={-1}
       aria-label={`Moment on ${longFormat.format(when)}`}
-      className="rise-in scroll-mt-24 rounded-3xl bg-white/12 outline-none backdrop-blur"
+      className="rise-in scroll-mt-24 rounded-2xl border border-white/12 bg-white/[0.055] outline-none"
     >
       <button
         type="button"
         aria-expanded={open}
         aria-controls={bodyId}
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center gap-4 rounded-3xl px-4 py-4 text-left sm:px-5"
+        className="flex w-full items-center gap-4 rounded-2xl px-4 py-4 text-left sm:px-5"
       >
         <MomentShape moment={moment} />
         <span className="min-w-0 flex-1">
           <span className="block text-sm text-foreground/80">
-            {dateFormat.format(when)} · {timeFormat.format(when)}
+            <time dateTime={moment.completedAt}>{dateFormat.format(when)} · {timeFormat.format(when)}</time>
             {moment.mood && getMood(moment.mood) ? ` · ${getMood(moment.mood)?.label}` : ""}
           </span>
           <span className={`mt-0.5 block font-display text-lg leading-snug ${open ? "" : "line-clamp-2"}`}>{preview}</span>
           {!open && (reflection || intention) && (
-            <span className="mt-2 flex flex-wrap gap-2 text-xs text-foreground/85">
-              {reflection && <span className="rounded-full bg-white/15 px-2.5 py-1">Reflection</span>}
+            <span className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-foreground/85">
+              {reflection && <span className="text-[#becdf8]">Reflection</span>}
               {intention && (
-                <span className="rounded-full bg-white/15 px-2.5 py-1">
+                <span className="text-[#becdf8]">
                   Intention{status ? ` · ${FOLLOW_UP_LABELS[status]}` : ""}
                 </span>
               )}

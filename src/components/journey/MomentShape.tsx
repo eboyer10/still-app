@@ -7,8 +7,8 @@ export default function MomentShape({ moment, className = "size-12" }: { moment:
   const mood = moment.mood ? getMood(moment.mood) : undefined;
   return (
     <span
-      className="grid shrink-0 place-items-center rounded-2xl bg-white/[0.07]"
-      style={{ boxShadow: `inset 0 0 22px hsl(${mood?.hue ?? NEUTRAL_HUE} 80% 55% / 0.25)` }}
+      className="grid shrink-0 place-items-center rounded-2xl border border-white/8 bg-white/[0.05]"
+      style={{ boxShadow: `inset 0 0 22px hsl(${mood?.hue ?? NEUTRAL_HUE} 45% 52% / 0.2)` }}
     >
       <MoodGlyph kind={mood?.kind ?? "bloom"} n={mood?.n ?? 6} hue={mood?.hue ?? NEUTRAL_HUE} className={className} />
     </span>

@@ -21,18 +21,12 @@
   --background: #070a1f;
   --foreground: #f2f4ff;
 
-  /* Lights on the journey landscape card. */
-  --orb-core: #ffffff;
   --orb-glow: rgb(160 175 255 / 0.7);
 
   --btn-from: #ffffff;
   --btn-to: #d9defc;
   --btn-ink: #0a0d2a;
 
-  --sky: linear-gradient(180deg, #2a2f8c 0%, #151a5c 62%, #0a0d2e 100%);
-  --ridge-far: rgb(150 160 255 / 0.3);
-  --ridge-mid: rgb(110 100 230 / 0.6);
-  --ridge-near: rgb(10 12 50 / 0.95);
 }
 
 @theme inline {
@@ -44,6 +38,7 @@
 }
 
 body {
+  overflow-x: clip;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -117,9 +112,25 @@ body {
 
 .bv-halo {
   position: absolute;
-  inset: -2%;
-  background: radial-gradient(closest-side, hsl(var(--hue) 59% 63% / 0.35), transparent);
-  opacity: calc(0.46 + var(--breath) * 0.17);
+  inset: -59%;
+  background:
+    radial-gradient(ellipse 49% 43% at 47% 49%, hsl(calc(var(--hue) - 31) 63% 60% / 0.24), transparent 100%),
+    radial-gradient(ellipse 46% 45% at 54% 52%, hsl(calc(var(--hue) + 20) 56% 59% / 0.22), transparent 100%);
+  opacity: calc(0.53 + var(--breath) * 0.16);
+}
+
+.bv-shape {
+  position: absolute;
+  inset: -14%;
+  width: 128%;
+  height: 128%;
+  opacity: calc(0.15 + var(--breath) * 0.11);
+  transform: rotate(calc(-16deg + var(--breath) * 27deg)) scale(calc(0.88 + var(--breath) * 0.12));
+}
+
+.bv-shape path,
+.bv-shape ellipse {
+  vector-effect: non-scaling-stroke;
 }
 
 .bv-orb {
@@ -154,42 +165,6 @@ body {
   opacity: 0.12;
 }
 
-/* ---------- Sound playing indicator ---------- */
-
-.eq {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 2px;
-  height: 14px;
-}
-
-.eq i {
-  width: 3px;
-  height: 100%;
-  border-radius: 2px;
-  background: currentColor;
-  transform-origin: bottom;
-  animation: still-eq 1.1s ease-in-out infinite;
-}
-
-.eq i:nth-child(2) {
-  animation-delay: -0.4s;
-}
-
-.eq i:nth-child(3) {
-  animation-delay: -0.8s;
-}
-
-@keyframes still-eq {
-  0%,
-  100% {
-    transform: scaleY(0.3);
-  }
-  50% {
-    transform: scaleY(1);
-  }
-}
-
 /* The full-screen session owns the whole screen: no menu button behind it. */
 body[data-session] .menu-root {
   display: none;
@@ -210,30 +185,10 @@ body[data-session] .menu-root {
   }
 }
 
-/* ---------- Journey landscape: each light is one moment you took ---------- */
-
-.landscape-light {
-  animation: still-twinkle 6s ease-in-out infinite;
-}
-
-@keyframes still-twinkle {
-  0%,
-  100% {
-    opacity: 0.75;
-    transform: scale(0.92);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.08);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .backdrop-auto,
   .bv-auto,
-  .eq i,
-  .rise-in,
-  .landscape-light {
+  .rise-in {
     animation: none !important;
   }
 
